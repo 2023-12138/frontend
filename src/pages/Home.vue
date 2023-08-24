@@ -7,7 +7,10 @@
                     Project Manager
                 </n-gradient-text>
                 <n-h2>一个综合管理平台</n-h2>
-                <n-h3>提供项目管理，人员管理和交流平台</n-h3>
+                <n-h3>包含人员管理、项目管理，助力团队项目开发</n-h3>
+                <div style="height: 90px;" />
+                <n-button type="primary" class="loginbutton">开始</n-button>
+                <n-button class="loginbutton">阅读文档</n-button>
             </div>
         </div>
     </div>
@@ -19,22 +22,30 @@ import HomeHeader from '../components/HomeHeader.vue';
 
 <style scoped>
 .description {
-    height: 500px;
+    height: auto;
     width: 500px;
     background-color: #ddd;
     padding: 20px;
-    border-radius: 50px;
-    box-shadow:
-        7px 7px 12px rgba(0, 0, 0, .4),
-        -7px -7px 12px rgba(255, 255, 255, .9);
+    border-radius: 10px;
+    box-shadow: 0 0 5px 5px #ccc;
 }
 
 .content {
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     height: calc(100% - 70px);
     width: 100%;
     background-color: whitesmoke;
+}
+
+.loginbutton {
+    font-size: medium;
+    width: 130px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    padding-right: 50px;
+    border-radius: 10px;
+    margin-right: 20px;
 }
 </style>
