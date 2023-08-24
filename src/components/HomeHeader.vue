@@ -1,8 +1,6 @@
 <template>
     <div class="header">
-        <n-icon id="logo" size="40" color="#0e7a0d">
-            <game-controller />
-        </n-icon>
+        <Logo/>
         <ul class="router">
             <li>
                 <n-button class="route" strong secondary type="info" @click="routeGo('/test')">
@@ -10,28 +8,27 @@
                 </n-button>
             </li>
             <li>
+                <n-button class="route" strong secondary type="info" @click="routeGo('/team')">
+                    team
+                </n-button>
+            </li>
+            <li>
                 <n-button class="route" strong secondary type="info" @click="routeGo('/login')">
                     登录
                 </n-button>
             </li>
-            <li>
+            <!-- <li>
                 <n-button class="route" strong secondary type="info" @click="routeGo('/test')">
                     测试
                 </n-button>
-            </li>
-            <li>
-                <n-button class="route" strong secondary type="info" @click="routeGo('/test')">
-                    测试
-                </n-button>
-            </li>
+            </li> -->
         </ul>
     </div>
 </template>
 
 <script setup lang='ts'>
-
-import { GameController } from '@vicons/ionicons5'
 import { useRouter } from 'vue-router';
+import Logo from '@/components/Logo.vue'
 
 const router = useRouter()
 
