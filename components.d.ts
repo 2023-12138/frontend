@@ -11,7 +11,6 @@ declare module 'vue' {
     HomeHeader: typeof import('./src/components/HomeHeader.vue')['default']
     LoginForm: typeof import('./src/components/LoginForm.vue')['default']
     Logo: typeof import('./src/components/Logo.vue')['default']
-    MyHeader: typeof import('./src/components/MyHeader.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCol: typeof import('naive-ui')['NCol']
     NForm: typeof import('naive-ui')['NForm']
