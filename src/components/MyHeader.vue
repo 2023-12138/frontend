@@ -10,8 +10,8 @@
                 </n-button>
             </li>
             <li>
-                <n-button class="route" strong secondary type="info" @click="routeGo('/test')">
-                    测试
+                <n-button class="route" strong secondary type="info" @click="routeGo('/login')">
+                    登录
                 </n-button>
             </li>
             <li>
