@@ -55,7 +55,8 @@ import LoginForm from '../components/LoginForm.vue';
                 .title{
                     font-size: 32px;
                     margin-bottom: 16px;
-
+                    display: flex;
+                    justify-content: flex-end;
                 }
                 .desc{
                     font-size: 28px;
