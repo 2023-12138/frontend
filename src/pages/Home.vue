@@ -1,6 +1,6 @@
 <template>
     <div style="height: 100vh;">
-        <MyHeader></MyHeader>
+        <HomeHeader></HomeHeader>
         <div class="content">
             <div class="description">
                 <n-gradient-text style="font-size: 42px;font-weight: 600;" type="info">
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang='ts'>
-import MyHeader from '../components/MyHeader.vue';
+import HomeHeader from '../components/HomeHeader.vue';
 </script>
 
 <style scoped>

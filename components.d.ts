@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    HomeHeader: typeof import('./src/components/HomeHeader.vue')['default']
+    Logo: typeof import('./src/components/Logo.vue')['default']
     MyHeader: typeof import('./src/components/MyHeader.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NGradientText: typeof import('naive-ui')['NGradientText']

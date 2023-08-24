@@ -8,6 +8,10 @@ const routes:Array<RouteRecordRaw> = [
     {
         path:'/test',
         component:() => import('../components/HelloWorld.vue')
+    },
+    {
+        path:'/team',
+        component:() => import('../pages/Team/index.vue')
     }
 ]
 
