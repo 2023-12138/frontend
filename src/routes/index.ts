@@ -1,26 +1,30 @@
-import { createRouter,createWebHistory,RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-const routes:Array<RouteRecordRaw> = [
+const routes: Array<RouteRecordRaw> = [
     {
-        path:'/',
-        component:() => import('../pages/Home.vue')
+        path: '/',
+        component: () => import('../pages/Home.vue')
     },
     {
-        path:'/test',
-        component:() => import('../components/HelloWorld.vue')
+        path: '/test',
+        component: () => import('../components/HelloWorld.vue')
     },
     {
-        path:'/team',
-        component:() => import('../pages/Team/index.vue')
+        path: '/team',
+        component: () => import('../pages/Team/index.vue')
     },
     {
-        path:'/login',
-        component:() => import('../pages/Login.vue')
+        path: '/login',
+        component: () => import('../pages/Login.vue')
+    },
+    {
+        path: '/document',
+        component: () => import('../pages/Document.vue')
     }
 ]
 
 const router = createRouter({
-    history:createWebHistory(),
+    history: createWebHistory(),
     routes
 })
 
