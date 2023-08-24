@@ -1,19 +1,23 @@
 <template>
     <div class="header">
-        <Logo/>
+        <div style="display: flex;">
+            <Logo />
+            <n-divider vertical style="height:40px ;margin-left: 20px;" />
+            <label style="font-size: x-large; text-align: center;margin-left: 20px;color: white;">{{ header_title }}</label>
+        </div>
         <ul class="router">
             <li>
-                <n-button class="route" strong secondary type="info" @click="routeGo('/test')">
+                <n-button class="route" strong tertiary @click="routeGo('/test')">
                     测试
                 </n-button>
             </li>
             <li>
-                <n-button class="route" strong secondary type="info" @click="routeGo('/team')">
+                <n-button class="route" strong tertiary @click="routeGo('/team')">
                     team
                 </n-button>
             </li>
             <li>
-                <n-button class="route" strong secondary type="info" @click="routeGo('/login')">
+                <n-button class="route" strong tertiary @click="routeGo('/login')">
                     登录
                 </n-button>
             </li>
@@ -31,8 +35,9 @@ import { useRouter } from 'vue-router';
 import Logo from '@/components/Logo.vue'
 
 const router = useRouter()
+defineProps<{ header_title: string }>()
 
-const routeGo = (path:string) => {
+const routeGo = (path: string) => {
     router.push(path)
 }
 
@@ -40,7 +45,7 @@ const routeGo = (path:string) => {
 
 <style scoped>
 .header {
-    background-color: #ccc;
+    background-color: #18a058;
     width: 100%;
     height: 70px;
     display: flex;
@@ -49,8 +54,7 @@ const routeGo = (path:string) => {
 }
 
 .router {
-    display: flex;
-
+    display: flex
 }
 
 .route {
@@ -58,7 +62,9 @@ const routeGo = (path:string) => {
     height: 50px;
     width: 100px;
     border-radius: 10px;
+    color: rgb(238, 234, 234);
 }
+
 #logo {
     margin-left: 30px;
 }
