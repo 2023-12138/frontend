@@ -4,7 +4,8 @@
             <div class="login-left">
                 <div class="top">
                     <div class="title">
-                        <span>欢迎使用</span>
+                        <n-h2>融创云开发</n-h2>
+                        <n-h3>人员管理，团队开发</n-h3>
                     </div>
                 </div>
                 <div class="bottom">
@@ -19,8 +20,8 @@
 </template>
 
 <script setup lang='ts'>
-import working from '../assets/woking.gif'
-import LoginForm from '../components/LoginForm.vue';
+import working from '@/assets/woking.gif'
+import LoginForm from '@/components/LoginForm.vue';
 </script>
 
 <style scoped>
@@ -52,17 +53,6 @@ import LoginForm from '../components/LoginForm.vue';
                 justify-content :flex-start;
                 align-items :flex-start;
                 margin:40px 0px;
-                .title{
-                    font-size: 32px;
-                    margin-bottom: 16px;
-                    display: flex;
-                    justify-content: flex-end;
-                }
-                .desc{
-                    font-size: 28px;
-                    text-align: left;
-                    color: rgb(166,175,188);
-                }
             }
             .bottom img {
                 width: 100%;
