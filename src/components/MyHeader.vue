@@ -60,6 +60,7 @@ const routeGo = (path:string) => {
     margin-right: 30px;
     height: 50px;
     width: 100px;
+    border-radius: 10px;
 }
 #logo {
     margin-left: 30px;
