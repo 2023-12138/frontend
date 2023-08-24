@@ -8,7 +8,7 @@
         </n-form-item>
 
         <div style="display: flex; justify-content: flex-end">
-            <n-button round type="primary" @click="login">
+            <n-button round type="primary" @click="login" style="width: 100%;">
                 登录
             </n-button>
         </div>
