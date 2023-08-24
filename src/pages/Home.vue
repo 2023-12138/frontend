@@ -1,8 +1,7 @@
 <template>
     <div style="height: 100vh;">
         <MyHeader></MyHeader>
-        <div
-            style="display:flex;justify-content: center;align-items: center; height: 100%; width: 100%; background-color: whitesmoke;">
+        <div class="content">
             <div class="description">
                 <n-gradient-text style="font-size: 42px;font-weight: 600;" type="info">
                     Project Manager
@@ -28,5 +27,14 @@ import MyHeader from '../components/MyHeader.vue';
     box-shadow:
         7px 7px 12px rgba(0, 0, 0, .4),
         -7px -7px 12px rgba(255, 255, 255, .9);
+}
+
+.content {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100% - 70px);
+    width: 100%;
+    background-color: whitesmoke;
 }
 </style>
