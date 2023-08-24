@@ -28,3 +28,24 @@ import HelloWorld from './components/HelloWorld.vue'
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 </style>
+<!-- <template>
+  <div>
+
+  </div>
+</template>
+
+<script setup lang='ts'>
+
+</script>
+
+<style scoped>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  div {
+    background-color: red;
+    width: 200px;
+    height: 200px;
+  }
+</style> -->
