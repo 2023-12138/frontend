@@ -11,10 +11,10 @@
                 </n-gradient-text>
                 <n-h2>一个综合管理平台</n-h2>
                 <n-h3>包含人员管理、项目管理，助力团队项目开发</n-h3>
-                <div style="height: 90px;" />
-                <n-button @click="router.push('/login')" type="primary" class="loginbutton">开始</n-button>
-                <n-button @click="router.push('/document')" class="loginbutton">阅读文档</n-button>
-
+                <div style="height: 90px;">
+                    <n-button @click="router.push('/login')" type="primary" class="loginbutton">开始</n-button>
+                    <n-button @click="router.push('/document')" class="loginbutton">阅读文档</n-button>
+                </div>
             </div>
 
 
@@ -27,7 +27,6 @@
 import { ref } from 'vue';
 import HomeHeader from '../components/HomeHeader.vue';
 import router from '@/routes';
-import { PeopleSharp } from '@vicons/ionicons5'
 const title = ref("FusionCode");
 </script>
 
