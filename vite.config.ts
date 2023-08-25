@@ -31,4 +31,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src/'),
     }
   },
+  // server:{
+  //     proxy: {
+  //         '/api': {
+  //             target: 'http://127.0.0.1:8000/',//设置你调用的接口域名和端口号 别忘了加http
+  //             changeOrigin: true,
+  //             rewrite:(path) => path.replace(/^\/api/, ''),
+  //         }
+  //     },
+  // }
 })
