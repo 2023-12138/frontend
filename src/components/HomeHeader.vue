@@ -7,8 +7,8 @@
         </div>
         <ul class="router">
             <li>
-                <n-button class="route" strong tertiary @click="routeGo('/test')">
-                    测试
+                <n-button class="route" strong tertiary @click="routeGo('/chatroom')">
+                    聊天
                 </n-button>
             </li>
             <li>

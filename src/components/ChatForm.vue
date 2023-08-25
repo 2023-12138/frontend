@@ -1,5 +1,5 @@
 <template>
-    <div style="display: flex;background-color: antiquewhite;">
+    <div style="display: flex;background-color: antiquewhite; height: 100%;">
         <n-space vertical>
             <n-tabs type="line" animated placement="left" style="height: 100%;">
                 <n-tab-pane name="oasis" tab="消息">
@@ -10,7 +10,7 @@
                 </n-tab-pane>
             </n-tabs>
         </n-space>
-        <div style="width: 100%;height: 100vh; background-color: blue;display: flex;flex-flow: column;">
+        <div style="width: 100%;height: 100%; background-color: blue;display: flex;flex-flow: column;">
             <div style="height: 70px; background-color: #ccc;display: flex;">
                 <n-h3 style=" width: fit-content;margin: 20px;">User</n-h3>
             </div>
@@ -81,4 +81,5 @@ function onMsgboxSubmitted(e: SubmitEvent) {
     margin-top: 13px;
     margin-left: 10px;
 }
+
 </style>

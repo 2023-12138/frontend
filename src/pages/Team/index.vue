@@ -16,9 +16,22 @@
                         <n-icon :component="FlashOutline" />
                     </template>
                 </n-input> -->
-                <div class="topNavRightIcon">
+                <div class="topNavRightIcon" @click="chatShowModal=true">
                     <n-icon size="25" :component="MessageCircle" />
                 </div>
+                <n-modal
+                    v-model:show="chatShowModal"
+                    class="custom-card"
+                    preset="card"
+                    style="width: 60vw;height: 85vh;"
+                    title="聊天室"
+                    size="huge"
+                    :bordered="false"
+                    header-style="padding:20px"
+                    content-style="height:70%"
+                >
+                    <ChatForm/>
+                </n-modal>
 
                 <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
                     @select="avatarHandleSelect" style="border-radius: 9px;width: 200px;">
@@ -62,12 +75,13 @@ import {
     // FlashOutline as FlashOutline,
 } from '@vicons/ionicons5'
 import { BellRegular } from '@vicons/fa'
+import { MessageCircle } from '@vicons/tabler'
 
-import { h, Component } from 'vue'
+import { h, Component,ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import Logo from '@/components/Logo.vue';
-import { MessageCircle } from '@vicons/tabler'
+import ChatForm from '@/components/ChatForm.vue'
 
 //侧边栏部分
 function renderIcon(icon: Component) {
@@ -189,6 +203,9 @@ const avatarDropdownThemeOverrides = {
 
 //顶部消息通知功能
 
+//聊天
+
+let chatShowModal = ref(false)
 </script>
 
 <style scoped>
@@ -283,4 +300,5 @@ const avatarDropdownThemeOverrides = {
     height: 100%;
     background-color: green;
 }
+
 </style>
