@@ -128,7 +128,6 @@
 import { ref } from 'vue'
 import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from 'axios'
-import { baseUrl } from '@/main'
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
 
 interface LoginModelType {
@@ -299,7 +298,7 @@ const login = (e: MouseEvent) => {
     e.preventDefault()
     loginFormRef.value?.validate((errors) => {
         if (!errors) {
-            axios.post(baseUrl + "/user/login", {
+            axios.post("/user/login", {
                 "username": loginModel.value.name,
                 "password": loginModel.value.password
             }).then(res => {
@@ -344,7 +343,7 @@ const submitRegisterCaptcha = () => {
                 }
             }, 1000);
         }
-        axios.post(baseUrl + "/user/sendCaptcha", {
+        axios.post("/user/sendCaptcha", {
             email: registerModel.value.email
         }).then(res => {
             if (res.status === 200) {
@@ -416,7 +415,7 @@ const submitForgetCaptcha = () => {
                 }
             }, 1000);
         }
-        axios.post(baseUrl + "/user/sendCaptcha", {
+        axios.post("/user/sendCaptcha", {
             email: forgetModel.value.email
         }).then(res => {
             if (res.status === 200) {
@@ -440,7 +439,7 @@ const forget = (e: MouseEvent) => {
     frogetFormRef.value?.validate((errors) => {
         console.log(forgetModel.value)
         if (!errors) {
-            axios.post(baseUrl + "/user/pwdFind", {
+            axios.post("/user/pwdFind", {
                 "email": forgetModel.value.email,
                 "captcha": forgetModel.value.captcha,
                 "newPassword": forgetModel.value.password,
