@@ -19,7 +19,9 @@ export interface Column {
     render: (row: RowData) => ReturnType<typeof h>;
 }
 
-const userNameInputRef = ref()
+const nameInputRef = ref()
+const emailInputRef = ref()
+const phoneInputRef = ref()
 
 const options = [{
     label: '管理员',
@@ -35,8 +37,25 @@ export const columns: Column[] = [
         key: 'name',
         width: 150,
         render(row: RowData) {
-            return h('div', {
+            return row.isEditing
+                ? h(NInput as any, {
+                    ref: nameInputRef,
+                    value: row.name,
+                    onUpdateValue: (v: string) => {
+                        row.name = v
+                    },
+                    onBlur: () => {
+                        row.isEditing = false
+                    },
+                })
+                : h('div', {
                     style: 'min-height: 22px',
+                    onClick: () => {
+                        row.isEditing = true
+                        nextTick(() => {
+                            nameInputRef.value.focus()
+                        })
+                    }
                 }, row.name)
         }
     },
@@ -45,8 +64,25 @@ export const columns: Column[] = [
         key: 'phone',
         width: 100,
         render(row: RowData) {
-            return h('div', {
+            return row.isEditing
+                ? h(NInput as any, {
+                    ref: emailInputRef,
+                    value: row.phone,
+                    onUpdateValue: (v: string) => {
+                        row.phone = v
+                    },
+                    onBlur: () => {
+                        row.isEditing = false
+                    },
+                })
+                : h('div', {
                     style: 'min-height: 22px',
+                    onClick: () => {
+                        row.isEditing = true
+                        nextTick(() => {
+                            emailInputRef.value.focus()
+                        })
+                    }
                 }, row.phone)
         }
     },
@@ -54,8 +90,28 @@ export const columns: Column[] = [
         title: '邮箱',
         key: 'email',
         render(row: RowData) {
-            return h('div', {
+            return row.isEditing
+                ? h(NInput as any, {
+                    ref: phoneInputRef,
+                    value: row.email,
+                    onUpdateValue: (v: string) => {
+                        row.email = v
+                    },
+                    onBlur: () => {
+                        row.isEditing = false
+                    },
+                    onEnter: () => {
+                        row.isEditing = false
+                    }
+                })
+                : h('div', {
                     style: 'min-height: 22px',
+                    onClick: () => {
+                        row.isEditing = true
+                        nextTick(() => {
+                            phoneInputRef.value.focus()
+                        })
+                    }
                 }, row.email)
         }
     },
@@ -64,25 +120,8 @@ export const columns: Column[] = [
         key: 'username',
         width: 100,
         render(row: RowData) {
-            return row.isEditing ? 
-                h(NInput as any, {
-                    ref: userNameInputRef,
-                    value: row.username,
-                    onUpdateValue: (v: string) => {
-                        row.username = v
-                    },
-                    onBlur: () => {
-                        row.isEditing = false
-                        //TODO:前后端
-                    },
-                }) : h('div', {
+            return h('div', {
                     style: 'min-height: 22px',
-                    onClick: () => {
-                        row.isEditing = true
-                        nextTick(() => {
-                            userNameInputRef.value.focus()
-                        })
-                    }
                 }, row.username)
         }
     },
@@ -109,6 +148,12 @@ export const columns: Column[] = [
         render(row: RowData) {
             return h('div', {
                     style: 'min-height: 22px',
+                    onClick: () => {
+                        row.isEditing = true
+                        nextTick(() => {
+                            phoneInputRef.value.focus()
+                        })
+                    }
                 }, row.email)
         }
     }

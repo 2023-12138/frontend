@@ -2,8 +2,10 @@
     <div class="member-container">
         <div class="member-top">
             <n-h2>成员管理</n-h2>
-            <n-h3>当前团队共{{ data.length }}人</n-h3>
-            <n-button type="primary">添加成员</n-button>
+            <div class="member-top-bottom">
+                <span>当前团队共{{ data.length }}人</span>
+                <n-button type="primary">添加成员</n-button>
+            </div>
         </div>
         <div class="member-bottom">
             <div class="sider">
@@ -29,7 +31,9 @@ const createData = (): RowData[] =>
         name: `John Brown ${index}`,
         phone: ((Math.random() * 40) | 0).toString(),
         email: `New York No. ${index} Lake Park`,
+        username: '嘻嘻',
         option: 'option',
+        rank: index === 0 ? '创建者' : '管理员',
         isEditing: false
     }))
 
@@ -55,6 +59,11 @@ const handleUpdateValue = (key: string) => {
     padding: 50px;
 }
 
+.member-top .member-top-bottom {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
 .member-bottom {
 
     display: inline-flex;
