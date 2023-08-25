@@ -137,8 +137,14 @@
     
 }
 
+.links span {
+    padding: 5px;
+    border-radius: 2px;
+}
 .links span:hover {
-    color: rgba(24, 160, 88, 0.5);
+    color: white;
+    background-color: rgba(24, 160, 88, 1);
+    
 }
 </style>
 
