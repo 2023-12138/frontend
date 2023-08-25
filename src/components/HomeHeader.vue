@@ -12,6 +12,11 @@
                 </n-button>
             </li>
             <li>
+                <n-button class="route" strong tertiary @click="routeGo('/test')">
+                    测试
+                </n-button>
+            </li>
+            <li>
                 <n-button class="route" strong tertiary @click="routeGo('/team')">
                     team
                 </n-button>
@@ -21,11 +26,11 @@
                     登录
                 </n-button>
             </li>
-            <!-- <li>
-                <n-button class="route" strong secondary type="info" @click="routeGo('/test')">
-                    测试
+            <li>
+                <n-button class="route" strong secondary type="info" @click="routeGo('/member')">
+                    成员管理
                 </n-button>
-            </li> -->
+            </li>
         </ul>
     </div>
 </template>

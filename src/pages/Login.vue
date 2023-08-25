@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <div class="login-container">
+    <div class="login-out-container">
+        <div class="login-in-container">
             <div class="login-left">
                 <div class="top">
                     <div class="title">
@@ -25,14 +25,14 @@ import LoginForm from '@/components/LoginForm.vue';
 </script>
 
 <style scoped>
-.container{
+.login-out-container{
     position: relative;
     background-image:linear-gradient(90deg, #ebebeb, #f5f7f6);
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    .login-container{
+    .login-in-container{
         width:874px;
         min-width: 874px;
         height: 78%;
@@ -47,6 +47,10 @@ import LoginForm from '@/components/LoginForm.vue';
         .login-left{
             width:50%;
             padding:47px 54px;
+            display:flex;
+            flex-direction:column ;
+            justify-content: center;
+            align-items :center;
             .top{
                 display:flex;
                 flex-direction:column;
