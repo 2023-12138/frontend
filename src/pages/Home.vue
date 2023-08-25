@@ -27,7 +27,6 @@
 import { ref } from 'vue';
 import HomeHeader from '../components/HomeHeader.vue';
 import router from '@/routes';
-import { PeopleSharp } from '@vicons/ionicons5'
 const title = ref("FusionCode");
 </script>
 
