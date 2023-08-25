@@ -16,21 +16,12 @@
                         <n-icon :component="FlashOutline" />
                     </template>
                 </n-input> -->
-                <div class="topNavRightIcon" @click="chatShowModal=true">
+                <div class="topNavRightIcon" @click="chatShowModal = true">
                     <n-icon size="25" :component="MessageCircle" />
                 </div>
-                <n-modal
-                    v-model:show="chatShowModal"
-                    class="custom-card"
-                    preset="card"
-                    style="width: 60vw;height: 85vh;"
-                    title="聊天室"
-                    size="huge"
-                    :bordered="false"
-                    header-style="padding:20px"
-                    content-style="height:70%"
-                >
-                    <ChatForm/>
+                <n-modal v-model:show="chatShowModal" class="custom-card" preset="card" style="width: 65vw;height: 85vh;"
+                    title="聊天室" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%">
+                    <ChatForm />
                 </n-modal>
 
                 <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
@@ -39,7 +30,7 @@
                         <n-icon size="25" :component="BellRegular" />
                     </div>
                 </n-dropdown>
-                
+
                 <div class="avatar">
                     <n-config-provider :theme-overrides="avatarDropdownThemeOverrides">
                         <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
@@ -54,10 +45,7 @@
             <div class="leftSideNav">
 
                 <div class="leftSideNavMenu">
-                    <n-menu 
-                    :options="menuOptions" 
-                    :default-expanded-keys="defaultExpandedKeys" 
-                    />
+                    <n-menu :options="menuOptions" :default-expanded-keys="defaultExpandedKeys" />
                 </div>
             </div>
             <div class="main">
@@ -77,7 +65,7 @@ import {
 import { BellRegular } from '@vicons/fa'
 import { MessageCircle } from '@vicons/tabler'
 
-import { h, Component,ref } from 'vue'
+import { h, Component, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import Logo from '@/components/Logo.vue';
@@ -93,7 +81,7 @@ const menuOptions: MenuOption[] = [
         label: () => h(
             RouterLink,
             {
-                to:{path:'/test'}
+                to: { path: '/test' }
             },
             {
                 default: () => '人员管理'
@@ -106,7 +94,7 @@ const menuOptions: MenuOption[] = [
         label: () => h(
             RouterLink,
             {
-                to:{path:'/test'}
+                to: { path: '/test' }
             },
             {
                 default: () => '团队设置'
@@ -123,7 +111,7 @@ const menuOptions: MenuOption[] = [
         label: () => h(
             RouterLink,
             {
-                to:{path:'/test'}
+                to: { path: '/test' }
             },
             {
                 default: () => '项目空间'
@@ -132,7 +120,7 @@ const menuOptions: MenuOption[] = [
         key: 'project_space',
         icon: renderIcon(BookIcon),
     },
-    
+
 ]
 
 const defaultExpandedKeys = 'project_space'
@@ -209,7 +197,6 @@ let chatShowModal = ref(false)
 </script>
 
 <style scoped>
-
 /* 顶部导航 */
 .topNav {
     /* width: 100%; */
@@ -246,8 +233,8 @@ let chatShowModal = ref(false)
     height: 40px;
     width: 40px;
     display: flex;
-    justify-content:center;
-    align-items:center ;
+    justify-content: center;
+    align-items: center;
     margin-right: 20px;
 }
 
@@ -287,10 +274,11 @@ let chatShowModal = ref(false)
     ::v-deep(.n-menu-item) {
         margin-top: 6px;
     }
-    ::v-deep(.n-menu-divider){
+
+    ::v-deep(.n-menu-divider) {
         --n-divider-color: rgb(216 229 215);
-        height:2px;
-        margin:6px 5px;
+        height: 2px;
+        margin: 6px 5px;
     }
 }
 
@@ -300,5 +288,4 @@ let chatShowModal = ref(false)
     height: 100%;
     background-color: green;
 }
-
 </style>

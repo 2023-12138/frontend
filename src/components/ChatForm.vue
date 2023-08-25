@@ -3,10 +3,48 @@
         <n-space vertical>
             <n-tabs class="leftContainer" type="line" animated placement="left">
                 <n-tab-pane name="oasis" tab="消息">
-                    <div class="recentMsgContainer" />
+                    <div class="recentMsgContainer">
+                        <n-list hoverable clickable>
+                            <n-list-item>
+                                <n-space horizontal v-for="item in recentChatList">
+                                    <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-ellipsis style="max-width: 62px;">{{ item.userName }}</n-ellipsis>
+                                </n-space>
+                            </n-list-item>
+                        </n-list>
+                    </div>
                 </n-tab-pane>
-                <n-tab-pane name="the beatles" tab="联系人">
-                    <div class="recentMsgContainer" />
+                <n-tab-pane name="the beatles" tab="团队">
+                    <div class="recentMsgContainer">
+                        <n-list hoverable clickable>
+                            <n-list-item v-for="team in allTeams">
+                                <!-- <n-space horizontal> -->
+                                <div class="teamNameContainer">
+                                    <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-ellipsis style="max-width: 62px;">{{ team.teamName }}</n-ellipsis>
+
+                                    <n-dropdown trigger="click" :options="teamMemberOptions">
+                                        <n-popover trigger="hover">
+                                            <template #trigger>
+                                                <n-button strong secondary circle type="primary">
+                                                    <template #icon>
+                                                        <n-icon>
+                                                            <ImageOutline />
+                                                        </n-icon>
+                                                    </template>
+                                                </n-button>
+                                            </template>
+
+                                            <span>选择团队成员私聊</span>
+                                        </n-popover>
+                                    </n-dropdown>
+
+                                </div>
+
+                                <!-- </n-space> -->
+                            </n-list-item>
+                        </n-list>
+                    </div>
                 </n-tab-pane>
             </n-tabs>
         </n-space>
@@ -17,7 +55,7 @@
             <div class="rightChatContentContainer">
                 <n-layout class="chatContentLayout">
                     <n-layout-content class="chatContent" content-style="padding: 24px;">
-                        <n-card v-for="_ in msgList" title="卡片">
+                        <n-card style="margin-top: 10px;" v-for="_ in msgList">
                             卡片内容
                         </n-card>
                     </n-layout-content>
@@ -38,7 +76,7 @@
                                 </template>
                             </n-button>
                             <n-form @submit="onMsgboxSubmitted" class="msgBoxForm">
-                                <n-input default-value="" placeholder="Message" show-count clearable class="msgBox" />
+                                <n-mention default-value="" placeholder="Message" :options="options" class="msgBox" />
                             </n-form>
                         </div>
                     </n-layout-footer>
@@ -49,30 +87,56 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ImageOutline } from '@vicons/ionicons5'
 import { useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
 const container = useChatContainer();
-const { userList, recentChatList, msgList, webSocket } = storeToRefs(container);
-
-
-onMounted(() => {
-    console.log("on mounted");
-
-})
-onUnmounted(() => {
-    console.log("on unmounted");
-
-})
+const { recentChatList, msgList, webSocket, allTeams, currentChatID } = storeToRefs(container);
+const options = [{ label: 'Feeman', value: 'Freeman' }, { label: 'TestUser', value: 'testuser' }];
+const teamMemberOptions = ref([
+    {
+        label: '滨海湾金沙，新加坡',
+        key: 'marina bay sands',
+        disabled: true
+    },
+    {
+        label: '布朗酒店，伦敦',
+        key: "brown's hotel, london"
+    },
+    {
+        label: '亚特兰蒂斯巴哈马，拿骚',
+        key: 'atlantis nahamas, nassau'
+    },
+    {
+        label: '比佛利山庄酒店，洛杉矶',
+        key: 'the beverly hills hotel, los angeles'
+    }
+])
 function onMsgboxSubmitted(e: SubmitEvent) {
     e.preventDefault();
-    msgList.value.push({
-        userName: 'Hello',
-        msg: 'world'
-    });
+    // msgList.value?.push({
+    //     userName: 'Hello',
+    //     msg: 'world',
+    //     userID: 0,
+    //     time: new Date(Date.now()),
+    //     imgstr: null
+    // });
+    webSocket.value?.send(JSON.stringify({
+        message: '', to_uid: 1, tid: '', from_uid: 2
+    }));
 }
+onMounted(() => {
+    if (webSocket.value == null) {
+        //重新加载socket的所有事件
+        webSocket.value = new WebSocket("ws://localhost:8000/ws/chat/2/");
+        webSocket.value.onmessage = (e) => {
+            console.log(e.data);
+            //message,senderId,teamId,time
+        };
+    }
 
+});
 </script>
 <style scoped>
 .msg_tool_button {
@@ -93,7 +157,7 @@ function onMsgboxSubmitted(e: SubmitEvent) {
 }
 
 .recentMsgContainer {
-    width: 110px;
+    width: 150px;
 }
 
 .rightChatRoomContainer {
@@ -105,19 +169,19 @@ function onMsgboxSubmitted(e: SubmitEvent) {
 }
 
 .targetUserContainer {
-    height: 70px;
+    height: 50px;
     background-color: #ccc;
     display: flex;
 }
 
 .targetUser {
     width: fit-content;
-    margin: 20px;
+    margin: 10px;
 }
 
 .rightChatContentContainer {
     background-color: blue;
-    height: calc(100% - 70px);
+    height: calc(100% - 50px);
     width: 100%;
 }
 
@@ -151,5 +215,13 @@ function onMsgboxSubmitted(e: SubmitEvent) {
     margin-left: 20px;
     text-align: left;
     width: calc(100% - 30px)
+}
+
+.teamNameContainer {
+    height: 100%;
+    width: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 </style>
