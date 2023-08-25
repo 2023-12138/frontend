@@ -24,6 +24,10 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/chatroom',
         component: () => import('../components/ChatForm.vue')
+    },
+    {
+        path: '/member',
+        component: () => import('@/pages/Team/Member.vue')
     }
 ]
 
