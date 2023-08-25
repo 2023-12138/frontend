@@ -16,11 +16,22 @@
                         <n-icon :component="FlashOutline" />
                     </template>
                 </n-input> -->
+                <div class="topNavRightIcon">
+                    <n-icon size="25" :component="MessageCircle" />
+                </div>
+
+                <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
+                    @select="avatarHandleSelect" style="border-radius: 9px;width: 200px;">
+                    <div class="topNavRightIcon">
+                        <n-icon size="25" :component="BellRegular" />
+                    </div>
+                </n-dropdown>
+                
                 <div class="avatar">
                     <n-config-provider :theme-overrides="avatarDropdownThemeOverrides">
                         <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
                             @select="avatarHandleSelect" style="border-radius: 9px;width: 200px;">
-                            <n-avatar round :size="55" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                            <n-avatar round :size="40" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                         </n-dropdown>
                     </n-config-provider>
                 </div>
@@ -36,8 +47,6 @@
                     />
                 </div>
             </div>
-
-
             <div class="main">
 
             </div>
@@ -48,13 +57,17 @@
 <script setup lang='ts'>
 import { NIcon, useMessage, NAvatar, NText, NConfigProvider } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import { h, Component } from 'vue'
 import {
     BookOutline as BookIcon,
     // FlashOutline as FlashOutline,
 } from '@vicons/ionicons5'
+import { BellRegular } from '@vicons/fa'
+
+import { h, Component } from 'vue'
+import { RouterLink } from 'vue-router'
 
 import Logo from '@/components/Logo.vue';
+import { MessageCircle } from '@vicons/tabler'
 
 //侧边栏部分
 function renderIcon(icon: Component) {
@@ -63,29 +76,53 @@ function renderIcon(icon: Component) {
 
 const menuOptions: MenuOption[] = [
     {
-        label: '成员管理',
+        label: () => h(
+            RouterLink,
+            {
+                to:{path:'/test'}
+            },
+            {
+                default: () => '人员管理'
+            }
+        ),
         key: 'member_management',
         icon: renderIcon(BookIcon),
     },
     {
-        label: '我的消息',
-        key: 'my_chats',
+        label: () => h(
+            RouterLink,
+            {
+                to:{path:'/test'}
+            },
+            {
+                default: () => '团队设置'
+            }
+        ),
+        key: 'team——settings',
         icon: renderIcon(BookIcon),
     },
     {
-        label: '项目空间',
+        key: 'header-divider',
+        type: 'divider'
+    },
+    {
+        label: () => h(
+            RouterLink,
+            {
+                to:{path:'/test'}
+            },
+            {
+                default: () => '项目空间'
+            }
+        ),
         key: 'project_space',
         icon: renderIcon(BookIcon),
-        children: [
-            {
-                label: '人物',
-                key: 'people',
-            }
-        ]
-    }
+    },
+    
 ]
 
 const defaultExpandedKeys = 'project_space'
+
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -149,35 +186,14 @@ const avatarDropdownThemeOverrides = {
         "borderRadius": "9px"
     }
 }
+
+//顶部消息通知功能
+
 </script>
 
 <style scoped>
-.layout {
-    /* display: flex; */
-}
 
-.leftSideNav {
-    width: 15%;
-    height: 100%;
-    /* background-color: black; */
-}
-
-
-
-.leftSideNavTopTitie {
-    margin-left: 15px;
-    letter-spacing: 3px;
-    font-family: '宋体', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-weight: bolder;
-    font-size: 20px;
-}
-
-.leftSideNavMenu {
-    ::v-deep(.n-menu-item) {
-        margin-top: 6px;
-    }
-}
-
+/* 顶部导航 */
 .topNav {
     /* width: 100%; */
     height: 100px;
@@ -209,6 +225,15 @@ const avatarDropdownThemeOverrides = {
     align-items: center;
 }
 
+.topNavRightIcon {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content:center;
+    align-items:center ;
+    margin-right: 20px;
+}
+
 .search {
     margin-left: 3%;
     width: 50%;
@@ -218,15 +243,41 @@ const avatarDropdownThemeOverrides = {
     margin-right: 1.5%;
 }
 
-
+/* 侧边栏导航 */
 .bottom {
     height: calc(100vh - 100px);
     display: flex;
     /* background-color: #aaa; */
 }
 
+.leftSideNav {
+    width: 15%;
+    height: 100%;
+    /* background-color: black; */
+}
 
 
+
+.leftSideNavTopTitie {
+    margin-left: 15px;
+    letter-spacing: 3px;
+    font-family: '宋体', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bolder;
+    font-size: 20px;
+}
+
+.leftSideNavMenu {
+    ::v-deep(.n-menu-item) {
+        margin-top: 6px;
+    }
+    ::v-deep(.n-menu-divider){
+        --n-divider-color: rgb(216 229 215);
+        height:2px;
+        margin:6px 5px;
+    }
+}
+
+/* 主窗口 */
 .main {
     width: 85%;
     height: 100%;
