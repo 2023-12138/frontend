@@ -4,7 +4,7 @@
         <div class="bottom">
             <div class="leftSideNav">
                 <div class="leftSideNavMenu">
-                    <n-menu :options="menuOptions" :render-label="renderMenuLabel"/>
+                    <n-menu :options="menuOptions" :render-label="renderMenuLabel" />
                 </div>
             </div>
             <div class="main">
@@ -25,7 +25,7 @@ import {
 
 
 import { h, Component } from 'vue'
-import {RouterLink} from 'vue-router'
+import { RouterLink } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
 
@@ -38,13 +38,13 @@ const menuOptions: MenuOption[] = [
     {
         label: '成员管理',
         key: 'member_management',
-        href:'/team/' + '1' + '/member',
+        href: '/team/' + '1' + '/member',
         icon: renderIcon(BookIcon),
     },
     {
         label: '团队设置',
         key: 'team——settings',
-        href:'/team/' + '1' + '/setting',
+        href: '/team/' + '1' + '/setting',
         icon: renderIcon(BookIcon),
     },
     {
@@ -54,25 +54,25 @@ const menuOptions: MenuOption[] = [
     {
         label: '项目空间',
         key: 'project_space',
-        href:'/team/' + '1' + '/projectmanage',
+        href: '/team/' + '1' + '/projectmanage',
         icon: renderIcon(FlashOutline),
     },
     {
         label: '项目1',
         key: 'project_1',
-        href:'/team/' + '1' + '/project/2',
+        href: '/team/' + '1' + '/project/2',
         icon: renderIcon(Document),
     },
-    
+
 ]
 
-function renderMenuLabel (option: MenuOption) {
+function renderMenuLabel(option: MenuOption) {
     if ('href' in option) {
-    return h(
-        RouterLink as any,
-        { to: option.href },
-        option.label as string
-    )
+        return h(
+            RouterLink as any,
+            { to: option.href },
+            option.label as string
+        )
     }
     return option.label as string
 }
@@ -80,9 +80,6 @@ function renderMenuLabel (option: MenuOption) {
 </script>
 
 <style scoped>
-
-
-
 /* 侧边栏导航 */
 .bottom {
     height: calc(100vh - 100px);
@@ -100,11 +97,12 @@ function renderMenuLabel (option: MenuOption) {
     ::v-deep(.n-menu-item) {
         margin-top: 6px;
     }
-    ::v-deep(.n-menu-divider){
+
+    ::v-deep(.n-menu-divider) {
         /* --n-divider-color: rgb(216 229 215); */
-        --n-divider-color:var(--primary-color);
-        height:2px;
-        margin:6px 5px;
+        --n-divider-color: var(--primary-color);
+        height: 2px;
+        margin: 6px 5px;
     }
 }
 
@@ -113,5 +111,4 @@ function renderMenuLabel (option: MenuOption) {
     width: 85%;
     height: 100%;
 }
-
 </style>
