@@ -1,49 +1,54 @@
 <template>
     <div class="parentContainer">
-        <div>
-            <n-tabs :value="selectedTab" class="leftContainer" type="segment" animated placement="top">
+        <div class="leftChatRoomMenu">
+            <n-tabs 
+            :value="selectedTab" 
+            placement="bottom" 
+            class="leftContainer" 
+            type="bar" 
+            animated 
+            pane-wrapper-class="paneWrapper"
+            pane-class="pane"
+            justify-content="space-around"
+            >
                 <n-tab-pane name="currentmessages" tab="消息">
-                    <div class="recentMsgContainer">
-                        <n-list hoverable clickable>
-                            <n-list-item horizontal v-for="item in recentChatList" @click="startChat(item.id, item.isuser)">
-                                <n-space>
-                                    <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                    <n-ellipsis style="max-width: 62px;">{{ item.userOrTeamName }}</n-ellipsis>
-                                </n-space>
-                            </n-list-item>
-                        </n-list>
-                    </div>
+                    <n-list hoverable clickable>
+                        <n-list-item horizontal v-for="item in recentChatList" @click="startChat(item.id, item.isuser)">
+                            <n-space>
+                                <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                <n-ellipsis style="max-width: 62px;">{{ item.userOrTeamName }}</n-ellipsis>
+                            </n-space>
+                        </n-list-item>
+                    </n-list>
                 </n-tab-pane>
                 <n-tab-pane name="teams" tab="团队">
-                    <div class="recentMsgContainer">
-                        <n-list hoverable clickable>
-                            <n-list-item v-for="team in allTeams" @click="onTeamClicked(team.teamID);">
-                                <div class="teamNameContainer">
-                                    <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                    <n-ellipsis style="max-width: 62px;">{{ team.teamName }}</n-ellipsis>
+                    <n-list hoverable clickable>
+                        <n-list-item v-for="team in allTeams" @click="onTeamClicked(team.teamID);">
+                            <div class="teamNameContainer">
+                                <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                <n-ellipsis style="max-width: 62px;">{{ team.teamName }}</n-ellipsis>
 
-                                    <n-dropdown trigger="hover" :options="team2Options(team)">
-                                        <n-popover trigger="hover">
-                                            <template #trigger>
-                                                <n-button strong secondary circle type="primary">
-                                                    <template #icon>
-                                                        <n-icon>
-                                                            <ImageOutline />
-                                                        </n-icon>
-                                                    </template>
-                                                </n-button>
-                                            </template>
+                                <n-dropdown trigger="hover" :options="team2Options(team)">
+                                    <n-popover trigger="hover">
+                                        <template #trigger>
+                                            <n-button strong secondary circle type="primary">
+                                                <template #icon>
+                                                    <n-icon>
+                                                        <ImageOutline />
+                                                    </n-icon>
+                                                </template>
+                                            </n-button>
+                                        </template>
 
-                                            <span>选择团队成员私聊</span>
-                                        </n-popover>
-                                    </n-dropdown>
+                                        <span>选择团队成员私聊</span>
+                                    </n-popover>
+                                </n-dropdown>
 
-                                </div>
+                            </div>
 
-                                <!-- </n-space> -->
-                            </n-list-item>
-                        </n-list>
-                    </div>
+                            <!-- </n-space> -->
+                        </n-list-item>
+                    </n-list>
                 </n-tab-pane>
             </n-tabs>
         </div>
@@ -344,21 +349,41 @@ onMounted(async () => {
     height: 100%;
 }
 
-.leftContainer {
+/* .leftContainer {
     height: 100%;
     background-color: #ccc;
+} */
+
+.leftChatRoomMenu {
+    width: 20%;
+    height: 100%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .recentMsgContainer {
+    height: 100%;
     width: 150px;
+    overflow-y: hidden;
 }
 
-.n-tab-pane {
-    overflow-y: scroll !important;
+.n-tabs {
+    height: 100% !important;
+    justify-content: space-between !important;
+}
+.pane {
+    height: 100%;
+    overflow-y: scroll;
+}
+.paneWrapper{
 }
 
+.n-tabs.n-tabs--bottom .n-tab-pane {
+    padding :0 !important;
+}
 .rightChatRoomContainer {
-    width: 100%;
+    width: 80%;
     height: 100%;
     background-color: blue;
     display: flex;
