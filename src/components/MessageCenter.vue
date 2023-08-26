@@ -21,12 +21,12 @@
             >
                 <n-tab-pane name="chat" tab="群&nbsp;聊" :tab-props="TabProp('chat')">
                     <div class="messagePane">
-                        <MessageItems v-model:messages="chatMessages" :read="readValue" tab="chat"/>
+                        <MessageItems :messages="chatMessages" :read="readValue" tab="chat"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane name="doc" tab="文&nbsp;档" :tab-props="TabProp('doc')">
                     <div class="messagePane">
-                        <MessageItems v-model:messages="docMessages" :read="readValue" tab="doc"/>
+                        <MessageItems :messages="docMessages" :read="readValue" tab="doc"/>
                     </div>
                 </n-tab-pane>
                 <!-- <n-tab-pane name="teamNotice" tab="通&nbsp;知" @click="switchTab('teamNotice')">
@@ -52,14 +52,38 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, Ref } from 'vue';
-import axios from '@/axios/axios';
+import { ref, Ref,reactive,onMounted } from 'vue';
+import { mypost } from '@/axios/axios';
 import { useMessage } from 'naive-ui';
 
 import { BellRegular } from '@vicons/fa';
 import { AdsClickRound as ClickIcon } from '@vicons/material';
 
 import MessageItems from '@/components/MessageItems.vue';
+
+type ChatMessages = {
+    noticeId: number,
+    uid: number,
+    rid: number,
+    tid: number,
+    docId: number | null,
+    type: string,
+    read: number,
+    is_active: boolean
+}[]
+
+type DocMessages = {
+    noticeId: number,
+    uid: number,
+    rid: number,
+    tid: number,
+    docId: number | null,
+    type: string,
+    read: number,
+    is_active: boolean
+}[]
+
+type Messages = ChatMessages | DocMessages;
 
 const giveMessage = useMessage()
 
@@ -68,33 +92,26 @@ const giveMessage = useMessage()
 let currentTab = ref('chat')
 
 const TabProp = (tab:string) => ({
-    onClick:() => {
+    onClick:async () => {
         currentTab.value = tab;
 
-        axios.post(
-            '/notice/getnotice',
-            {'type':tab}
-        ).then(res => {
-            console.log(res);
-            if(res.status === 200){
-                if(res.data.code === 200){
-                    let messageList = res.data.data.notice_list;
-                    if(tab == 'chat'){
-                        chatMessages = messageList.map((x:any) => x);
-                    }else{
-                        docMessages = messageList.map((x:any) => x);
-                    }
-                }else{
-                    giveMessage.warning(res.data.message);
-                }
-            }else{
-                giveMessage.error('网络错误');
-            }
-        })
-
+        let res = await mypost(giveMessage,'/notice/getnotice',{'type':tab});
+        if(!res){
+            return;
+        }
+        console.log(res);
+        let messageList = res.notice_list;
+        if(tab == 'chat'){
+            chatMessages = messageList.map((x:any) => x);
+            console.log(chatMessages);
+            
+        }else{
+            docMessages = messageList.map((x:any) => x);
+        }
+        
         let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
         isAllRead.value = true;
-        for (let message of readMessages.value) {
+        for (let message of readMessages) {
             if(message.read == 0){
                 isAllRead.value = false;
                 break;
@@ -103,13 +120,18 @@ const TabProp = (tab:string) => ({
     }
 })
 
+onMounted(async () => {
+    let res = await mypost(giveMessage,'/notice/getnotice',{'type':'chat'});
+    chatMessages = res.notice_list.map((x:any) => x);
+})
+
 //底部控件
     //全读消息
 const isAllRead = ref(false)
 
 const readAll = () => {
     let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
-    for (let message of readMessages.value) {
+    for (let message of readMessages) {
         message.read = 1;
     }
     isAllRead.value = true;
@@ -117,74 +139,14 @@ const readAll = () => {
     //一键删除消息
 const deleteAll = () => {
     let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
-    readMessages.value.splice(0)
+    readMessages.splice(0);
 }
 
 //聊天消息数据
-let chatMessages = ref([
-    {
-        id:'消息id1',
-        team:'团队1',
-        read:0,
-        text:'消息是啥'
-    },
-    {
-        id:'消息id2',
-        team:'团队2',
-        read:0,
-        text:'消息是啥嘞'
-    },
-    {
-        id:'消息id3',
-        team:'团队3',
-        read:1,
-        text:'这个消息已读'
-    }
-])
+let chatMessages:Messages = reactive([])
 
 //文档消息数据
-let docMessages = ref([
-    {
-        id:'消息id1',
-        team:'团队1',
-        read:0,
-        text:'消息是啥'
-    },
-    {
-        id:'消息id2',
-        team:'团队2',
-        read:0,
-        text:'消息是啥嘞'
-    },
-    {
-        id:'消息id3',
-        team:'团队3',
-        read:1,
-        text:'这个消息已读'
-    }
-])
-
-//团队通知数据
-// let teamNoticeMessages = ref([
-//     {
-//         id:'消息id1',
-//         team:'团队1',
-//         read:0,
-//         text:'消息是啥'
-//     },
-//     {
-//         id:'消息id2',
-//         team:'团队2',
-//         read:0,
-//         text:'消息是啥嘞'
-//     },
-//     {
-//         id:'消息id3',
-//         team:'团队3',
-//         read:1,
-//         text:'这个消息已读'
-//     }
-// ])
+let docMessages:Messages = reactive([])
 
 //已读未读筛选框
 

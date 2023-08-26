@@ -13,10 +13,7 @@
         <div class="dividerVertical"></div>
         <div class="messageContent">
             <div class="messageTitle">
-                {{ message.team }}在群聊中提到了你
-            </div>
-            <div class="messageText">
-                {{ message.text }}
+                在群聊中{{ message.tid }}提到了你
             </div>
         </div>
         <div class="selectMore">
@@ -31,11 +28,14 @@
 </template>
 
 <script setup lang='ts'>
-import { ref,onMounted } from 'vue';
+import { ref,onMounted, nextTick } from 'vue';
+
+import { useMessage } from 'naive-ui';
 
 import { MessageCircle } from '@vicons/tabler'
 import { Document } from '@vicons/carbon';
 import { BuildingHome20Filled } from '@vicons/fluent'
+import { mypost } from '@/axios/axios';
 
 let props = defineProps<{
     messages:any[],
@@ -43,7 +43,7 @@ let props = defineProps<{
     tab:string
 }>();
 
-
+const giveMessage = useMessage();
 
 //图标
 let color= ref('#82cefd');
@@ -70,8 +70,16 @@ onMounted(() => {
 
 //删除消息控件
 
-const deleteMessage = (index:number) => {
-    props.messages.splice(index,1)
+const deleteMessage = async (index:number) => {
+    const res = await mypost(giveMessage,'/notice/onedelete',{nid:props.messages[index].noticeId})
+    if(!res){
+        return;
+    }
+    console.log(index);
+    debugger;
+    nextTick(() => {
+        props.messages.splice(index,1);
+    })
 }
 
 </script>
