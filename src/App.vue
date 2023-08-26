@@ -1,9 +1,9 @@
 <template>
-  <n-config-provider :theme-overrides="themeOverrides">
-    <n-message-provider>
-      <router-view></router-view>
-    </n-message-provider>
-  </n-config-provider>
+    <n-config-provider :theme-overrides="themeOverrides">
+        <n-message-provider>
+            <router-view></router-view>
+        </n-message-provider>
+    </n-config-provider>
 </template>
 
 <script setup lang='ts'>
@@ -14,29 +14,33 @@ import { NConfigProvider } from 'naive-ui'
  * @type import('naive-ui').GlobalThemeOverrides
  */
 const themeOverrides = {
-  common: {
-    primaryColor: '#82cefd'
-  },
-  Button: {
-  },
-  Select: {
-    peers: {
-      InternalSelection: {
-      }
+    common: {
+        primaryColor: '#82cefd',
+        primaryColorHover: '#45b8ff',
+        primaryColorPressed: '#0a9ffc'
+    },
+    Button: {
+        primaryColor: '#45b8ff',
+        primaryColorHover: '#0a9ffc',
+    },
+    Select: {
+        peers: {
+            InternalSelection: {
+            }
+        }
     }
-  }
-  // ...
+    // ...
 }
 </script>
 
 <style>
 * {
-  --primary-color:#82cefd;
-  margin: 0;
-  padding: 0;
+    --primary-color: #82cefd;
+    margin: 0;
+    padding: 0;
 }
 
 li {
-  list-style-type: none;
+    list-style-type: none;
 }
 </style>

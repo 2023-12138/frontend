@@ -139,12 +139,11 @@
 
 .links span {
     padding: 5px;
-    border-radius: 2px;
+    border-radius: 5px;
 }
 .links span:hover {
     color: white;
-    background-color: rgba(24, 160, 88, 1);
-    
+    background-color: rgb(69, 184, 255); 
 }
 </style>
 
@@ -181,8 +180,8 @@ const loginFormRef = ref<FormInst | null>(null)
 const registerFormRef = ref<FormInst | null>(null)
 const frogetFormRef = ref<FormInst | null>(null)
 const message = useMessage()
-const emailPattern: RegExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-const phonePattern = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+const emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const phonePattern = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1589]))\d{8}$/
 const formType = ref<string>('login')
 const loginModel = ref<LoginModelType>({
     name: null,
