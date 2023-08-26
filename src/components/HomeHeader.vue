@@ -12,7 +12,7 @@
                 </n-button>
             </li>
             <li>
-                <n-button class="route" strong tertiary @click="routeGo('/team')">
+                <n-button class="route" strong tertiary @click="routeGo('/team/1/member')">
                     team
                 </n-button>
             </li>

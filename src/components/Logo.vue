@@ -1,5 +1,5 @@
 <template>
-    <n-icon id="logo" size="30" color="#0e7a0d">
+    <n-icon id="logo" size="30" color="black">
         <game-controller />
     </n-icon>
 </template>

@@ -21,7 +21,7 @@
                 <n-icon size="25" :component="MessageCircle" />
             </div>
             <n-modal v-model:show="chatShowModal" class="custom-card" preset="card" style="width: 60vw;height: 85vh;"
-                title="聊天室" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%">
+                title="聊天室" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%;">
                 <ChatForm />
             </n-modal>
 
@@ -159,7 +159,7 @@ let createTeamModal = ref(false)
 .topNav {
     /* width: 100%; */
     height: 100px;
-    background-color: #ccc;
+    background-image: linear-gradient(100deg,rgb(190, 218, 255),rgb(0, 195, 255) 2000px);
     display: flex;
     justify-content: space-between;
     align-items: center;
