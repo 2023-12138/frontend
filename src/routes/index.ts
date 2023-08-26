@@ -10,8 +10,26 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../components/HelloWorld.vue')
     },
     {
-        path: '/team',
-        component: () => import('../pages/Team/index.vue')
+        path: '/team/:tid',
+        component: () => import('../pages/Team/index.vue'),
+        children: [
+            {
+                path: 'setting',
+                component: () => import('../pages/Team/Setting.vue')
+            },
+            {
+                path: 'member',
+                component: () => import('../pages/Team/Member.vue')
+            },
+            {
+                path: 'projectmanage',
+                component: () => import('../pages/Team/ProjectManage.vue')
+            },
+            {
+                path: 'project/:pid',
+                component: () => import('../pages/Team/Project.vue')
+            }
+        ]
     },
     {
         path: '/login',
@@ -21,14 +39,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/document',
         component: () => import('../pages/Document.vue')
     },
-    {
-        path: '/chatroom',
-        component: () => import('../components/ChatForm.vue')
-    },
-    {
-        path: '/member',
-        component: () => import('@/pages/Team/Member.vue')
-    }
 ]
 
 const router = createRouter({

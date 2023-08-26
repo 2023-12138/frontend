@@ -1,4 +1,4 @@
-import { NInput } from "naive-ui";
+import { NInput, NSelect } from "naive-ui";
 import { Ref, computed, h, nextTick, ref } from "vue";
 
 export interface RowData {
@@ -6,7 +6,9 @@ export interface RowData {
     name: string;
     phone: string;
     email: string;
+    username: string;
     option: string;
+    rank: string;
     isEditing: boolean;
 }
 
@@ -21,6 +23,14 @@ const nameInputRef = ref()
 const emailInputRef = ref()
 const phoneInputRef = ref()
 
+const options = [{
+    label: '管理员',
+    value: '管理员'
+  },
+  {
+    label: '普通成员',
+    value: '普通成员'
+  }]
 export const columns: Column[] = [
     {
         title: '姓名',
@@ -106,7 +116,34 @@ export const columns: Column[] = [
         }
     },
     {
-        title: '操作',
+        title: '昵称',
+        key: 'username',
+        width: 100,
+        render(row: RowData) {
+            return h('div', {
+                    style: 'min-height: 22px',
+                }, row.username)
+        }
+    },
+    {
+        title: '企业身份',
+        key: 'rank',
+        width: 150,
+        render(row: RowData) {
+            return row.rank !== '创建者' ? h(NSelect as any, {
+                options: options,
+                value: row.rank,
+                onUpdateValue: (v : string) => {
+                    row.rank = v
+                }
+            }) : h(NSelect as any, {
+                disabled : true,
+                value: row.rank
+            })
+        }
+    },
+    {
+        title: '',
         key: 'option',
         render(row: RowData) {
             return h('div', {
@@ -117,7 +154,7 @@ export const columns: Column[] = [
                             phoneInputRef.value.focus()
                         })
                     }
-                }, [])
+                }, row.email)
         }
     }
 ]

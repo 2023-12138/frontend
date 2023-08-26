@@ -1,3 +1,10 @@
+<template>
+    <div>
+
+    </div>
+</template>
+
+<script lang="ts">
 import { h, Component } from 'vue'
 import { NIcon } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
@@ -17,11 +24,11 @@ export const menuOptions: MenuOption[] = [
         icon: renderIcon(HomeIcon)
     },
     {
-        key: 'divider-1',
+        key: 'divider',
         type: 'divider'
     },
     {
-        label: '管理者',
+        label: '管理员',
         key: 'manager',
         icon: renderIcon(PersonIcon)
     },
@@ -31,3 +38,8 @@ export const menuOptions: MenuOption[] = [
         icon: renderIcon(PersonIcon)
     }
 ]
+</script>
+
+<style scoped>
+
+</style>
