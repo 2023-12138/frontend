@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref,onMounted, nextTick } from 'vue';
+import { ref,onMounted } from 'vue';
 
 import { useMessage } from 'naive-ui';
 
@@ -68,18 +68,14 @@ onMounted(() => {
     avatarIcons(props.tab); 
 })
 
-//删除消息控件
+//删除单个消息控件
 
 const deleteMessage = async (index:number) => {
     const res = await mypost(giveMessage,'/notice/onedelete',{nid:props.messages[index].noticeId})
     if(!res){
         return;
     }
-    console.log(index);
-    debugger;
-    nextTick(() => {
-        props.messages.splice(index,1);
-    })
+    props.messages.splice(index,1);
 }
 
 </script>

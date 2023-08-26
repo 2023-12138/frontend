@@ -21,12 +21,12 @@
             >
                 <n-tab-pane name="chat" tab="群&nbsp;聊" :tab-props="TabProp('chat')">
                     <div class="messagePane">
-                        <MessageItems :messages="chatMessages" :read="readValue" tab="chat"/>
+                        <MessageItems v-model:messages="chatMessages" :read="readValue" tab="chat"/>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane name="doc" tab="文&nbsp;档" :tab-props="TabProp('doc')">
                     <div class="messagePane">
-                        <MessageItems :messages="docMessages" :read="readValue" tab="doc"/>
+                        <MessageItems v-model:messages="docMessages" :read="readValue" tab="doc"/>
                     </div>
                 </n-tab-pane>
                 <!-- <n-tab-pane name="teamNotice" tab="通&nbsp;知" @click="switchTab('teamNotice')">
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, Ref,reactive,onMounted } from 'vue';
+import { ref, Ref,onMounted } from 'vue';
 import { mypost } from '@/axios/axios';
 import { useMessage } from 'naive-ui';
 
@@ -102,16 +102,16 @@ const TabProp = (tab:string) => ({
         console.log(res);
         let messageList = res.notice_list;
         if(tab == 'chat'){
-            chatMessages = messageList.map((x:any) => x);
+            chatMessages.value = messageList.map((x:any) => x);
             console.log(chatMessages);
             
         }else{
-            docMessages = messageList.map((x:any) => x);
+            docMessages.value = messageList.map((x:any) => x);
         }
         
         let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
         isAllRead.value = true;
-        for (let message of readMessages) {
+        for (let message of readMessages.value) {
             if(message.read == 0){
                 isAllRead.value = false;
                 break;
@@ -122,31 +122,41 @@ const TabProp = (tab:string) => ({
 
 onMounted(async () => {
     let res = await mypost(giveMessage,'/notice/getnotice',{'type':'chat'});
-    chatMessages = res.notice_list.map((x:any) => x);
+    chatMessages.value = res.notice_list.map((x:any) => x);
+    console.log(chatMessages.value);
+    
 })
 
 //底部控件
     //全读消息
 const isAllRead = ref(false)
 
-const readAll = () => {
+const readAll = async () => {
+    const res = await mypost(giveMessage,'/notice/allread',{type:currentTab.value});
+    if(!res){
+        return;
+    }
     let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
-    for (let message of readMessages) {
+    for (let message of readMessages.value) {
         message.read = 1;
     }
     isAllRead.value = true;
 }
     //一键删除消息
-const deleteAll = () => {
+const deleteAll = async () => {
+    const res = await mypost(giveMessage,'/notice/alldelete',{type:currentTab.value});
+    if(!res){
+        return;
+    }
     let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
-    readMessages.splice(0);
+    readMessages.value.splice(0);
 }
 
 //聊天消息数据
-let chatMessages:Messages = reactive([])
+const chatMessages:Ref<Messages> = ref([]);
 
 //文档消息数据
-let docMessages:Messages = reactive([])
+const docMessages:Ref<Messages> = ref([]);
 
 //已读未读筛选框
 
