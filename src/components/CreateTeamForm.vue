@@ -11,7 +11,7 @@
                 </n-form-item>
 
                 <div class="form-bottom">
-                    <n-button round type="primary" @click="login" style="width: 100%;">
+                    <n-button round type="primary" @click="createTeam" style="width: 100%;">
                         创建
                     </n-button>
                 </div>
@@ -53,7 +53,7 @@ interface createTeamModelType {
 }
 
 
-const loginFormRef = ref<FormInst | null>(null)
+const createTeamFormRef = ref<FormInst | null>(null)
 const message = useMessage()
 
 const createTeamModel = ref<createTeamModelType>({
@@ -77,11 +77,12 @@ const createTeamRules: FormRules = {
 }
 
 const teamStore = useTeamStore()
-const login = (e: MouseEvent) => {
+const createTeam = (e: MouseEvent) => {
     e.preventDefault()
-    loginFormRef.value?.validate((errors) => {
+    createTeamFormRef.value?.validate((errors) => {
         if (!errors) {
             teamStore.curTeam = 1
+            console.log(createTeamModel.value)
         } else {
             message.warning("请完善信息")
         }
