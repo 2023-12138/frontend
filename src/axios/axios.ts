@@ -17,7 +17,10 @@ export async function mypost(message: MessageApiInjection, url: string, props: a
         if (res.data.code === 200) {
             return res.data.data;
         } else {
-            message.warning(res.data.message);
+            let code = res.data.code
+            if(code === 400){
+                message.warning(res.data.message)
+            }
             return false;
         }
     } else {
