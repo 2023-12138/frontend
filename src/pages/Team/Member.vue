@@ -21,8 +21,9 @@
   
 <script setup lang="ts">
 import { ref, Ref } from 'vue'
-import { RowData, columns, paginationRef, handlePageChange } from '@/interfaces/Member/MemberTable'
-import { menuOptions } from '@/interfaces/Member/MemberMenu';
+import { RowData } from '@/interfaces/Member/MemberTable.interface'
+import { columns, paginationRef, handlePageChange } from '@/components/Member/MemberTable.vue'
+import { menuOptions }  from '@/components/Member/MemberMenu.vue';
 import { useMessage } from 'naive-ui';
 // 测试用
 const createData = (): RowData[] =>
@@ -78,4 +79,4 @@ const handleUpdateValue = (key: string) => {
     width: 80%;
 }
 </style>
-  
+  @/interfaces/Member/MemberMenu.interface@/interfaces/Member/MemberTable.interface
