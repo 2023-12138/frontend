@@ -3,7 +3,7 @@
         <div class="member-top">
             <n-h2>成员管理</n-h2>
             <div class="member-top-bottom">
-                <span>当前团队共{{ data.length }}人</span>
+                <span>当前团队共{{ data.length }}人&nbsp; ID: {{ $route.params.tid }}</span>
                 <n-button type="primary" @click="showModal=true">添加成员</n-button>
                 <AddMemberModal v-model:show="showModal"></AddMemberModal>
             </div>
@@ -93,4 +93,3 @@ const handleUpdateValue = (key: string) => {
     width: 80%;
 }
 </style>
-  @/interfaces/Member/MemberMenu.interface@/interfaces/Member/MemberTable.interface

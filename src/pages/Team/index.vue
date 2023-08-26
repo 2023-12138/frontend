@@ -20,6 +20,7 @@ import type { MenuOption } from 'naive-ui'
 import {
     BookOutline as BookIcon,
     FlashOutline as FlashOutline,
+    Document
 } from '@vicons/ionicons5'
 
 
@@ -37,13 +38,13 @@ const menuOptions: MenuOption[] = [
     {
         label: '成员管理',
         key: 'member_management',
-        href:'/team/member',
+        href:'/team/' + '1' + '/member',
         icon: renderIcon(BookIcon),
     },
     {
         label: '团队设置',
         key: 'team——settings',
-        href:'/test',
+        href:'/team/' + '1' + '/setting',
         icon: renderIcon(BookIcon),
     },
     {
@@ -53,8 +54,14 @@ const menuOptions: MenuOption[] = [
     {
         label: '项目空间',
         key: 'project_space',
-        href:'/test',
+        href:'/team/' + '1' + '/projectmanage',
         icon: renderIcon(FlashOutline),
+    },
+    {
+        label: '项目1',
+        key: 'project_1',
+        href:'/team/' + '1' + '/project/2',
+        icon: renderIcon(Document),
     },
     
 ]
