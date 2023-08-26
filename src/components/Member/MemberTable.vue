@@ -1,31 +1,27 @@
-<template>
-    <div>
-
-    </div>
-</template>
-
 <script lang="ts">
-import { NButton, NInput, NSelect } from "naive-ui";
+import { NInput, NSelect } from "naive-ui";
 import { Ref, computed, h, nextTick, ref } from "vue";
 import { RowData, Column } from '@/interfaces/Member/MemberTable.interface'
+import DeleteConfirm from './DeleteConfirm.vue'
 
 const userNameInputRef = ref()
 
 export const options = [{
     label: '管理员',
     value: '管理员'
-  },
-  {
+},
+{
     label: '协作成员',
     value: '协作成员'
-  }]
+}]
+
 export const columns: Column[] = [
     {
         title: '昵称',
         key: 'username',
         width: 150,
         render(row: RowData) {
-            return row.isEditing ? 
+            return row.isEditing ?
                 h(NInput as any, {
                     ref: userNameInputRef,
                     value: row.username,
@@ -53,8 +49,8 @@ export const columns: Column[] = [
         width: 150,
         render(row: RowData) {
             return h('div', {
-                    style: 'min-height: 22px',
-                }, row.name)
+                style: 'min-height: 22px',
+            }, row.name)
         }
     },
     {
@@ -63,17 +59,18 @@ export const columns: Column[] = [
         width: 250,
         render(row: RowData) {
             return h('div', {
-                    style: 'min-height: 22px',
-                }, row.phone)
+                style: 'min-height: 22px',
+            }, row.phone)
         }
     },
     {
         title: '邮箱',
         key: 'email',
+        width: 300,
         render(row: RowData) {
             return h('div', {
-                    style: 'min-height: 22px',
-                }, row.email)
+                style: 'min-height: 22px',
+            }, row.email)
         }
     },
     {
@@ -84,11 +81,11 @@ export const columns: Column[] = [
             return row.rank !== '创建者' ? h(NSelect as any, {
                 options: options,
                 value: row.rank,
-                onUpdateValue: (v : string) => {
+                onUpdateValue: (v: string) => {
                     row.rank = v
                 }
             }) : h(NSelect as any, {
-                disabled : true,
+                disabled: true,
                 value: row.rank
             })
         }
@@ -97,14 +94,14 @@ export const columns: Column[] = [
         title: '',
         key: 'option',
         render(row: RowData) {
-            return h(NButton, {
-                    style: 'min-height: 22px, border-style : none',
-                    bordered: false,
-                    onClick: () => {
-                        // TODO
-                        console.log(row.key)
-                    }
-                }, '删除')
+            return h(
+                DeleteConfirm as any,
+                {
+                    buttonText: '删除',
+                    uid: row.key,
+                    //TODO: tid
+                },
+            );
         }
     }
 ]
@@ -116,11 +113,9 @@ export const handlePageChange = (curPage: number): void => {
     page.value = curPage
 }
 export const paginationRef: Ref<{ pageSize: number; page: number }> = computed(() => ({
-    pageSize: 7,
+    pageSize: 6,
     page: page.value
 }))
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

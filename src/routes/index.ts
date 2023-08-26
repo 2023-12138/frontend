@@ -27,14 +27,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/document',
         component: () => import('../pages/Document.vue')
     },
-    {
-        path: '/chatroom',
-        component: () => import('../components/ChatForm.vue')
-    },
-    {
-        path: '/member',
-        component: () => import('@/pages/Team/Member.vue')
-    }
 ]
 
 const router = createRouter({

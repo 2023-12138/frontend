@@ -24,11 +24,11 @@ export const menuOptions: MenuOption[] = [
         icon: renderIcon(HomeIcon)
     },
     {
-        key: 'divider-1',
+        key: 'divider',
         type: 'divider'
     },
     {
-        label: '管理者',
+        label: '管理员',
         key: 'manager',
         icon: renderIcon(PersonIcon)
     },

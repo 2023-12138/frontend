@@ -1,7 +1,7 @@
 import { h } from "vue";
 
 export interface RowData {
-    key: number;    // uid
+    key: string;    // uid
     name: string;
     phone: string;
     email: string;

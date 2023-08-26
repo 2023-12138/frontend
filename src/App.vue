@@ -16,10 +16,12 @@ import { NConfigProvider } from 'naive-ui'
 const themeOverrides = {
     common: {
         primaryColor: '#82cefd',
-        primaryColorHover: '#CF523A',
-        primaryColorPressed: '#963C2A'
+        primaryColorHover: '#45b8ff',
+        primaryColorPressed: '#0a9ffc'
     },
     Button: {
+        primaryColor: '#45b8ff',
+        primaryColorHover: '#0a9ffc',
     },
     Select: {
         peers: {

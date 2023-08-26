@@ -139,12 +139,11 @@
 
 .links span {
     padding: 5px;
-    border-radius: 2px;
+    border-radius: 5px;
 }
 .links span:hover {
     color: white;
-    background-color: rgba(24, 160, 88, 1);
-    
+    background-color: rgb(69, 184, 255); 
 }
 </style>
 
