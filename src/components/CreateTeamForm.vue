@@ -1,22 +1,19 @@
 <template>
     <div class="create-team-form-container">
-        <n-scrollbar>
-            <n-form ref="createTeamFormRef" :model="createTeamModel" :rules="createTeamRules">
-                <n-form-item path="teamname" label="团队名称">
-                    <n-input v-model:value="createTeamModel.teamname" @keydown.enter.prevent placeholder="请输入团队名称" />
-                </n-form-item>
-                <n-form-item path="teamdescription" label="团队描述">
-                    <n-input v-model:value="createTeamModel.teamdescription" @keydown.enter.prevent
-                        placeholder="请输入团队描述" />
-                </n-form-item>
+        <n-form ref="createTeamFormRef" :model="createTeamModel" :rules="createTeamRules">
+            <n-form-item path="teamname" label="团队名称">
+                <n-input v-model:value="createTeamModel.teamname" @keydown.enter.prevent placeholder="请输入团队名称" />
+            </n-form-item>
+            <n-form-item path="teamdescription" label="团队描述">
+                <n-input v-model:value="createTeamModel.teamdescription" @keydown.enter.prevent placeholder="请输入团队描述" />
+            </n-form-item>
 
-                <div class="form-bottom">
-                    <n-button round type="primary" @click="createTeam" style="width: 100%;">
-                        创建
-                    </n-button>
-                </div>
-            </n-form>           
-        </n-scrollbar>
+            <div class="form-bottom">
+                <n-button round type="primary" @click="createTeam" style="width: 100%;">
+                    创建
+                </n-button>
+            </div>
+        </n-form>
     </div>
 </template>
   
@@ -37,7 +34,6 @@
     flex-direction: column;
     margin-top: 5%;
 }
-
 </style>
 
 <script setup lang="ts">
