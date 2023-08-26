@@ -1,7 +1,7 @@
 <template>
     <div class="parentContainer">
-        <div style="height: 100%;">
-            <n-tabs :value="selectedTab" class="leftContainer" type="line" animated placement="left">
+        <div>
+            <n-tabs :value="selectedTab" class="leftContainer" type="segment" animated placement="top">
                 <n-tab-pane name="currentmessages" tab="消息">
                     <div class="recentMsgContainer">
                         <n-list hoverable clickable>
@@ -100,8 +100,8 @@ import { ImageOutline } from '@vicons/ionicons5'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
 import { NTabs, useMessage } from 'naive-ui';
-import axios, { mypost } from '@/axios/axios'
 import { useUserStore } from '@/store/userStore';
+import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const userStore = useUserStore();
 const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName } = storeToRefs(container);
@@ -297,7 +297,35 @@ onMounted(async () => {
     if (!res) {
         return;
     }
-    console.log(res);
+    const li: {
+        teamlist: {
+            tid: number;
+            teamname: string;
+            teaminform: string;
+            is_active: boolean;
+        }[]
+    } = res;
+    debugger;
+    allTeams.value = [];
+    for (const ateam of li.teamlist) {
+        const teammembers: {
+            userName: string;
+            userID: number;
+        }[] = [];
+        let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
+        if (!mres) return;
+        for (const member of mres.userlist) {
+            teammembers.push({
+                userName: member.username,
+                userID: member.uid
+            });
+        }
+        allTeams.value.push({
+            teamName: ateam.teamname,
+            teamID: ateam.tid,
+            teamMembers: teammembers
+        });
+    }
 
 
 });
@@ -323,6 +351,10 @@ onMounted(async () => {
 
 .recentMsgContainer {
     width: 150px;
+}
+
+.n-tab-pane {
+    overflow-y: scroll !important;
 }
 
 .rightChatRoomContainer {
