@@ -1,6 +1,6 @@
 <template>
     <div class="parentContainer">
-        <n-space vertical>
+        <div style="height: 100%;">
             <n-tabs :value="selectedTab" class="leftContainer" type="line" animated placement="left">
                 <n-tab-pane name="currentmessages" tab="消息">
                     <div class="recentMsgContainer">
@@ -46,8 +46,10 @@
                     </div>
                 </n-tab-pane>
             </n-tabs>
-        </n-space>
-        <div class="rightChatRoomContainer">
+        </div>
+        <n-h3 style="width: 100%; background-color: aliceblue; text-align: center;"
+            v-show="currentChatID.id == -1">选择一个团队或联系人开始聊天</n-h3>
+        <div class="rightChatRoomContainer" v-show="currentChatID.id != -1">
             <div class="targetUserContainer">
                 <n-h3 class="targetUser">{{ currentChatName }}</n-h3>
             </div>
@@ -98,12 +100,14 @@ import { ImageOutline } from '@vicons/ionicons5'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
 import { NTabs, useMessage } from 'naive-ui';
-import axios from '@/axios/axios'
+import axios, { mypost } from '@/axios/axios'
+import { useUserStore } from '@/store/userStore';
 const container = useChatContainer();
-const { recentChatList, msgList, webSocket, allTeams, currentChatID } = storeToRefs(container);
-const currentChatName = ref('User');
-const options = [{ label: 'Feeman', value: 'Freeman' }, { label: 'TestUser', value: 'testuser' }];
-const wsURL = "ws://localhost:8000/ws/chat/3/";
+const userStore = useUserStore();
+const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName } = storeToRefs(container);
+const { curUser } = storeToRefs(userStore);
+const options = ref([{ label: 'Feeman', value: 'Freeman' }, { label: 'TestUser', value: 'testuser' }]);
+const wsURL = `ws://localhost:8000/ws/chat/${curUser.value}/`;
 const inputMessage = ref('');
 const message = useMessage();
 const selectedTab = ref<string | undefined>(undefined);
@@ -112,11 +116,14 @@ function onMsgboxSubmitted(e: SubmitEvent) {
     if (webSocket.value?.readyState != WebSocket.OPEN) {
         message.error('webSocket Disconnected');
     }
-
     try {
-        webSocket.value?.send(JSON.stringify({
-            message: inputMessage.value, to_uid: 3, tid: '', from_uid: 2
-        }));
+        const newLocal = JSON.stringify({
+            message: inputMessage.value,
+            to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
+            tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: curUser.value
+        });
+        console.log(newLocal);
+        webSocket.value?.send(newLocal);
         inputMessage.value = '';
         message.success('msg send success');
     } catch (error) {
@@ -144,19 +151,29 @@ let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
     webSocket.value.onmessage = (e) => {
+        console.log('recv a msg:');
         console.log(e.data);
         const data = JSON.parse(e.data);
         //message,senderId,teamId,time
         let message: string = data.message;
         let senderId: number = data.senderId;
+        let receiverId: number | string = data.receiverId;
         let teamId: number | string = data.teamId;
         let currentTime: string = data.time;
+
         //判断是否在recent中
-        let isuser = !(teamId == "");
+        let isuser = (teamId == "");
         let recent: RecentListModel | undefined;
         if (isuser) {
-            recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
-        } else {
+            //首先判断是否是自己发出去的
+            if (senderId == curUser.value) {
+                recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
+            } else {
+                recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
+            }
+        }
+        else {
+            //首先判断是否是自己发出去的
             recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
         }
         if (recent == undefined) return;
@@ -217,7 +234,7 @@ function startChat(id: number, isuser: boolean) {
     if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
         //没找到,问服务器请求历史数据
         if (isuser) {
-            //请求user的历史数据
+
         } else {
             //请求team的历史数据
         }
@@ -238,7 +255,7 @@ function changeChatContent(id: number, isuser: boolean) {
     msgList.value = [];
     const chat = recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser);
     if (chat == undefined) {
-        message.error('team == undefined');
+        message.error('chat is undefined');
         return;
     }
     currentChatName.value = chat.userOrTeamName;
@@ -251,19 +268,38 @@ function changeChatContent(id: number, isuser: boolean) {
             imgstr: null
         });
     });
-
+    if (!isuser) {
+        let team = allTeams.value.find((ele) => {
+            ele.teamID == id
+        });
+        if (team == undefined) return;
+        team.teamMembers.forEach(member => {
+            options.value = [];
+            options.value.push({
+                label: member.userName,
+                value: member.userID.toString()
+            });
+        });
+    }
 }
-onMounted(() => {
+onMounted(async () => {
     if (webSocket.value == null) {
         //重新加载socket的所有事件
         try {
             webSocket.value = new WebSocket(wsURL);
             initWebSocket();
-
         } catch (error) {
             message.error('webSocket cannot connect to server');
         }
     }
+    //问服务器要一些东西
+    let res = await mypost(message, '/team/viewTeam', {});
+    if (!res) {
+        return;
+    }
+    console.log(res);
+
+
 });
 </script>
 <style scoped>
@@ -282,6 +318,7 @@ onMounted(() => {
 
 .leftContainer {
     height: 100%;
+    background-color: #ccc;
 }
 
 .recentMsgContainer {

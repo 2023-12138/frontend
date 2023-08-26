@@ -29,13 +29,14 @@ export const useChatContainer = defineStore('chatroom', () => {
         ]
     );
     //显示在消息中，最近列表
-    const recentChatList = ref<RecentListModel[]>([{ userOrTeamName: 'Freeman', id: 1, isuser: true, lastMsg: 'Hello', Messages: [] }]);
+    const recentChatList = ref<RecentListModel[]>([]);
     //消息列表，会随着点击消息变化
     const msgList = ref<MessageModel[]>([]);
     //聊天对象的id，tid or uid
     const currentChatID = ref({
-        id: 3, isuser: true
+        id: -1, isuser: true
     });
+    const currentChatName = ref("User");
     const webSocket = ref<WebSocket | null>(null);
-    return { recentChatList, msgList, webSocket, allTeams, currentChatID }
+    return { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName }
 })

@@ -134,16 +134,17 @@
     margin: 5px;
     margin-top: 5%;
     justify-content: space-around;
-    
+
 }
 
 .links span {
     padding: 5px;
     border-radius: 5px;
 }
+
 .links span:hover {
     color: white;
-    background-color: rgb(69, 184, 255); 
+    background-color: rgb(69, 184, 255);
 }
 </style>
 
@@ -153,6 +154,7 @@ import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from '@/axios/axios'
 import router from '@/routes';
 import { useUserStore } from '@/store/userStore'
+import { storeToRefs } from 'pinia';
 
 interface LoginModelType {
     name: string | null
@@ -342,8 +344,8 @@ const forgetRules: FormRules = {
         },
     ],
 }
-
-const userStore = useUserStore()
+const userStore = useUserStore();
+const userstore = storeToRefs(userStore);
 const login = (e: MouseEvent) => {
     e.preventDefault()
     loginFormRef.value?.validate((errors) => {
@@ -357,8 +359,8 @@ const login = (e: MouseEvent) => {
                     if (res.data.code === 200) {
                         message.success('登录成功')
                         localStorage.setItem('token', res.data.data.token)
-                        userStore.curUser = res.data.data.uid
-                        router.push('/team')
+                        userstore.curUser.value = res.data.data.uid
+                        router.push('/team/1/member')
                     } else {
                         message.warning(res.data.message)
                     }
