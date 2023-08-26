@@ -53,17 +53,15 @@
 
 <script setup lang='ts'>
 import { ref, Ref } from 'vue';
+import axios from '@/axios/axios';
+import { useMessage } from 'naive-ui';
 
-import { BellRegular } from '@vicons/fa'
-import { AdsClickRound as ClickIcon } from '@vicons/material'
+import { BellRegular } from '@vicons/fa';
+import { AdsClickRound as ClickIcon } from '@vicons/material';
 
-import MessageItems from '@/components/MessageItems.vue'
+import MessageItems from '@/components/MessageItems.vue';
 
-// type ChatMessages = {
-
-//     avatar:string,
-
-// }
+const giveMessage = useMessage()
 
 //顶部消息通知功能
     //tab控件
@@ -72,6 +70,28 @@ let currentTab = ref('chat')
 const TabProp = (tab:string) => ({
     onClick:() => {
         currentTab.value = tab;
+
+        axios.post(
+            '/notice/getnotice',
+            {'type':tab}
+        ).then(res => {
+            console.log(res);
+            if(res.status === 200){
+                if(res.data.code === 200){
+                    let messageList = res.data.data.notice_list;
+                    if(tab == 'chat'){
+                        chatMessages = messageList.map((x:any) => x);
+                    }else{
+                        docMessages = messageList.map((x:any) => x);
+                    }
+                }else{
+                    giveMessage.warning(res.data.message);
+                }
+            }else{
+                giveMessage.error('网络错误');
+            }
+        })
+
         let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
         isAllRead.value = true;
         for (let message of readMessages.value) {
@@ -167,6 +187,7 @@ let docMessages = ref([
 // ])
 
 //已读未读筛选框
+
 let readValue:Ref<number> = ref(0)
 const readOptions = [
     {
