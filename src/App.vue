@@ -15,7 +15,7 @@ import { NConfigProvider } from 'naive-ui'
  */
 const themeOverrides = {
   common: {
-    primaryColor: '#18a058'
+    primaryColor: '#82cefd'
   },
   Button: {
   },
@@ -31,6 +31,7 @@ const themeOverrides = {
 
 <style>
 * {
+  --primary-color:#82cefd;
   margin: 0;
   padding: 0;
 }
