@@ -360,7 +360,7 @@ const login = (e: MouseEvent) => {
                         message.success('登录成功')
                         localStorage.setItem('token', res.data.data.token)
                         localStorage.setItem('uid', res.data.data.uid)
-                        userStore.curUser = res.data.data.uid
+                        userstore.curUser = res.data.data.uid
                         router.push('/team/1/member')
                     } else {
                         message.warning(res.data.message)
