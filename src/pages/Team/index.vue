@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div class="main">
-
+                <router-view></router-view>
             </div>
         </div>
     </div>
@@ -35,9 +35,9 @@ function renderIcon(icon: Component) {
 
 const menuOptions: MenuOption[] = [
     {
-        label: '人员管理',
+        label: '成员管理',
         key: 'member_management',
-        href:'/test',
+        href:'/team/member',
         icon: renderIcon(BookIcon),
     },
     {
@@ -105,7 +105,6 @@ function renderMenuLabel (option: MenuOption) {
 .main {
     width: 85%;
     height: 100%;
-    background-color: var(--primary-color);
 }
 
 </style>

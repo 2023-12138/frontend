@@ -11,7 +11,13 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/team',
-        component: () => import('../pages/Team/index.vue')
+        component: () => import('../pages/Team/index.vue'),
+        children: [
+            {
+                path: 'member',
+                component: () => import('../pages/Team/Member.vue')
+            }
+        ]
     },
     {
         path: '/login',
