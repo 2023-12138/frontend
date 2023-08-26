@@ -1,29 +1,28 @@
 <template>
     <div class="parentContainer">
         <n-space vertical>
-            <n-tabs class="leftContainer" type="line" animated placement="left">
-                <n-tab-pane name="oasis" tab="消息">
+            <n-tabs :value="selectedTab" class="leftContainer" type="line" animated placement="left">
+                <n-tab-pane name="currentmessages" tab="消息">
                     <div class="recentMsgContainer">
                         <n-list hoverable clickable>
-                            <n-list-item>
-                                <n-space horizontal v-for="item in recentChatList">
+                            <n-list-item horizontal v-for="item in recentChatList" @click="startChat(item.id, item.isuser)">
+                                <n-space>
                                     <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                    <n-ellipsis style="max-width: 62px;">{{ item.userName }}</n-ellipsis>
+                                    <n-ellipsis style="max-width: 62px;">{{ item.userOrTeamName }}</n-ellipsis>
                                 </n-space>
                             </n-list-item>
                         </n-list>
                     </div>
                 </n-tab-pane>
-                <n-tab-pane name="the beatles" tab="团队">
+                <n-tab-pane name="teams" tab="团队">
                     <div class="recentMsgContainer">
                         <n-list hoverable clickable>
-                            <n-list-item v-for="team in allTeams">
-                                <!-- <n-space horizontal> -->
+                            <n-list-item v-for="team in allTeams" @click="onTeamClicked(team.teamID);">
                                 <div class="teamNameContainer">
                                     <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     <n-ellipsis style="max-width: 62px;">{{ team.teamName }}</n-ellipsis>
 
-                                    <n-dropdown trigger="click" :options="teamMemberOptions">
+                                    <n-dropdown trigger="hover" :options="team2Options(team)">
                                         <n-popover trigger="hover">
                                             <template #trigger>
                                                 <n-button strong secondary circle type="primary">
@@ -50,13 +49,19 @@
         </n-space>
         <div class="rightChatRoomContainer">
             <div class="targetUserContainer">
-                <n-h3 class="targetUser">User</n-h3>
+                <n-h3 class="targetUser">{{ currentChatName }}</n-h3>
             </div>
             <div class="rightChatContentContainer">
                 <n-layout class="chatContentLayout">
                     <n-layout-content class="chatContent" content-style="padding: 24px;">
-                        <n-card style="margin-top: 10px;" v-for="_ in msgList">
-                            卡片内容
+                        <n-card style="margin-top: 10px;" v-for="msg in msgList">
+                            <n-space vertical>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <n-h6>{{ msg.userName }}</n-h6>
+                                    <span>{{ msg.time }}</span>
+                                </div>
+                                <span>{{ msg.msg }}</span>
+                            </n-space>
                         </n-card>
                     </n-layout-content>
                     <n-layout-footer class="chatToolFooter">
@@ -76,7 +81,8 @@
                                 </template>
                             </n-button>
                             <n-form @submit="onMsgboxSubmitted" class="msgBoxForm">
-                                <n-mention default-value="" placeholder="Message" :options="options" class="msgBox" />
+                                <n-mention v-model:value="inputMessage" placeholder="Message" :options="options"
+                                    class="msgBox" />
                             </n-form>
                         </div>
                     </n-layout-footer>
@@ -87,55 +93,177 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { ImageOutline } from '@vicons/ionicons5'
-import { useChatContainer } from '@/store/store'
+import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
+import { NTabs, useMessage } from 'naive-ui';
+import axios from '@/axios/axios'
 const container = useChatContainer();
 const { recentChatList, msgList, webSocket, allTeams, currentChatID } = storeToRefs(container);
+const currentChatName = ref('User');
 const options = [{ label: 'Feeman', value: 'Freeman' }, { label: 'TestUser', value: 'testuser' }];
-const teamMemberOptions = ref([
-    {
-        label: '滨海湾金沙，新加坡',
-        key: 'marina bay sands',
-        disabled: true
-    },
-    {
-        label: '布朗酒店，伦敦',
-        key: "brown's hotel, london"
-    },
-    {
-        label: '亚特兰蒂斯巴哈马，拿骚',
-        key: 'atlantis nahamas, nassau'
-    },
-    {
-        label: '比佛利山庄酒店，洛杉矶',
-        key: 'the beverly hills hotel, los angeles'
-    }
-])
+const wsURL = "ws://localhost:8000/ws/chat/3/";
+const inputMessage = ref('');
+const message = useMessage();
+const selectedTab = ref<string | undefined>(undefined);
 function onMsgboxSubmitted(e: SubmitEvent) {
     e.preventDefault();
-    // msgList.value?.push({
-    //     userName: 'Hello',
-    //     msg: 'world',
-    //     userID: 0,
-    //     time: new Date(Date.now()),
-    //     imgstr: null
-    // });
-    webSocket.value?.send(JSON.stringify({
-        message: '', to_uid: 1, tid: '', from_uid: 2
-    }));
+    if (webSocket.value?.readyState != WebSocket.OPEN) {
+        message.error('webSocket Disconnected');
+    }
+
+    try {
+        webSocket.value?.send(JSON.stringify({
+            message: inputMessage.value, to_uid: 3, tid: '', from_uid: 2
+        }));
+        inputMessage.value = '';
+        message.success('msg send success');
+    } catch (error) {
+        message.error('send err');
+    }
+
+}
+function team2Options(team: TeamModel) {
+    let options: { label: string; key: number; disabled: boolean; props: { onClick: () => void; }; }[] = [];
+    team.teamMembers.forEach(member => {
+        options.push({
+            label: member.userName,
+            key: member.userID,
+            disabled: false,
+            props: {
+                onClick: () => {
+                    onUserClicked(member.userID);
+                }
+            }
+        })
+    });
+    return options;
+}
+let reconnectCount = 0;
+function initWebSocket() {
+    if (webSocket.value == null) return;
+    webSocket.value.onmessage = (e) => {
+        console.log(e.data);
+        const data = JSON.parse(e.data);
+        //message,senderId,teamId,time
+        let message: string = data.message;
+        let senderId: number = data.senderId;
+        let teamId: number | string = data.teamId;
+        let currentTime: string = data.time;
+        //判断是否在recent中
+        let isuser = !(teamId == "");
+        let recent: RecentListModel | undefined;
+        if (isuser) {
+            recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
+        } else {
+            recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
+        }
+        if (recent == undefined) return;
+        recent.Messages.push({
+            userName: `${senderId}`,
+            msg: message,
+            userID: senderId,
+            time: currentTime,
+            imgstr: null
+        });
+        //判断是否正在展示
+        if (currentChatID.value.id == recent.id) {
+            msgList.value.push({
+                userName: `${senderId}`,
+                msg: message,
+                userID: senderId,
+                time: currentTime,
+                imgstr: null
+            });
+        }
+    };
+    webSocket.value.onclose = (_) => {
+        if (reconnectCount > 10) {
+            reconnectCount = 0;
+            message.error('重连超过次数限制 不再重连');
+            return;
+        }
+        try {
+            reconnectCount++;
+            message.error(`WebSocket断开 正在重连 ${reconnectCount}/10`);
+            webSocket.value = new WebSocket(wsURL);
+            initWebSocket();
+        } catch {
+            message.error('重连失败？');
+        }
+    }
+    webSocket.value.onerror = (_) => {
+        message.error('unknown error');
+    }
+}
+function onTeamClicked(id: number) {
+    selectedTab.value = 'currentmessages';
+    nextTick(() => {
+        selectedTab.value = undefined;
+    })
+    currentChatID.value = { id: id, isuser: false };
+    startChat(id, false);
+}
+function onUserClicked(id: number) {
+    selectedTab.value = 'currentmessages';
+    nextTick(() => {
+        selectedTab.value = undefined;
+    })
+    currentChatID.value = { id: id, isuser: true };
+    startChat(id, true);
+}
+function startChat(id: number, isuser: boolean) {
+    if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
+        //没找到,问服务器请求历史数据
+        if (isuser) {
+            //请求user的历史数据
+        } else {
+            //请求team的历史数据
+        }
+        //添加到历史数据Messages中
+        recentChatList.value.push({
+            userOrTeamName: `${id}`,
+            id: id,
+            isuser: isuser,
+            lastMsg: null,
+            Messages: []
+        });
+    }
+
+    changeChatContent(id, isuser);
+
+}
+function changeChatContent(id: number, isuser: boolean) {
+    msgList.value = [];
+    const chat = recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser);
+    if (chat == undefined) {
+        message.error('team == undefined');
+        return;
+    }
+    currentChatName.value = chat.userOrTeamName;
+    chat.Messages.forEach(message => {
+        msgList.value.push({
+            userName: message.userName,
+            msg: message.msg,
+            userID: message.userID,
+            time: message.time,
+            imgstr: null
+        });
+    });
+
 }
 onMounted(() => {
     if (webSocket.value == null) {
         //重新加载socket的所有事件
-        webSocket.value = new WebSocket("ws://localhost:8000/ws/chat/2/");
-        webSocket.value.onmessage = (e) => {
-            console.log(e.data);
-            //message,senderId,teamId,time
-        };
-    }
+        try {
+            webSocket.value = new WebSocket(wsURL);
+            initWebSocket();
 
+        } catch (error) {
+            message.error('webSocket cannot connect to server');
+        }
+    }
 });
 </script>
 <style scoped>
