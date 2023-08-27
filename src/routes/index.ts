@@ -27,7 +27,13 @@ const routes: Array<RouteRecordRaw> = [
             },
             {
                 path: 'project/:pid',
-                component: () => import('../pages/Team/Project.vue')
+                component: () => import('../pages/Team/Project.vue'),
+                children: [
+                    {
+                        path:'/doc/:did',
+                        component: () => import('../pages/Team/Doc.vue')
+                    }
+                ]
             }
         ]
     },
