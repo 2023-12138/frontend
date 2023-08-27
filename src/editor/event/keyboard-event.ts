@@ -1,4 +1,5 @@
 // import { Editor } from "..";
+import { usedocEditStore } from '@/store/docEditStore.ts'
 import BaseEventHandler from "./base-event";
 import hotkeys from "./hotkeys";
 /*
@@ -6,6 +7,9 @@ import hotkeys from "./hotkeys";
  * @Author: ZengYong
  * @CreateDate: 2021-09-18 17:01:46
  */
+
+const docEditStore = usedocEditStore();
+
 export class KeyboardEventHandler extends BaseEventHandler{
   // constructor (editor: Editor) {
   //   super(editor);
@@ -45,6 +49,11 @@ export class KeyboardEventHandler extends BaseEventHandler{
         text = e.data;
         if (text) {
           this.editor.insertTextAtCursor(text);
+          if(text=='@'){
+            if(docEditStore.onAT != null){
+              docEditStore.onAT();
+            }
+          }
         }
         break;
       case 'insertFromPaste':
