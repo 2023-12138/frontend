@@ -21,22 +21,87 @@
         </div>
         <div id="main"></div>
     </div>
+    <n-popselect 
+        v-model:value="ATValue" 
+        size="medium"
+        scrollable 
+        :options="ATOptions" 
+        :show="ATshow" 
+        :x="ATleft" 
+        :y="ATtop+ATheight/2+2" 
+        trigger="manual"
+    >
+    </n-popselect>
 </template>
 
 <script setup lang='ts'>
-import { onMounted } from "vue";
+import { onMounted,ref,watch } from "vue";
 import { Editor, withUndoRedo } from "@/editor/index";
+import { usedocEditStore } from '@/store/docEditStore.ts'
 
 import { ArrowBackSharp } from '@vicons/ionicons5';
 import { Edit16Filled } from '@vicons/fluent'
+import { mypost } from "@/axios/axios";
+import { useMessage } from "naive-ui";
+import { useRoute } from "vue-router";
+
+const message = useMessage();
+const docEditStore = usedocEditStore();
+
+let editor:Editor;
 
 onMounted(() => {
-    let editor = new Editor(document.getElementById('main') as HTMLElement);
+    editor = new Editor(document.getElementById('main') as HTMLElement);
     editor = withUndoRedo(editor); // UndoRedo Plugin
     editor.insertTextAtCursor('**This is a bold text**\n> tips：You can switch source mode with `cmd+/`');
     console.log(editor);
     console.log(editor.getContent());
+    
 })
+
+//AT事件
+const ATleft = ref(0);
+const ATtop = ref(0);
+const ATheight = ref(0);
+const ATValue = ref('');
+const ATshow = ref(false);
+const ATOptions = ref([
+    {
+        label: '全体成员',
+        value: 'allUser'
+    }
+])
+const route = useRoute();
+docEditStore.onAT = async () => {
+    //申请成员列表
+    const res = await mypost(message,'/team/viewUser',{tid:route.params.tid})
+    if(!res){
+        return;
+    }
+    ATValue.value = '';
+    ATOptions.value.splice(1);
+    for(const member of res.userlist){
+        ATOptions.value.push({label:member.username,value:member.username+'&'+member.uid});
+    }
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+        ATshow.value = true;
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        ATleft.value = rect.left;
+        ATtop.value = rect.top;
+        ATheight.value = rect.height;
+        console.log(range);
+    }
+}
+
+watch(ATValue,(newValue) => {
+    if(newValue!=''){
+        editor.insertTextAtCursor(newValue.split('&')[0]);
+        ATshow.value = false; 
+    }
+})
+
 </script>
 
 <style scoped>
@@ -115,5 +180,15 @@ onMounted(() => {
     justify-content: center;
     margin-top: 10px;
     margin-bottom: 5px;
+}
+
+.mask {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: red;
+    opacity: 0.5;
+    left: 0;
+    top: 0;
 }
 </style>
