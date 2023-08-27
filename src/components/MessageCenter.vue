@@ -21,12 +21,16 @@
             >
                 <n-tab-pane name="chat" tab="群&nbsp;聊" :tab-props="TabProp('chat')">
                     <div class="messagePane">
-                        <MessageItems v-model:messages="chatMessages" :read="readValue" tab="chat"/>
+                        <n-scrollbar style="max-height: 330px">
+                            <MessageItems v-model:messages="chatMessages" :read="readValue" tab="chat"/>
+                        </n-scrollbar>
                     </div>
                 </n-tab-pane>
                 <n-tab-pane name="doc" tab="文&nbsp;档" :tab-props="TabProp('doc')">
                     <div class="messagePane">
-                        <MessageItems v-model:messages="docMessages" :read="readValue" tab="doc"/>
+                        <n-scrollbar style="max-height: 330px">
+                            <MessageItems v-model:messages="docMessages" :read="readValue" tab="doc"/>
+                        </n-scrollbar>
                     </div>
                 </n-tab-pane>
                 <!-- <n-tab-pane name="teamNotice" tab="通&nbsp;知" @click="switchTab('teamNotice')">

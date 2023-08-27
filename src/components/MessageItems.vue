@@ -60,8 +60,14 @@ const avatarIcons = (tab:string) => {
 }
 
 //读消息
-const readMessage = (index:number) => {
-    props.messages[index].read=true
+const readMessage = async (index:number) => {
+    if(props.messages[index].read == 0){
+        const res = await mypost(giveMessage,'/notice/oneread',{nid:props.messages[index].noticeId})
+        if(!res){
+            return;
+        }
+        props.messages[index].read = 1
+    }
 }
 
 onMounted(() => {
