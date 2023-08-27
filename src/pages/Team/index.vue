@@ -41,9 +41,11 @@ const menuOptions: MenuOption[] = [
         label: '成员管理',
         key: 'member_management',
         href:'/team/' + tid + '/member',
+        icon: renderIcon(BookIcon),
     },
     {
-        key: 'team——settings',
+        label: '团队设置',
+        key: 'team_setting',
         href:'/team/' + tid + '/setting',
         icon: renderIcon(BookIcon),
     },
