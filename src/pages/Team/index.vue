@@ -41,6 +41,7 @@ const menuOptions: MenuOption[] = [
         label: '成员管理',
         key: 'member_management',
         href:'/team/' + tid + '/member',
+    },
     {
         key: 'team——settings',
         href:'/team/' + tid + '/setting',
