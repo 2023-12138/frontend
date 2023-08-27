@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, h, onMounted, ref, watch } from 'vue'
+import { defineComponent, h, ref, watch } from 'vue'
 import { NIcon, NTag, SelectRenderLabel, SelectRenderTag, useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
 import axios from '@/axios/axios';
@@ -133,10 +133,6 @@ export default defineComponent({
                 ]
             )
         }
-
-        onMounted(() => {
-            console.log("on mounted");
-        })
 
         watch(inputValue, (newInputValue, _oldInputValue) => {
             if (newInputValue) {

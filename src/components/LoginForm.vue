@@ -92,7 +92,7 @@
                     </n-button>
 
                     <div class="links">
-                        <span @click="formType = 'login'">去登陆</span>
+                        <span @click="formType = 'login'">去登录</span>
                     </div>
                 </div>
             </n-form>
@@ -359,7 +359,7 @@ const login = (e: MouseEvent) => {
                         localStorage.setItem('token', res.data.data.token)
                         localStorage.setItem('uid',res.data.data.uid)
                         userStore.curUser = res.data.data.uid
-                        router.push('/team/1/member')
+                        router.push('/team/' + res.data.data.privateTid +'/projectmanage')
                     } else {
                         message.warning(res.data.message)
                     }
