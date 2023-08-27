@@ -4,7 +4,7 @@
             <n-h2>成员管理</n-h2>
             <div class="member-top-bottom">
                 <span>当前团队共{{ data.length }}人&nbsp; ID: {{ $route.params.tid }}</span>
-                <n-button type="primary" @click="showModal=true">添加成员</n-button>
+                <n-button type="primary" @click="showModal = true">添加成员</n-button>
                 <AddMemberModal v-model:show="showModal"></AddMemberModal>
             </div>
         </div>
@@ -21,27 +21,56 @@
 </template>
   
 <script setup lang="ts">
-import { ref, Ref } from 'vue'
+import { onMounted, ref, Ref } from 'vue'
 import { useMessage } from 'naive-ui';
+import { useRoute } from 'vue-router';
 
 import { MemberRowData } from '@/interfaces/Member/MemberTable.interface'
 import { columns, paginationRef, handlePageChange } from '@/components/Member/MemberTable.vue'
-import { menuOptions }  from '@/components/Member/MemberMenu.vue';
+import { menuOptions } from '@/components/Member/MemberMenu.vue';
 import AddMemberModal from '@/components/Member/AddMemberModal.vue'
+import axios from '@/axios/axios';
 
 const showModal = ref(false)
+const route = useRoute()
+const tid = route.params.tid
 
-// 测试用
-
-const data: Ref<MemberRowData[]> = ref([])
-const preData: Ref<MemberRowData[]> = ref(data.value)
 // 用于筛选数据
-// const preData = data
+const data: Ref<MemberRowData[]> = ref([])
+const preData: Ref<MemberRowData[]> = ref([])
+
 
 // 前后端逻辑
-// const getDataIndex = (key: number): number => {
-//     return data.value.findIndex((item) => item.key === key)
-// }
+onMounted(() => {
+    console.log("member table mounted");
+    axios.post('team/viewUser', {
+        tid: tid
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                console.log(res.data);
+                
+                data.value = res.data.data.userlist.map((item : any) => {
+                    return {
+                        key: item.uid,    // uid
+                        name: item.name,
+                        phone: item.phone,
+                        email: item.email,
+                        username: item.username,
+                        option: '',
+                        rank: item.status === '2' ? '协作成员' : (item.status === '1' ? '管理员' : '创建者'),
+                        isEditing: false,
+                    }
+                })
+                preData.value = data.value
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
+})
 
 const message = useMessage()
 const handleUpdateValue = (key: string) => {
@@ -67,6 +96,7 @@ const handleUpdateValue = (key: string) => {
     justify-content: space-between;
     margin: 10px;
 }
+
 .member-bottom {
 
     display: inline-flex;
