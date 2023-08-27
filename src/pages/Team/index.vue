@@ -22,12 +22,13 @@ import {
     FlashOutline as FlashOutline,
     Document
 } from '@vicons/ionicons5'
-
-
-import { h, Component } from 'vue'
+import { storeToRefs } from 'pinia'; 
+import { useTeamStore } from '@/store/teamStore'
+import { h, Component, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
+
 
 //侧边栏部分
 function renderIcon(icon: Component) {
@@ -35,6 +36,13 @@ function renderIcon(icon: Component) {
 }
 const route = useRoute()
 const tid = route.params.tid
+
+const teamStore = useTeamStore();
+const teamstore = storeToRefs(teamStore);
+
+watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
+    location.reload()
+})
 
 const menuOptions: MenuOption[] = [
     {

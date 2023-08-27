@@ -15,6 +15,8 @@
 import { defineComponent, h, ref, watch } from 'vue'
 import { NIcon, NTag, SelectRenderLabel, SelectRenderTag, useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia'; 
+import { useTeamStore } from '@/store/teamStore'
 import axios from '@/axios/axios';
 import { UserAddOutlined } from '@vicons/antd';
 import { UserAdmin } from '@vicons/carbon';
@@ -23,6 +25,8 @@ export default defineComponent({
     setup() {
         const selectedValues = ref<string[]>([]);
         const inputValue = ref<string>('null');
+        const teamStore = useTeamStore();
+        const teamstore = storeToRefs(teamStore);
         const route = useRoute()
         const tid = route.params.tid
         let options = ref<{ label: string, value: string, disabled: boolean }[]>([
@@ -51,6 +55,7 @@ export default defineComponent({
                             }
 
                             if (index === selectedValues.value.length && flag) {
+                                teamstore.teamChanged.value = !(teamstore.teamChanged.value)
                                 message.success("邀请成功")
                             }
                         } else {
@@ -137,7 +142,7 @@ export default defineComponent({
         watch(inputValue, (newInputValue, _oldInputValue) => {
             if (newInputValue) {
                 axios.post('team/getUsers', {
-                    "userName": newInputValue
+                    "username": newInputValue
                 }).then(res => {
                     if (res.status === 200) {
                         if (res.data.code === 200) {

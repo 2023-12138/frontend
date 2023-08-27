@@ -1,12 +1,18 @@
+<template>
+    
+</template>
+
 <script lang="ts">
-import { NInput, NSelect } from "naive-ui";
+import { NInput, NSelect, useMessage } from "naive-ui";
 import { Ref, computed, h, nextTick, ref } from "vue";
 import { MemberRowData, Column } from '@/interfaces/Member/MemberTable.interface'
 import DeleteConfirm from './DeleteConfirm.vue'
+import axios from "@/axios/axios";
 
 const userNameInputRef = ref()
+const message = useMessage()
 
-export const options = [{
+const options = [{
     label: '管理员',
     value: '管理员'
 },
@@ -15,7 +21,7 @@ export const options = [{
     value: '协作成员'
 }]
 
-export const columns: Column[] = [
+const columns: Column[] = [
     {
         title: '昵称',
         key: 'username',
@@ -56,7 +62,7 @@ export const columns: Column[] = [
     {
         title: '手机',
         key: 'phone',
-        width: 250,
+        width: 150,
         render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
@@ -66,7 +72,7 @@ export const columns: Column[] = [
     {
         title: '邮箱',
         key: 'email',
-        width: 300,
+        width: 250,
         render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
@@ -82,7 +88,40 @@ export const columns: Column[] = [
                 options: options,
                 value: row.rank,
                 onUpdateValue: (v: string) => {
-                    row.rank = v
+                    // TODO: row.rank = v
+                    if (v === '管理员') {
+                        axios.post("team/addAdmin", {
+                            tid: row.key.split('.')[0],
+                            uid: row.key.split('.')[1]
+                        }).then(res => {
+                            if (res.status === 200) {
+                                if (res.data.code === 200) {
+                                    message.success('修改成功')
+                                    row.rank = v
+                                } else {
+                                    message.warning(res.data.message)
+                                }
+                            } else {
+                                message.error('服务器错误')
+                            }
+                        })
+                    } else {
+                        axios.post("team/removeAdmin", {
+                            tid: row.key.split('.')[0],
+                            uid: row.key.split('.')[1]
+                        }).then(res => {
+                            if (res.status === 200) {
+                                if (res.data.code === 200) {
+                                    message.success('修改成功')
+                                    row.rank = v
+                                } else {
+                                    message.warning(res.data.message)
+                                }
+                            } else {
+                                message.error('服务器错误')
+                            }
+                        })
+                    }
                 }
             }) : h(NSelect as any, {
                 disabled: true,
@@ -94,14 +133,15 @@ export const columns: Column[] = [
         title: '',
         key: 'option',
         render(row: MemberRowData) {
-            return h(
-                DeleteConfirm as any,
-                {
+            if (row.rank !== '创建者') {
+                return h(DeleteConfirm, {
                     buttonText: '删除',
                     uid: row.key,
-                    //TODO: tid
-                },
-            );
+                    // TODO: tid
+                });
+            } else {
+                return h('span'); // 返回一个空的 <span> 元素作为占位符
+            }
         }
     }
 ]
@@ -109,10 +149,10 @@ export const columns: Column[] = [
 // page
 
 const page: Ref<number> = ref(1)
-export const handlePageChange = (curPage: number): void => {
+const handlePageChange = (curPage: number): void => {
     page.value = curPage
 }
-export const paginationRef: Ref<{ pageSize: number; page: number }> = computed(() => ({
+const paginationRef: Ref<{ pageSize: number; page: number }> = computed(() => ({
     pageSize: 6,
     page: page.value
 }))

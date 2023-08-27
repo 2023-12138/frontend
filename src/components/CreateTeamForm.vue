@@ -41,6 +41,9 @@ import { ref } from 'vue'
 import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from '@/axios/axios'
 import router from '@/routes';
+import { useTeamStore } from '@/store/teamStore';
+import { storeToRefs } from 'pinia'; 
+
 
 interface createTeamModelType {
     teamname: string | null
@@ -80,6 +83,8 @@ const createTeamRules: FormRules = {
     ],
 }
 
+const teamStore = useTeamStore();
+const teamstore = storeToRefs(teamStore);
 const createTeam = (e: MouseEvent) => {
     e.preventDefault()
     createTeamFormRef.value?.validate((errors) => {
@@ -96,6 +101,7 @@ const createTeam = (e: MouseEvent) => {
                         })
                         emitUpdateModal(false)
                         router.push('/team/' + res.data.data.tid + '/projectmanage')
+                        teamstore.teamChanged.value = !(teamstore.teamChanged.value)
                         message.success('创建成功')
                     } else {
                         message.warning(res.data.message)
