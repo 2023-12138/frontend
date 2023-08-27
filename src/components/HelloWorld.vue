@@ -1,11 +1,11 @@
 <template>
 
-<ul>
-    <li v-for="list in lists" :key="list.id">
-        <span>{{ list.name }}</span>
-        <input type="text">
-    </li>
-</ul>
+<pre style="width: 500px;height: 500px;background-color: #ccc;margin-left: 100px;" contenteditable="true">
+    nasifnsafoasnfnsa
+    nasifnisafnia afasf      asf
+
+    asfsafsaf
+</pre>
 <button @click="add">增加</button>
 
 </template>
