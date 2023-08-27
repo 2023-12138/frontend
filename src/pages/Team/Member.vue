@@ -24,7 +24,7 @@
 import { ref, Ref } from 'vue'
 import { useMessage } from 'naive-ui';
 
-import { RowData } from '@/interfaces/Member/MemberTable.interface'
+import { MemberRowData } from '@/interfaces/Member/MemberTable.interface'
 import { columns, paginationRef, handlePageChange } from '@/components/Member/MemberTable.vue'
 import { menuOptions }  from '@/components/Member/MemberMenu.vue';
 import AddMemberModal from '@/components/Member/AddMemberModal.vue'
@@ -32,7 +32,7 @@ import AddMemberModal from '@/components/Member/AddMemberModal.vue'
 const showModal = ref(false)
 
 // 测试用
-const createData = (): RowData[] =>
+const createData = (): MemberRowData[] =>
     Array.from({ length: 100 }).map((_, index) => ({
         // key放置tid和uid
         key: index.toString(),
@@ -45,8 +45,8 @@ const createData = (): RowData[] =>
         isEditing: false
     }))
 
-const data: Ref<RowData[]> = ref(createData())
-const preData: Ref<RowData[]> = ref(data.value)
+const data: Ref<MemberRowData[]> = ref(createData())
+const preData: Ref<MemberRowData[]> = ref(data.value)
 // 用于筛选数据
 // const preData = data
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { NInput, NSelect } from "naive-ui";
 import { Ref, computed, h, nextTick, ref } from "vue";
-import { RowData, Column } from '@/interfaces/Member/MemberTable.interface'
+import { MemberRowData, Column } from '@/interfaces/Member/MemberTable.interface'
 import DeleteConfirm from './DeleteConfirm.vue'
 
 const userNameInputRef = ref()
@@ -20,7 +20,7 @@ export const columns: Column[] = [
         title: '昵称',
         key: 'username',
         width: 150,
-        render(row: RowData) {
+        render(row: MemberRowData) {
             return row.isEditing ?
                 h(NInput as any, {
                     ref: userNameInputRef,
@@ -47,7 +47,7 @@ export const columns: Column[] = [
         title: '姓名',
         key: 'name',
         width: 150,
-        render(row: RowData) {
+        render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
             }, row.name)
@@ -57,7 +57,7 @@ export const columns: Column[] = [
         title: '手机',
         key: 'phone',
         width: 250,
-        render(row: RowData) {
+        render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
             }, row.phone)
@@ -67,7 +67,7 @@ export const columns: Column[] = [
         title: '邮箱',
         key: 'email',
         width: 300,
-        render(row: RowData) {
+        render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
             }, row.email)
@@ -77,7 +77,7 @@ export const columns: Column[] = [
         title: '企业身份',
         key: 'rank',
         width: 150,
-        render(row: RowData) {
+        render(row: MemberRowData) {
             return row.rank !== '创建者' ? h(NSelect as any, {
                 options: options,
                 value: row.rank,
@@ -93,7 +93,7 @@ export const columns: Column[] = [
     {
         title: '',
         key: 'option',
-        render(row: RowData) {
+        render(row: MemberRowData) {
             return h(
                 DeleteConfirm as any,
                 {

@@ -1,6 +1,6 @@
 import { h } from "vue";
 
-export interface RowData {
+export interface MemberRowData {
     key: string;    // uid
     name: string;
     phone: string;
@@ -15,5 +15,5 @@ export interface Column {
     title: string;
     key: string;
     width?: number;
-    render: (row: RowData) => ReturnType<typeof h>;
+    render: (row: MemberRowData) => ReturnType<typeof h>;
 }
