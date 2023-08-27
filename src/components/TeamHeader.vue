@@ -5,17 +5,6 @@
             <span>融创云开发</span>
         </div>
         <div class="topNavRight">
-            <!-- <n-input 
-                placeholder="搜索" 
-                class="search" 
-                size="large"
-                round
-                >
-                    <template #prefix>
-                        <n-icon :component="FlashOutline" />
-                    </template>
-                </n-input> -->
-
             <!-- 聊天 -->
             <div class="topNavRightIcon" @click="chatShowModal = true">
                 <n-icon size="25" :component="MessageCircle" />
@@ -45,13 +34,14 @@
                 title="创建团队" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%">
                 <CreateTeamForm></CreateTeamForm>
             </n-modal>
+            <n-button @click="newMessage">测试新消息通知</n-button> 
         </div>
     </div>
 </template>
 
 <script setup lang='ts'>
 import { ref, h } from 'vue';
-import { NIcon, useMessage, NAvatar, NText, NConfigProvider } from 'naive-ui'
+import { NIcon, NButton, NAvatar, NText, NConfigProvider,useMessage,useNotification } from 'naive-ui'
 
 import { MessageCircle } from '@vicons/tabler'
 
@@ -153,6 +143,34 @@ const avatarDropdownThemeOverrides = {
 let chatShowModal = ref(false)
 let createTeamModal = ref(false)
 
+//新通知实时提示
+const notification = useNotification();
+const newMessage = () => {
+    const n = notification.create({
+        title: '你在某某团队群聊被@了',
+        avatar: () =>
+            h(NAvatar, {
+              size: 'small',
+              round: true,
+              src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+            }),
+        meta: ' ',
+        action: () =>
+            h(
+              NButton,
+              {
+                text: true,
+                type: 'primary',
+                onClick: () => {
+                  n.destroy()
+                }
+              },
+              {
+                default: () => '去查看'
+              }
+            ),
+    })
+}
 </script>
 
 <style scoped>

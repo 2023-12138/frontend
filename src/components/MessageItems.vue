@@ -17,9 +17,6 @@
             </div>
         </div>
         <div class="selectMore">
-            <!-- <div class="selectMoreIcon">
-                <n-icon class="selectMoreRegular" size="30" :component="MoreHorizontal20Regular" color="#82cefd"/>
-            </div> -->
             <n-button quaternary type="error" round @click.stop="deleteMessage(index)">
                 删除
             </n-button>
