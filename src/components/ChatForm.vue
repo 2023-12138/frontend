@@ -1,33 +1,25 @@
 <template>
     <div class="parentContainer">
         <div class="leftChatRoomMenu">
-            <n-tabs 
-            :value="selectedTab" 
-            placement="bottom" 
-            class="leftContainer" 
-            type="bar" 
-            animated 
-            pane-wrapper-class="paneWrapper"
-            pane-class="pane"
-            justify-content="space-around"
-            >
+            <n-tabs :value="selectedTab" placement="bottom" class="leftContainer" type="bar" animated
+                pane-wrapper-class="paneWrapper" pane-class="pane" justify-content="space-around">
                 <n-tab-pane name="currentmessages" tab="消息">
                     <n-list hoverable clickable>
-                        <n-list-item horizontal v-for="item in recentChatList" @click="startChat(item.id, item.isuser)">
-                            <n-space>
+                        <n-list-item style="padding: 5px;" horizontal v-for="item in recentChatList"
+                            @click="startChat(item.id, item.isuser, item.userOrTeamName)">
+                            <div style="display: flex; padding: 10px;justify-content: space-around;">
                                 <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                <n-ellipsis style="max-width: 62px;">{{ item.userOrTeamName }}</n-ellipsis>
-                            </n-space>
+                                <n-ellipsis style="max-width: 120px; width: 100%;">{{ item.userOrTeamName }}</n-ellipsis>
+                            </div>
                         </n-list-item>
                     </n-list>
                 </n-tab-pane>
                 <n-tab-pane name="teams" tab="团队">
                     <n-list hoverable clickable>
-                        <n-list-item v-for="team in allTeams" @click="onTeamClicked(team.teamID);">
+                        <n-list-item v-for="team in allTeams" @click="onTeamClicked(team.teamID, team.teamName);">
                             <div class="teamNameContainer">
                                 <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                <n-ellipsis style="max-width: 62px;">{{ team.teamName }}</n-ellipsis>
-
+                                <n-ellipsis style="max-width: 82px;width: 82px;">{{ team.teamName }}</n-ellipsis>
                                 <n-dropdown trigger="hover" :options="team2Options(team)">
                                     <n-popover trigger="hover">
                                         <template #trigger>
@@ -61,7 +53,9 @@
             <div class="rightChatContentContainer">
                 <n-layout class="chatContentLayout">
                     <n-layout-content class="chatContent" content-style="padding: 24px;">
-                        <n-card style="margin-top: 10px;" v-for="msg in msgList">
+                        <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
+                            :rid="msg.rid" :io="io" />
+                        <!-- <n-card size="medium" style="margin-top: 10px;" v-for="msg in msgList">
                             <n-space vertical>
                                 <div style="display: flex; justify-content: space-between;">
                                     <n-h6>{{ msg.userName }}</n-h6>
@@ -69,7 +63,7 @@
                                 </div>
                                 <span>{{ msg.msg }}</span>
                             </n-space>
-                        </n-card>
+                        </n-card> -->
                     </n-layout-content>
                     <n-layout-footer class="chatToolFooter">
                         <div class="chatToolContainer">
@@ -104,33 +98,67 @@ import { ref, onMounted, nextTick } from 'vue'
 import { ImageOutline } from '@vicons/ionicons5'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
-import { NTabs, useMessage } from 'naive-ui';
-import { useUserStore } from '@/store/userStore';
+import { NMention, NTabs, useMessage } from 'naive-ui';
 import { mypost } from '@/axios/axios';
+import ChatMessage from '@/components/ChatMessage.vue';
 const container = useChatContainer();
-const userStore = useUserStore();
-const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName } = storeToRefs(container);
-const { curUser } = storeToRefs(userStore);
-const options = ref([{ label: 'Feeman', value: 'Freeman' }, { label: 'TestUser', value: 'testuser' }]);
-const wsURL = `ws://localhost:8000/ws/chat/${curUser.value}/`;
+const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onNewAT } = storeToRefs(container);
+const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
+const myname = ref('');
+const options = ref<{
+    label: string,
+    value: string
+}[]>([]);
+const wsURL = `ws://localhost:8000/ws/chat/${myuid.value}/`;
 const inputMessage = ref('');
 const message = useMessage();
+
 const selectedTab = ref<string | undefined>(undefined);
+const io = new IntersectionObserver(eles => {
+    eles.forEach(ioe => {
+        const element = ioe.target;
+        const ratio = ioe.intersectionRatio;
+        if (ratio > 0 && ratio <= 1) {
+            //todo:发送已读请求
+            io.unobserve(element);
+            console.log(`${element} 可视`);
+            let div: any = element;
+            console.log("riddddd" + div['rid']);
+            mypost(message, '/notice/haveread', { rid: div['rid'] });
+        }
+    });
+});
 function onMsgboxSubmitted(e: SubmitEvent) {
     e.preventDefault();
     if (webSocket.value?.readyState != WebSocket.OPEN) {
         message.error('webSocket Disconnected');
     }
-    try {
+    try { //判断@了哪些人
+        let atlist: Array<number> = [];
+
+        if (!currentChatID.value.isuser) {
+
+            options.value.forEach(option => {
+                if (option.value == "全体成员") {
+                    atlist.push(-1);
+                }
+                else if (inputMessage.value.includes(`@${option.value}`)) {
+                    const team = allTeams.value.find((ele) => ele.teamID == currentChatID.value.id);
+                    atlist.push(team?.teamMembers.find(ele => ele.userName == option.value)?.userID || NaN);
+                }
+            });
+        }
         const newLocal = JSON.stringify({
             message: inputMessage.value,
             to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
-            tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: curUser.value
+            tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
+            aite: atlist
         });
         console.log(newLocal);
         webSocket.value?.send(newLocal);
         inputMessage.value = '';
         message.success('msg send success');
+
     } catch (error) {
         message.error('send err');
     }
@@ -145,7 +173,7 @@ function team2Options(team: TeamModel) {
             disabled: false,
             props: {
                 onClick: () => {
-                    onUserClicked(member.userID);
+                    onUserClicked(member.userID, member.userName);
                 }
             }
         })
@@ -155,7 +183,7 @@ function team2Options(team: TeamModel) {
 let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
-    webSocket.value.onmessage = (e) => {
+    webSocket.value.onmessage = async (e) => {
         console.log('recv a msg:');
         console.log(e.data);
         const data = JSON.parse(e.data);
@@ -165,38 +193,56 @@ function initWebSocket() {
         let receiverId: number | string = data.receiverId;
         let teamId: number | string = data.teamId;
         let currentTime: string = data.time;
+        let msgtype: string = data.type;
+        let rid: number = parseInt(data.rid);
+        console.log(msgtype);
 
+        if (msgtype == 'chat_aite') {
+
+            if (onNewAT.value != null) onNewAT.value(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(");
+        } else {
+            rid = NaN;
+        }
         //判断是否在recent中
         let isuser = (teamId == "");
+        let senderName = 'O_O :(';
         let recent: RecentListModel | undefined;
-        if (isuser) {
+        if (isuser) {//私聊信息
             //首先判断是否是自己发出去的
-            if (senderId == curUser.value) {
+            if (senderId == myuid.value) {//自己发送的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
-            } else {
+                senderName = myname.value;
+            } else {//别人发的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
+                senderName = recent?.userOrTeamName || "V_V :)";
             }
         }
-        else {
-            //首先判断是否是自己发出去的
+        //群聊信息
+        else { //统一处理
             recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
+            const team = allTeams.value.find(ele => ele.teamID == teamId);
+            const name = team?.teamMembers.find(ele => ele.userID == senderId)?.userName;
+            console.log(name);
+            senderName = allTeams.value.find(ele => ele.teamID == teamId)?.teamMembers.find(ele1 => ele1.userID == senderId)?.userName || 'NaN :(';
         }
         if (recent == undefined) return;
         recent.Messages.push({
-            userName: `${senderId}`,
+            userName: senderName,
             msg: message,
             userID: senderId,
             time: currentTime,
-            imgstr: null
+            imgstr: null,
+            rid: rid
         });
         //判断是否正在展示
         if (currentChatID.value.id == recent.id) {
             msgList.value.push({
-                userName: `${senderId}`,
+                userName: senderName,
                 msg: message,
                 userID: senderId,
                 time: currentTime,
-                imgstr: null
+                imgstr: null,
+                rid: rid
             });
         }
     };
@@ -219,33 +265,37 @@ function initWebSocket() {
         message.error('unknown error');
     }
 }
-function onTeamClicked(id: number) {
+function onTeamClicked(id: number, targetUserName: string) {
     selectedTab.value = 'currentmessages';
     nextTick(() => {
         selectedTab.value = undefined;
     })
     currentChatID.value = { id: id, isuser: false };
-    startChat(id, false);
+    startChat(id, false, targetUserName);
 }
-function onUserClicked(id: number) {
+function onUserClicked(id: number, targetUserName: string) {
     selectedTab.value = 'currentmessages';
     nextTick(() => {
         selectedTab.value = undefined;
     })
     currentChatID.value = { id: id, isuser: true };
-    startChat(id, true);
+    startChat(id, true, targetUserName);
 }
-function startChat(id: number, isuser: boolean) {
+function startChat(id: number, isuser: boolean, targetUName: string) {
     if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
-        //没找到,问服务器请求历史数据
+        //没找到,问服务器请求历史数据 
+        // :todo
         if (isuser) {
-
+            mypost(message, 'chat/getHistory', { senderId: id, tid: '' });
         } else {
             //请求team的历史数据
+            // :todo
+            mypost(message, 'chat/getHistory', { tid: id, senderId: '' });
         }
-        //添加到历史数据Messages中
+
+        //添加到最近聊天中
         recentChatList.value.push({
-            userOrTeamName: `${id}`,
+            userOrTeamName: targetUName,
             id: id,
             isuser: isuser,
             lastMsg: null,
@@ -270,19 +320,22 @@ function changeChatContent(id: number, isuser: boolean) {
             msg: message.msg,
             userID: message.userID,
             time: message.time,
-            imgstr: null
+            imgstr: null,
+            rid: message.rid
         });
     });
     if (!isuser) {
-        let team = allTeams.value.find((ele) => {
-            ele.teamID == id
-        });
+        let team = allTeams.value.find((ele) => ele.teamID == id);
         if (team == undefined) return;
+        options.value = [];
+        options.value.push({
+            label: '全体成员',
+            value: '全体成员'
+        });
         team.teamMembers.forEach(member => {
-            options.value = [];
             options.value.push({
                 label: member.userName,
-                value: member.userID.toString()
+                value: member.userName,
             });
         });
     }
@@ -298,6 +351,11 @@ onMounted(async () => {
         }
     }
     //问服务器要一些东西
+    if (myname.value == "") {
+        let res = await mypost(message, '/user/showInfo', {});
+        if (!res) return;
+        myname.value = res.info.username;
+    }
     let res = await mypost(message, '/team/viewTeam', {});
     if (!res) {
         return;
@@ -310,7 +368,6 @@ onMounted(async () => {
             is_active: boolean;
         }[]
     } = res;
-    debugger;
     allTeams.value = [];
     for (const ateam of li.teamlist) {
         const teammembers: {
@@ -355,11 +412,12 @@ onMounted(async () => {
 } */
 
 .leftChatRoomMenu {
-    width: 20%;
+    width: 25%;
     height: 100%;
     background-color: #ccc;
     display: flex;
     justify-content: flex-end;
+
 }
 
 .recentMsgContainer {
@@ -372,16 +430,22 @@ onMounted(async () => {
     height: 100% !important;
     justify-content: space-between !important;
 }
+
 .pane {
     height: 100%;
     overflow-y: scroll;
 }
-.paneWrapper{
-}
+
 
 .n-tabs.n-tabs--bottom .n-tab-pane {
-    padding :0 !important;
+    padding: 0 !important;
 }
+
+.n-list-item {
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+}
+
 .rightChatRoomContainer {
     width: 80%;
     height: 100%;
@@ -441,9 +505,9 @@ onMounted(async () => {
 
 .teamNameContainer {
     height: 100%;
-    width: 120px;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 </style>
