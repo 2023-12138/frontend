@@ -28,17 +28,8 @@ import CreateProjectModal from '@/components/Project/CreateProjectModal.vue';
 const showModal = ref(false)
 
 // 测试用
-const createData = (): ProjectRowData[] =>
-    Array.from({ length: 20 }).map((_, index) => ({
-        // key放置tid和uid
-        key: index.toString(),
-        projectname: `John Brown ${index}`,
-        description: `description ${index}`,
-        creator: `creator ${index}`,
-        isEditing: false
-    }))
 
-const data: Ref<ProjectRowData[]> = ref(createData())
+const data: Ref<ProjectRowData[]> = ref([])
 // 用于筛选数据
 
 // 前后端逻辑

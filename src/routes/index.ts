@@ -14,6 +14,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/Team/index.vue'),
         children: [
             {
+                path: '',
+                component: () => import('../pages/Team/TeamHome.vue')
+            },
+            {
                 path: 'setting',
                 component: () => import('../pages/Team/Setting.vue')
             },

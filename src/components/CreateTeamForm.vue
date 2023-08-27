@@ -92,7 +92,7 @@ const createTeam = (e: MouseEvent) => {
                     if (res.data.code === 200) {
                         props.avatarOptions[3].children!.splice(-1, 0, {
                             label: createTeamModel.value.teamname!,
-                            key: res.data.data.tid
+                            key: 'team' + res.data.data.tid
                         })
                         emitUpdateModal(false)
                         router.push('/team/' + res.data.data.tid + '/projectmanage')
