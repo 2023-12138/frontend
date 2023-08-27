@@ -102,10 +102,13 @@ import { NMention, NTabs, useMessage } from 'naive-ui';
 import { mypost } from '@/axios/axios';
 import ChatMessage from '@/components/ChatMessage.vue';
 const container = useChatContainer();
-const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName } = storeToRefs(container);
+const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onNewAT } = storeToRefs(container);
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 const myname = ref('');
-const options = ref([{ label: 'Feeman', value: 'Freeman' }, { label: 'TestUser', value: 'testuser' }]);
+const options = ref<{
+    label: string,
+    value: string
+}[]>([]);
 const wsURL = `ws://localhost:8000/ws/chat/${myuid.value}/`;
 const inputMessage = ref('');
 const message = useMessage();
@@ -184,7 +187,6 @@ function initWebSocket() {
         console.log('recv a msg:');
         console.log(e.data);
         const data = JSON.parse(e.data);
-
         //message,senderId,teamId,time
         let message: string = data.message;
         let senderId: number = data.senderId;
@@ -194,8 +196,10 @@ function initWebSocket() {
         let msgtype: string = data.type;
         let rid: number = parseInt(data.rid);
         console.log(msgtype);
-        if (msgtype != 'chat_aite') {
-            console.log(msgtype);
+
+        if (msgtype == 'chat_aite') {
+            if (onNewAT.value != null) onNewAT.value();
+        } else {
             rid = NaN;
         }
         //判断是否在recent中

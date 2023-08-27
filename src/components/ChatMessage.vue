@@ -29,6 +29,11 @@ const props = defineProps<{
 }>();
 const d = ref();
 onMounted(() => {
+    d.value.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest',
+        behavior: 'smooth'
+    });
     console.log(`rid:${props.rid} msg:${props.content} recved `);
     console.log(d.value);
     let rid = -1;
