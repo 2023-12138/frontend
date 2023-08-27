@@ -41,7 +41,6 @@ import { ref } from 'vue'
 import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from '@/axios/axios'
 import router from '@/routes';
-import { useTeamStore } from '@/store/teamStore'
 
 interface createTeamModelType {
     teamname: string | null
@@ -49,6 +48,15 @@ interface createTeamModelType {
 }
 
 
+let props = defineProps<{
+    avatarOptions: any[],
+}>()
+
+const emit = defineEmits();
+
+const emitUpdateModal = (status : boolean) => {
+    emit('updateModalStatus', status);
+};
 const createTeamFormRef = ref<FormInst | null>(null)
 const message = useMessage()
 
@@ -72,13 +80,30 @@ const createTeamRules: FormRules = {
     ],
 }
 
-const teamStore = useTeamStore()
 const createTeam = (e: MouseEvent) => {
     e.preventDefault()
     createTeamFormRef.value?.validate((errors) => {
         if (!errors) {
-            teamStore.curTeam = 1
-            console.log(createTeamModel.value)
+            axios.post('team/createTeam', {
+                "teamname": createTeamModel.value.teamname,
+                "teaminform": createTeamModel.value.teamdescription
+            }).then(res => {
+                if (res.status === 200) {
+                    if (res.data.code === 200) {
+                        props.avatarOptions[3].children!.splice(-1, 0, {
+                            label: createTeamModel.value.teamname!,
+                            key: res.data.data.tid
+                        })
+                        emitUpdateModal(false)
+                        router.push('/team/' + res.data.data.tid + '/projectmanage')
+                        message.success('创建成功')
+                    } else {
+                        message.warning(res.data.message)
+                    }
+                } else {
+                    message.error("服务器错误")
+                }
+            })
         } else {
             message.warning("请完善信息")
         }

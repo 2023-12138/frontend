@@ -42,7 +42,8 @@
             <!-- 创建团队Modal -->
             <n-modal v-model:show="createTeamModal" class="custom-card" preset="card" style="width: 60vw;height: 50vh;"
                 title="创建团队" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%">
-                <CreateTeamForm></CreateTeamForm>
+                <CreateTeamForm v-model:avatarOptions="avatarOptions" @updateModalStatus="updateModalStatus">
+                </CreateTeamForm>
             </n-modal>
         </div>
     </div>
@@ -58,6 +59,7 @@ import Logo from '@/components/Logo.vue';
 import ChatForm from '@/components/ChatForm.vue'
 import MessageCenter from './MessageCenter.vue';
 import CreateTeamForm from '@/components/CreateTeamForm.vue'
+import router from '@/routes';
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -86,7 +88,7 @@ function renderCustomHeader() {
     )
 }
 
-const avatarOptions = [
+const avatarOptions = ref([
     {
         key: 'header',
         type: 'render',
@@ -130,14 +132,18 @@ const avatarOptions = [
         label: '退出登录',
         key: 'logout'
     },
-]
+])
 
 const message = useMessage()
 
 function avatarHandleSelect(key: string | number) {
     message.info(String(key))
     if (key === 'create-team') {
-        createTeamModal.value = true 
+        createTeamModal.value = true
+
+    } else if (key === 'logout') {
+        localStorage.removeItem('token')
+        router.push("/")
     }
 }
 
@@ -150,7 +156,11 @@ const avatarDropdownThemeOverrides = {
 //聊天
 
 let chatShowModal = ref(false)
+
 let createTeamModal = ref(false)
+const updateModalStatus = (status: boolean) => {
+    createTeamModal.value = status;
+};
 
 </script>
 
@@ -159,7 +169,7 @@ let createTeamModal = ref(false)
 .topNav {
     /* width: 100%; */
     height: 100px;
-    background-image: linear-gradient(100deg,rgb(190, 218, 255),rgb(0, 195, 255) 2000px);
+    background-image: linear-gradient(100deg, rgb(190, 218, 255), rgb(0, 195, 255) 2000px);
     display: flex;
     justify-content: space-between;
     align-items: center;

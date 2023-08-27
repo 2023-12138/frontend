@@ -25,7 +25,7 @@ import {
 
 
 import { h, Component } from 'vue'
-import {RouterLink} from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
 
@@ -33,18 +33,20 @@ import TeamHeader from '@/components/TeamHeader.vue'
 function renderIcon(icon: Component) {
     return () => h(NIcon, null, { default: () => h(icon) })
 }
+const route = useRoute()
+const tid = route.params.tid
 
 const menuOptions: MenuOption[] = [
     {
         label: '成员管理',
         key: 'member_management',
-        href:'/team/' + '1' + '/member',
+        href:'/team/' + tid + '/member',
         icon: renderIcon(BookIcon),
     },
     {
         label: '团队设置',
         key: 'team——settings',
-        href:'/team/' + '1' + '/setting',
+        href:'/team/' + tid + '/setting',
         icon: renderIcon(BookIcon),
     },
     {
@@ -54,13 +56,13 @@ const menuOptions: MenuOption[] = [
     {
         label: '项目空间',
         key: 'project_space',
-        href:'/team/' + '1' + '/projectmanage',
+        href:'/team/' + tid + '/projectmanage',
         icon: renderIcon(FlashOutline),
     },
     {
         label: '项目1',
         key: 'project_1',
-        href:'/team/' + '1' + '/project/2',
+        href:'/team/' + tid + '/project/2',
         icon: renderIcon(Document),
     },
     
