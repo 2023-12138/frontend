@@ -36,7 +36,31 @@ const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
 
 watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
-    location.reload()
+    axios.post('team/viewUser', {
+        tid: tid
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {                
+                data.value = res.data.data.userlist.map((item : any) => {
+                    return {
+                        key: tid + '.' + item.uid ,    // tid + uid
+                        name: item.name,
+                        phone: item.phone,
+                        email: item.email,
+                        username: item.username,
+                        option: '',
+                        rank: item.status === '2' ? '协作成员' : (item.status === '1' ? '管理员' : '创建者'),
+                        isEditing: false,
+                    }
+                })
+                preData.value = data.value
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
 })
 
 const showModal = ref(false)

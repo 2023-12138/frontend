@@ -40,11 +40,12 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, h } from 'vue';
+import { ref, h, onMounted } from 'vue';
 
 import { useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
-
+import { storeToRefs } from 'pinia'; 
+import { useTeamStore } from '@/store/teamStore'
 import { MessageCircle } from '@vicons/tabler'
 
 import Logo from '@/components/Logo.vue';
@@ -52,6 +53,7 @@ import ChatForm from '@/components/ChatForm.vue'
 import MessageCenter from './MessageCenter.vue';
 import CreateTeamForm from '@/components/CreateTeamForm.vue'
 import router from '@/routes';
+import axios from '@/axios/axios';
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -80,6 +82,40 @@ function renderCustomHeader() {
     )
 }
 
+const teamStore = useTeamStore();
+const teamstore = storeToRefs(teamStore);
+
+onMounted(() => {
+    axios.post('team/viewTeam', {
+    }).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                const privateTid = res.data.data.privateTid
+                avatarOptions.value[3].children![0] = {
+                    label: '个人空间',
+                    key: 'team.' + privateTid
+                }
+                const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
+                teamlist.forEach((item: any, index: number) => {
+                    avatarOptions.value[3].children![index + 2] = {
+                        label: item.teamname,
+                        key: 'team.' + item.tid
+                    }
+                })
+                avatarOptions.value[3].children!.push({
+                    label: '创建团队',
+                    key: 'create-team'
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
+})
+
 const avatarOptions = ref([
     {
         key: 'header',
@@ -96,7 +132,7 @@ const avatarOptions = ref([
     },
     {
         label: '切换团队',
-        key: 'stmt4',
+        key: 'switch-team',
         children: [
             {
                 label: '个人空间',
@@ -128,14 +164,19 @@ const avatarOptions = ref([
 
 const message = useMessage()
 
-function avatarHandleSelect(key: string | number) {
-    message.info(String(key))
+function avatarHandleSelect(key: string) {
+    message.info(key)
     if (key === 'create-team') {
         createTeamModal.value = true
-
     } else if (key === 'logout') {
         localStorage.removeItem('token')
         router.push("/")
+    } else {
+        const tid = key!.split('.')[1]
+        message.info("切换团队" + tid)
+        router.push("/team/" + tid + "/projectmanage")
+        teamstore.curTeam.value = tid
+        teamstore.teamChanged.value = !(teamstore.teamChanged.value)
     }
 }
 

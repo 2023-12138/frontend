@@ -4,7 +4,7 @@
         <div class="bottom">
             <div class="leftSideNav">
                 <div class="leftSideNavMenu">
-                    <n-menu :options="menuOptions" :render-label="renderMenuLabel" />
+                    <n-menu v-model:options="menuOptions" :render-label="renderMenuLabel" />
                 </div>
             </div>
             <div class="main">
@@ -15,16 +15,16 @@
 </template>
 
 <script setup lang='ts'>
-import { NIcon } from 'naive-ui'
+import { NIcon, useMessage } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
 import {
     BookOutline as BookIcon,
     FlashOutline as FlashOutline,
     Document
 } from '@vicons/ionicons5'
-import { storeToRefs } from 'pinia'; 
+import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
-import { h, Component, watch } from 'vue'
+import { h, Component, watch, ref, Ref, onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
@@ -35,26 +35,70 @@ function renderIcon(icon: Component) {
     return () => h(NIcon, null, { default: () => h(icon) })
 }
 const route = useRoute()
-const tid = route.params.tid
+
 
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
+const tid = route.params.tid
+const message = useMessage()
 
-watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
-    location.reload()
+onMounted(() => {
+    menuOptions.value = [
+        {
+            label: '成员管理',
+            key: 'member_management',
+            href: '/team/' + tid + '/member',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            label: '团队设置',
+            key: 'team_setting',
+            href: '/team/' + tid + '/setting',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            key: 'header-divider',
+            type: 'divider'
+        },
+        {
+            label: '项目空间',
+            key: 'project_space',
+            href: '/team/' + tid + '/projectmanage',
+            icon: renderIcon(FlashOutline),
+        },
+        {
+            label: '项目1',
+            key: 'project_1',
+            href: '/team/' + tid + '/project/2',
+            icon: renderIcon(Document),
+        },
+    ]
 })
 
-const menuOptions: MenuOption[] = [
+
+watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
+    menuOptions.value.forEach((item: any) => {
+        if (item.key !== 'header-divider') {
+            let list = item.href.split('/')
+            console.log(list)
+            list[2] = teamstore.curTeam.value
+            item.href = list.join('/')
+        }
+    })
+    console.log(menuOptions)
+})
+
+const menuOptions: Ref<any[]> = ref([
     {
         label: '成员管理',
         key: 'member_management',
-        href:'/team/' + tid + '/member',
+        href: '/team/' + tid + '/member',
         icon: renderIcon(BookIcon),
     },
     {
         label: '团队设置',
         key: 'team_setting',
-        href:'/team/' + tid + '/setting',
+        href: '/team/' + tid + '/setting',
         icon: renderIcon(BookIcon),
     },
     {
@@ -64,17 +108,16 @@ const menuOptions: MenuOption[] = [
     {
         label: '项目空间',
         key: 'project_space',
-        href:'/team/' + tid + '/projectmanage',
+        href: '/team/' + tid + '/projectmanage',
         icon: renderIcon(FlashOutline),
     },
     {
         label: '项目1',
         key: 'project_1',
-        href:'/team/' + tid + '/project/2',
+        href: '/team/' + tid + '/project/2',
         icon: renderIcon(Document),
     },
-
-]
+])
 
 function renderMenuLabel(option: MenuOption) {
     if ('href' in option) {
