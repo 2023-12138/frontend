@@ -31,6 +31,6 @@ export const useChatContainer = defineStore('chatroom', () => {
     });
     const currentChatName = ref("User");
     const webSocket = ref<WebSocket | null>(null);
-    const onNewAT: Ref<(() => void) | null> = ref(null);
+    const onNewAT: Ref<((teamID: number, teamName: string) => void) | null> = ref(null);
     return { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onNewAT }
 })

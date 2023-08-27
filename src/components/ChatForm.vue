@@ -198,7 +198,8 @@ function initWebSocket() {
         console.log(msgtype);
 
         if (msgtype == 'chat_aite') {
-            if (onNewAT.value != null) onNewAT.value();
+
+            if (onNewAT.value != null) onNewAT.value(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(");
         } else {
             rid = NaN;
         }
