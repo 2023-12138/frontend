@@ -30,10 +30,10 @@
                     <n-input v-model:value="registerModel.email" @keydown.enter.prevent placeholder="请输入邮箱" />
                 </n-form-item>
                 <n-form-item path="name" label="真实姓名">
-                    <n-input v-model:value="registerModel.name" @keydown.enter.prevent placeholder="请输入邮箱" />
+                    <n-input v-model:value="registerModel.name" @keydown.enter.prevent placeholder="请输入姓名" />
                 </n-form-item>
                 <n-form-item path="phone" label="联系电话">
-                    <n-input v-model:value="registerModel.phone" @keydown.enter.prevent placeholder="请输入邮箱" />
+                    <n-input v-model:value="registerModel.phone" @keydown.enter.prevent placeholder="请输入电话" />
                 </n-form-item>
                 <n-form-item path="password" label="密码">
                     <n-input v-model:value="registerModel.password" type="password" @keydown.enter.prevent
