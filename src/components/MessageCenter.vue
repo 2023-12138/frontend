@@ -92,6 +92,10 @@ type Messages = ChatMessages | DocMessages;
 const giveMessage = useMessage()
 
 //顶部消息通知功能
+//弹框控件
+
+
+//弹框内部
     //tab控件
 let currentTab = ref('chat')
 

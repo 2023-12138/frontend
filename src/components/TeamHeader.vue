@@ -5,17 +5,6 @@
             <span>融创云开发</span>
         </div>
         <div class="topNavRight">
-            <!-- <n-input 
-                placeholder="搜索" 
-                class="search" 
-                size="large"
-                round
-                >
-                    <template #prefix>
-                        <n-icon :component="FlashOutline" />
-                    </template>
-                </n-input> -->
-
             <!-- 聊天 -->
             <div class="topNavRightIcon" @click="chatShowModal = true">
                 <n-icon size="25" :component="MessageCircle" />
@@ -52,7 +41,9 @@
 
 <script setup lang='ts'>
 import { ref, h } from 'vue';
-import { NIcon, useMessage, NAvatar, NText, NConfigProvider } from 'naive-ui'
+
+import { useChatContainer } from '@/store/store'
+import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
 
 import { MessageCircle } from '@vicons/tabler'
 
@@ -163,6 +154,37 @@ const updateModalStatus = (status: boolean) => {
     createTeamModal.value = status;
 };
 
+//新通知实时提示
+const notification = useNotification();
+const newMessage = (teamId: number, teamName: string) => {
+    const n = notification.create({
+        title: `你在${teamName}团队群聊被@了`,
+        avatar: () =>
+            h(NAvatar, {
+                size: 'small',
+                round: true,
+                src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+            }),
+        meta: ' ',
+        action: () =>
+            h(
+                NButton,
+                {
+                    text: true,
+                    type: 'primary',
+                    onClick: () => {
+                        n.destroy()
+                    }
+                },
+                {
+                    default: () => '去查看'
+                }
+            ),
+    })
+}
+
+const chatContainer = useChatContainer();
+chatContainer.onNewAT = newMessage;
 </script>
 
 <style scoped>
