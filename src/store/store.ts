@@ -1,3 +1,4 @@
+import { mypost } from '@/axios/axios';
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 export type TeamModel = { teamName: string; teamID: number; teamMembers: Array<{ userName: string, userID: number }> };
@@ -15,6 +16,7 @@ export type MessageModel = {
     userID: number; //发送者的id
     time: string; //消息发送的时间
     imgstr: string | null;
+    rid: number;
 };
 export const useChatContainer = defineStore('chatroom', () => {
     //团队列表，如果消息列表中有，则展示即可；如果没有，向服务器请求
