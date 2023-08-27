@@ -40,7 +40,7 @@ const routeGo = (path: string) => {
 
 <style scoped>
 .header {
-    background-color: #18a058;
+    background-color: #45b8ff;
     width: 100%;
     height: 70px;
     display: flex;

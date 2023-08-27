@@ -32,20 +32,8 @@ import AddMemberModal from '@/components/Member/AddMemberModal.vue'
 const showModal = ref(false)
 
 // 测试用
-const createData = (): MemberRowData[] =>
-    Array.from({ length: 100 }).map((_, index) => ({
-        // key放置tid和uid
-        key: index.toString(),
-        name: `John Brown ${index}`,
-        phone: ((Math.random() * 40) | 0).toString(),
-        email: `New York No. ${index} Lake Park`,
-        username: '嘻嘻',
-        option: 'option',
-        rank: index === 0 ? '创建者' : '管理员',
-        isEditing: false
-    }))
 
-const data: Ref<MemberRowData[]> = ref(createData())
+const data: Ref<MemberRowData[]> = ref([])
 const preData: Ref<MemberRowData[]> = ref(data.value)
 // 用于筛选数据
 // const preData = data

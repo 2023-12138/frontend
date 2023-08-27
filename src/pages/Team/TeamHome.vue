@@ -1,6 +1,5 @@
 <template>
     <div style="height: 100vh;">
-        <HomeHeader header_title="主页"></HomeHeader>
         <div class="content">
             <div class="description">
                 <n-gradient-text :gradient="{
@@ -25,7 +24,6 @@
 
 <script setup lang='ts'>
 import { ref } from 'vue';
-import HomeHeader from '../components/HomeHeader.vue';
 import router from '@/routes';
 const title = ref("FusionCode");
 </script>
