@@ -49,7 +49,7 @@ const routeGo = (path: string) => {
 }
 
 .router {
-    display: flex
+    display: flex;
 }
 
 .route {
@@ -62,5 +62,10 @@ const routeGo = (path: string) => {
 
 #logo {
     margin-left: 30px;
+}
+
+
+li {
+    list-style-type: none;
 }
 </style>

@@ -1,31 +1,32 @@
 <template>
-    <div>
-
-        <div class="project-container">
-            <div class="project-top">
-                <n-h2>项目1</n-h2>
-                <div class="project-top-bottom">
-                    <span>
-                        TID: {{ $route.params.tid }}
-                        PID: {{ $route.params.pid }}
-                    </span>
-                    <n-button type="primary">新建文件</n-button>
-                </div>
+    <router-view v-if="$route.params.did"></router-view>
+    <div v-else class="project-container">
+        <div class="project-top">
+            <n-h2>项目1</n-h2>
+            <div class="project-top-bottom">
+                <span>
+                    TID: {{ $route.params.tid }}
+                    PID: {{ $route.params.pid }}
+                </span>
+                <n-button type="primary">新建文件</n-button>
             </div>
-            <div class="project-bottom">
-                <div class="content">
-                    <n-tabs type="line" animated>
-                        <n-tab-pane name="file" tab="文件">
-                            Wonderwall
-                        </n-tab-pane>
-                        <n-tab-pane name="setting" tab="设置">
-                            七里香
-                        </n-tab-pane>
-                        <n-tab-pane name="rubbish bin" tab="回收站">
-                            七里香
-                        </n-tab-pane>
-                    </n-tabs>
-                </div>
+        </div>
+        <div class="project-bottom">
+            <div class="content">
+                <n-tabs type="line" animated>
+                    <n-tab-pane name="file" tab="文件">
+                        Wonderwall
+                        <button @click="$router.push('/team/1/project/2/doc/1')">
+                            文档
+                        </button>
+                    </n-tab-pane>
+                    <n-tab-pane name="setting" tab="设置">
+                        七里香
+                    </n-tab-pane>
+                    <n-tab-pane name="rubbish bin" tab="回收站">
+                        七里香
+                    </n-tab-pane>
+                </n-tabs>
             </div>
         </div>
     </div>

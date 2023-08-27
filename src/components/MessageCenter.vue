@@ -107,7 +107,6 @@ const TabProp = (tab:string) => ({
         let messageList = res.notice_list;
         if(tab == 'chat'){
             chatMessages.value = messageList.map((x:any) => x);
-            console.log(chatMessages);
             
         }else{
             docMessages.value = messageList.map((x:any) => x);
@@ -127,8 +126,6 @@ const TabProp = (tab:string) => ({
 onMounted(async () => {
     let res = await mypost(giveMessage,'/notice/getnotice',{'type':'chat'});
     chatMessages.value = res.notice_list.map((x:any) => x);
-    console.log(chatMessages.value);
-    
 })
 
 //底部控件
