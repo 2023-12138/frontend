@@ -1,8 +1,33 @@
 <template>
     <div>
-        这是项目内容页面嘻嘻
-        TID: {{ $route.params.tid }}
-        PID: {{ $route.params.pid }}
+
+        <div class="project-container">
+            <div class="project-top">
+                <n-h2>项目1</n-h2>
+                <div class="project-top-bottom">
+                    <span>
+                        TID: {{ $route.params.tid }}
+                        PID: {{ $route.params.pid }}
+                    </span>
+                    <n-button type="primary">新建文件</n-button>
+                </div>
+            </div>
+            <div class="project-bottom">
+                <div class="content">
+                    <n-tabs type="line" animated>
+                        <n-tab-pane name="file" tab="文件">
+                            Wonderwall
+                        </n-tab-pane>
+                        <n-tab-pane name="setting" tab="设置">
+                            七里香
+                        </n-tab-pane>
+                        <n-tab-pane name="rubbish bin" tab="回收站">
+                            七里香
+                        </n-tab-pane>
+                    </n-tabs>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -11,5 +36,25 @@
 </script>
 
 <style scoped>
+.project-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
 
+.project-top .project-top-bottom {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.project-bottom {
+
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.content {
+    width: 100%;
+}
 </style>

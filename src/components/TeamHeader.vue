@@ -41,7 +41,7 @@
             </div>
 
             <!-- 创建团队Modal -->
-            <n-modal v-model:show="createTeamModal" class="custom-card" preset="card" style="width: 60vw;height: 85vh;"
+            <n-modal v-model:show="createTeamModal" class="custom-card" preset="card" style="width: 60vw;height: 50vh;"
                 title="创建团队" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%">
                 <CreateTeamForm></CreateTeamForm>
             </n-modal>
