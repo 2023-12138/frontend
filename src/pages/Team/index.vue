@@ -82,7 +82,7 @@ function renderMenuLabel(option: MenuOption) {
 <style scoped>
 /* 侧边栏导航 */
 .bottom {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 70px);
     display: flex;
     /* background-color: #aaa; */
 }
