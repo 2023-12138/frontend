@@ -141,6 +141,11 @@ const deleteMessage = async (index:number) => {
     height: 50%;
     /* background-color: red; */
     border-radius: 7px;
+    visibility: hidden;
+}
+
+.message:hover .selectMore{
+    visibility: visible;
 }
 
 .selectMoreIcon {

@@ -48,8 +48,8 @@
                 </template>
                 全部标记为已读
             </n-button>
-            <n-button quaternary type="error" round @click="deleteAll">
-                删除全部
+            <n-button quaternary type="error" round @click="deleteAll" v-show="readValue == 1">
+                删除已读
             </n-button>
         </div>
     </n-popover>
@@ -145,12 +145,14 @@ const readAll = async () => {
 }
     //一键删除消息
 const deleteAll = async () => {
-    const res = await mypost(giveMessage,'/notice/alldelete',{type:currentTab.value});
+    const res = await mypost(giveMessage,'/notice/alldelete',{type:currentTab.value,kind:'read'});
     if(!res){
         return;
     }
     let readMessages = currentTab.value === 'chat' ? chatMessages : docMessages;
-    readMessages.value.splice(0);
+    readMessages.value = readMessages.value.filter((x)=> x.read == 0);
+    console.log(readMessages.value);
+    
 }
 
 //聊天消息数据

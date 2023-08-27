@@ -18,6 +18,8 @@
     "@vicons/material": "^0.12.0",
     "@vicons/tabler": "^0.12.0",
     "axios": "^1.4.0",
+    "commonmark": "^0.30.0",
+    "is-hotkey": "^0.2.0",
     "path": "^0.12.7",
     "pinia": "^2.1.6",
     "unplugin-auto-import": "^0.16.6",
@@ -28,8 +30,11 @@
     "web-editor-markdown": "^1.0.8"
   },
   "devDependencies": {
+    "@types/commonmark": "^0.27.6",
+    "@types/is-hotkey": "^0.1.7",
     "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue": "^4.2.3",
+    "less": "^4.2.0",
     "naive-ui": "^2.34.4",
     "typescript": "^5.0.2",
     "vfonts": "^0.0.3",

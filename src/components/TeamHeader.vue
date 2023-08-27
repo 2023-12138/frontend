@@ -159,7 +159,7 @@ let createTeamModal = ref(false)
 /* 顶部导航 */
 .topNav {
     /* width: 100%; */
-    height: 100px;
+    height: 70px;
     background-image: linear-gradient(100deg, rgb(190, 218, 255), rgb(0, 195, 255) 2000px);
     display: flex;
     justify-content: space-between;
