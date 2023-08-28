@@ -155,10 +155,13 @@ function onMsgboxSubmitted(e: SubmitEvent) {
             });
         }
         const newLocal = JSON.stringify({
-            message: inputMessage.value,
-            to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
-            tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
-            aite: atlist
+            type: 'chat',
+            data: {
+                message: inputMessage.value,
+                to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
+                tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
+                aite: atlist
+            }
         });
         console.log(newLocal);
         webSocket.value?.send(newLocal);
@@ -188,12 +191,13 @@ function team2Options(team: TeamModel) {
 }
 
 async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderName: string) {
-    const data = JSON.parse(e.data);
+    let data = JSON.parse(e.data);
+    let msgtype: string = data.type;
+    data = data.data;
     //message,senderId,teamId,time
     let message: string = data.message;
     let senderId: number = data.senderId;
     let currentTime: string = data.time;
-    let msgtype: string = data.type;
     let rid: number = parseInt(data.rid);
     if (msgtype != 'chat_aite') rid = NaN;
     //判断是否正在展示

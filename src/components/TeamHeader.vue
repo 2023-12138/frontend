@@ -255,16 +255,16 @@ let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
     webSocket.value.onmessage = async (e) => {
-        const data = JSON.parse(e.data);
+        let data = JSON.parse(e.data);
+        let msgtype: string = data.type;
+        data = data.data;
         let message: string = data.message;
         let senderId: number = data.senderId;
         let receiverId: number | string = data.receiverId;
         let teamId: number | string = data.teamId;
         let currentTime: string = data.time;
-        let msgtype: string = data.type;
         let rid: number = parseInt(data.rid);
         if (msgtype == 'doc_aite') {
-            //call doc aite notify api
             newDocMessage();
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
