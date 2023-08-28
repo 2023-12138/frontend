@@ -15,7 +15,7 @@
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="file" tab="文件">
-                        <n-button @click="$router.push('/team/' + $route.params.tid + '/project/2/doc/1')">
+                        <n-button @click="$router.push('/team/' + $route.params.tid + '/project/'+ $route.params.pid + '/doc/1')">
                             文档
                         </n-button>
                     </n-tab-pane>

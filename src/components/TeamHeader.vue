@@ -170,7 +170,7 @@ const avatarOptions = ref([
 const message = useMessage()
 
 function avatarHandleSelect(key: string) {
-    message.info(key)
+    // message.info(key)
     if (key === 'create-team') {
         createTeamModal.value = true
     } else if (key === 'logout') {
