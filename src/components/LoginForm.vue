@@ -154,6 +154,7 @@ import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from '@/axios/axios'
 import router from '@/routes';
 import { useUserStore } from '@/store/userStore'
+import { useTeamStore } from '@/store/teamStore'
 import { storeToRefs } from 'pinia';
 
 interface LoginModelType {
@@ -346,10 +347,13 @@ const forgetRules: FormRules = {
 }
 const userStore = useUserStore();
 const userstore = storeToRefs(userStore);
+const teamStore = useTeamStore();
+const teamstore = storeToRefs(teamStore);
 const login = (e: MouseEvent) => {
     e.preventDefault()
     loginFormRef.value?.validate((errors) => {
         if (!errors) {
+            let privateTid
             axios.post("/user/login", {
                 "username": loginModel.value.name,
                 "password": loginModel.value.password
@@ -360,15 +364,19 @@ const login = (e: MouseEvent) => {
                         message.success('登录成功')
                         localStorage.setItem('token', res.data.data.token)
                         localStorage.setItem('uid',res.data.data.uid)
-                        userstore.curUser = res.data.data.uid
-                        router.push('/team/private' + res.data.data.privateTid +'/projectmanage')
+                        userstore.curUser.value = res.data.data.uid.toString()
+                        teamstore.curTeam.value = res.data.data.privateTid.toString()
+                        privateTid = res.data.data.privateTid.toString()
                     } else {
                         message.warning(res.data.message)
                     }
                 } else {
                     message.error("网络错误")
                 }
-            })
+            }).finally(() => {
+                router.push('/team/private' + privateTid +'/projectmanage')
+            }
+            )
         } else {
             message.warning("请完善信息")
         }

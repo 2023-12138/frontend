@@ -165,9 +165,9 @@ function avatarHandleSelect(key: string) {
     } else {
         const tid = key!.split('.')[1]
         message.info("切换团队" + tid)
-        router.push("/team/" + tid + "/projectmanage")
         teamstore.curTeam.value = tid
         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
+        router.push("/team/" + tid + "/projectmanage")
     }
 }
 

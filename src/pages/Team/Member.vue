@@ -36,6 +36,8 @@ const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
 
 watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
+    tid.value = teamstore.curTeam.value.toString()
+    console.log(tid)
     axios.post('team/viewUser', {
         tid: tid.value.replace('private', '')
     }).then(res => {
@@ -43,7 +45,7 @@ watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
             if (res.data.code === 200) {                
                 data.value = res.data.data.userlist.map((item : any) => {
                     return {
-                        key: tid + '.' + item.uid ,    // tid + uid
+                        key: tid.value + '.' + item.uid ,    // tid + uid
                         name: item.name,
                         phone: item.phone,
                         email: item.email,
@@ -65,7 +67,7 @@ watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
 
 const showModal = ref(false)
 const route = useRoute()
-const tid = ref(route.params.tid.toString())
+const tid = ref<string>(route.params.tid.toString())
 const showButton = ref<boolean>(!(tid.value.toString().startsWith('private')))
 // 用于筛选数据
 const data: Ref<MemberRowData[]> = ref([])

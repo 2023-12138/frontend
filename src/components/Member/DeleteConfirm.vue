@@ -29,10 +29,11 @@ export default defineComponent({
         const teamstore = storeToRefs(teamStore);
 
         const handlePositiveClick = () => {
+            console.log(props.id)
             const tid = props.id?.split('.')[0]
             const uid = props.id?.split('.')[1]
             axios.post('team/deleteUser', {
-                tid : tid,
+                tid : tid?.replace('private', ''),
                 uid : uid,
             }).then(res => {
                 if (res.status === 200) {

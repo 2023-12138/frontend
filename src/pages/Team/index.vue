@@ -43,10 +43,11 @@ const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
 const projectStore = useProjectStore();
 const projectstore = storeToRefs(projectStore);
-const tid = ref(route.params.tid.toString())
+const tid = ref<String>(route.params.tid.toString())
 const message = useMessage()
 
 onMounted(() => {
+    tid.value = route.params.tid.toString()
     menuOptions.value = [
         {
             label: '成员管理',
@@ -163,7 +164,7 @@ watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
         },
     ]
     axios.post('project/viewProject', {
-        tid: tid.value.replace('private', '')
+        tid: tid.value.toString().replace('private', '')
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {

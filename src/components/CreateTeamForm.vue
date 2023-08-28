@@ -93,6 +93,7 @@ const createTeam = (e: MouseEvent) => {
                 "teamname": createTeamModel.value.teamname,
                 "teaminform": createTeamModel.value.teamdescription
             }).then(res => {
+                console.log(res)
                 if (res.status === 200) {
                     if (res.data.code === 200) {
                         props.avatarOptions[3].children!.splice(-1, 0, {
@@ -100,9 +101,11 @@ const createTeam = (e: MouseEvent) => {
                             key: 'team.' + res.data.data.tid
                         })
                         emitUpdateModal(false)
-                        router.push('/team/' + res.data.data.tid + '/projectmanage')
                         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
+                        teamstore.curTeam.value =  res.data.data.tid
                         message.success('创建成功')
+                        router.push('/team/' + res.data.data.tid + '/projectmanage')
+                        
                     } else {
                         message.warning(res.data.message)
                     }
