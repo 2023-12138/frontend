@@ -3,6 +3,7 @@
         <template #trigger>
             <div class="bellIcon">
                 <n-icon size="25" :component="BellRegular" />
+                <div class="remind" v-show="remindShow"></div>
             </div>
         </template>
         <div class="content">
@@ -56,7 +57,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, Ref,onMounted } from 'vue';
+import { ref, Ref,onMounted,watch } from 'vue';
 import { mypost } from '@/axios/axios';
 import { useMessage } from 'naive-ui';
 
@@ -92,6 +93,7 @@ type Messages = ChatMessages | DocMessages;
 const giveMessage = useMessage()
 
 //顶部消息通知功能
+
 //弹框控件
 
 
@@ -129,6 +131,15 @@ const TabProp = (tab:string) => ({
 
 onMounted(async () => {
     let res = await mypost(giveMessage,'/notice/getnotice',{'type':'chat'});
+    if(!res){
+        return;
+    }
+    for(const message of res.notice_list){
+        if(message.read == 0){
+            remindShow.value = true;
+            break;
+        }
+    }
     chatMessages.value = res.notice_list.map((x:any) => x);
 })
 
@@ -186,6 +197,24 @@ let tabStyle:Object = {
     fontSize:'15px',
 }
 
+//提醒红点
+const remindShow = ref(false);
+watch([chatMessages.value,docMessages.value],() => {
+    remindShow.value = false;
+    for(const message of chatMessages.value){
+        if(message.read == 0){
+            remindShow.value = true;
+            return;
+        }
+    }
+    for(const message of docMessages.value){
+        if(message.read == 0){
+            remindShow.value = true;
+            return;
+        }
+    }
+},{deep:true})
+
 </script>
 
 <style scoped>
@@ -197,6 +226,17 @@ let tabStyle:Object = {
     justify-content:center;
     align-items:center ;
     margin-right: 20px;
+    position:relative;
+}
+
+.remind {
+    height: 7px;
+    width: 7px;
+    background-color: red;
+    border-radius: 50%;
+    position:absolute;
+    right: 20%;
+    top:15%;
 }
 
 .content {

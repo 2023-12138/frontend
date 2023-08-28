@@ -6,6 +6,8 @@
         :key="message.id" 
         v-show="read>=message.read" 
         @click="readMessage(index)"
+        @mouseenter="textShow[index] = !textShow[index]"
+        @mouseleave="textShow[index] = !textShow[index]"
     >
         <div class="messageAvatar">
             <n-icon size="30" :component="avatar" :color="color"/>
@@ -13,7 +15,10 @@
         <div class="dividerVertical"></div>
         <div class="messageContent">
             <div class="messageTitle">
-                在群聊中{{ message.tid }}提到了你
+                在群聊{{ message.tid }}中提到了你
+            </div>
+            <div class="messageText" v-show="textShow[index]">
+                具体消息
             </div>
         </div>
         <div class="selectMore">
@@ -57,6 +62,7 @@ const avatarIcons = (tab:string) => {
 }
 
 //读消息
+const textShow = ref(Array(props.messages.length).fill(false));
 const readMessage = async (index:number) => {
     if(props.messages[index].read == 0){
         const res = await mypost(giveMessage,'/notice/oneread',{nid:props.messages[index].noticeId})
