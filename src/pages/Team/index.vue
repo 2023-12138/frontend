@@ -47,6 +47,7 @@ const tid = ref<String>(route.params.tid.toString())
 const message = useMessage()
 
 onMounted(() => {
+    console.log('onMounted hook executed');
     axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
     tid.value = route.params.tid.toString()
     menuOptions.value = [

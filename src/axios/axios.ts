@@ -1,15 +1,10 @@
 import axios from 'axios'
+import { useAxiosStore } from '@/store/axiosStore';
 import { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
-
+const axiosStore = useAxiosStore();
 let header = localStorage.getItem('token')
 
-let request = axios.create({
-    baseURL: 'http://101.43.202.84:7002/',
-    headers: {
-        'Authorization': header === undefined ? localStorage.getItem('token') : header
-    },
-    timeout: 5000
-})
+let request = axiosStore.axiosInstance
 
 export async function mypost(message: MessageApiInjection, url: string, props: any) {
     const res = await request.post(url, props);

@@ -153,6 +153,7 @@ import { ref } from 'vue'
 import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from '@/axios/axios'
 import router from '@/routes';
+import { useAxiosStore } from '@/store/axiosStore';
 import { useUserStore } from '@/store/userStore'
 import { useTeamStore } from '@/store/teamStore'
 import { storeToRefs } from 'pinia';
@@ -349,6 +350,7 @@ const userStore = useUserStore();
 const userstore = storeToRefs(userStore);
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
+const axiosStore = useAxiosStore();
 const login = (e: MouseEvent) => {
     e.preventDefault()
     loginFormRef.value?.validate((errors) => {
@@ -368,6 +370,8 @@ const login = (e: MouseEvent) => {
                         userstore.curUser.value = res.data.data.uid.toString()
                         teamstore.curTeam.value = res.data.data.privateTid.toString()
                         privateTid = res.data.data.privateTid.toString()
+                        axiosStore.updateAuthorizationHeader(res.data.data.token) 
+                        console.log(axios.defaults)
                         flag = true
                     } else {
                         message.warning(res.data.message)
@@ -376,11 +380,7 @@ const login = (e: MouseEvent) => {
                     message.error("网络错误")
                 }
             }).finally(() => {
-                // router.push('/team/private' + privateTid + '/projectmanage')
                 if (flag) {
-                    // setTimeout(() => {
-                    //     router.push('/team/private' + privateTid + '/projectmanage')
-                    // }, 1000)
                     router.push('/team/private' + privateTid + '/projectmanage')
                 }
             }
