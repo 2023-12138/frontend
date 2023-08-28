@@ -18,8 +18,9 @@
     </div>
 </template>
 <script setup lang="ts">
+import { useChatContainer } from '@/store/store';
 import { onMounted, ref } from 'vue';
-
+const container = useChatContainer();
 const props = defineProps<{
     title: string,
     content: string,
@@ -28,7 +29,9 @@ const props = defineProps<{
     io: IntersectionObserver
 }>();
 const d = ref();
+let ele = d.value as HTMLDivElement;
 onMounted(() => {
+    container.msgElements.push({ rid: props.rid, element: ele });
     d.value.scrollIntoView({
         block: 'nearest',
         inline: 'nearest',
@@ -36,11 +39,9 @@ onMounted(() => {
     });
     console.log(`rid:${props.rid} msg:${props.content} recved `);
     console.log(d.value);
-    let rid = -1;
     if (Number.isNaN(props.rid)) return;
-    rid = props.rid;
     if (d.value != undefined) {
-        d.value['rid'] = rid;
+        d.value['rid'] = props.rid;
         props.io.observe(d.value);
     }
 });
