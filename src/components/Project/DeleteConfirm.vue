@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue';
 import { useMessage } from 'naive-ui';
 import { storeToRefs } from 'pinia'; 
-import { useTeamStore } from '@/store/teamStore'
+import { useProjectStore } from '@/store/projectStore'
 import axios from '@/axios/axios';
 
 
@@ -25,27 +25,25 @@ export default defineComponent({
 
         const handleNegativeClick = () => {
         }
-        const teamStore = useTeamStore();
-        const teamstore = storeToRefs(teamStore);
+        const projectStore = useProjectStore();
+        const projectstore = storeToRefs(projectStore);
 
         const handlePositiveClick = () => {
-            const tid = props.id?.split('.')[0]
-            const uid = props.id?.split('.')[1]
-            // axios.post('team/deleteUser', {
-            //     tid : tid,
-            //     uid : uid,
-            // }).then(res => {
-            //     if (res.status === 200) {
-            //         if (res.data.code === 200) {
-            //             teamstore.teamChanged.value = !(teamstore.teamChanged.value)
-            //             message.success("删除成功")
-            //         } else {
-            //             message.warning(res.data.message)
-            //         }
-            //     } else {
-            //         message.error('服务器错误')
-            //     }
-            // })
+            axios.post('project/deleteProject', {
+                tid : props.id!.split('.')[0],
+                pid : props.id!.split('.')[1],
+            }).then(res => {
+                if (res.status === 200) {
+                    if (res.data.code === 200) {
+                        projectstore.projectChanged.value = !(projectstore.projectChanged.value)
+                        message.success("删除成功")
+                    } else {
+                        message.warning(res.data.message)
+                    }
+                } else {
+                    message.error('服务器错误')
+                }
+            })
         }
 
         return {

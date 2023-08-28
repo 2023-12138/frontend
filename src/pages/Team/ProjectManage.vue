@@ -50,7 +50,7 @@ watch(projectstore.projectChanged, () => {
             if (res.data.code === 200) {
                 data.value = res.data.data.projectlist?.map((item: any) => {
                     return {
-                        key: item.pid,   // pid
+                        key: tid.value.replace('private', '') + '.' + item.pid,   // pid
                         projectname: item.project_name,
                         description: item.project_inform,
                         creator: item.uid,
@@ -73,7 +73,7 @@ onMounted(() => {
             if (res.data.code === 200) {
                 data.value = res.data.data.projectlist?.map((item: any) => {
                     return {
-                        key: item.pid,   // pid
+                        key: tid.value.replace('private', '') + '.' + item.pid,   // pid
                         projectname: item.project_name,
                         description: item.project_inform,
                         creator: item.uid,

@@ -76,7 +76,7 @@ export const columns: Column[] = [
         render(row: ProjectRowData) {
             return h(DeleteConfirm, {
                 buttonText: '删除',
-                uid: row.key,
+                id: row.key,
                 // TODO: tid
             });
         }
