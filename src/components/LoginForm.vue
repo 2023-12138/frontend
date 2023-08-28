@@ -361,7 +361,7 @@ const login = (e: MouseEvent) => {
                         localStorage.setItem('token', res.data.data.token)
                         localStorage.setItem('uid',res.data.data.uid)
                         userstore.curUser = res.data.data.uid
-                        router.push('/team/' + res.data.data.privateTid +'/projectmanage')
+                        router.push('/team/private' + res.data.data.privateTid +'/projectmanage')
                     } else {
                         message.warning(res.data.message)
                     }
