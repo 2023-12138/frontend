@@ -40,9 +40,9 @@
 </template>
 
 <script setup lang='ts'>
-import { ref, h } from 'vue';
+import { ref, h, onMounted } from 'vue';
 
-import { useChatContainer } from '@/store/store'
+import { RecentListModel, useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
 
 import { MessageCircle } from '@vicons/tabler'
@@ -52,7 +52,12 @@ import ChatForm from '@/components/ChatForm.vue'
 import MessageCenter from './MessageCenter.vue';
 import CreateTeamForm from '@/components/CreateTeamForm.vue'
 import router from '@/routes';
-
+import { storeToRefs } from 'pinia';
+import { mypost } from '@/axios/axios';
+const container = useChatContainer();
+const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
+const wsURL = `ws://localhost:8000/ws/chat/${myuid.value}/`;
+const { webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container);
 //顶部头像下拉框功能
 function renderCustomHeader() {
     return h(
@@ -156,7 +161,7 @@ const updateModalStatus = (status: boolean) => {
 
 //新通知实时提示
 const notification = useNotification();
-const newMessage = (teamId: number, teamName: string) => {
+const newMessage = (teamId: number, teamName: string, rid: number) => {
     const n = notification.create({
         title: `你在${teamName}团队群聊被@了`,
         avatar: () =>
@@ -173,6 +178,10 @@ const newMessage = (teamId: number, teamName: string) => {
                     text: true,
                     type: 'primary',
                     onClick: () => {
+                        chatShowModal.value = true;
+                        setTimeout(() => {
+                            if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(teamId, rid);
+                        }, 500);
                         n.destroy()
                     }
                 },
@@ -182,9 +191,159 @@ const newMessage = (teamId: number, teamName: string) => {
             ),
     })
 }
-
+const newDocMessage = (/*teamId: number, teamName: string, rid: number*/) => {
+    const n = notification.create({
+        title: `你在文档中被@了`,
+        avatar: () =>
+            h(NAvatar, {
+                size: 'small',
+                round: true,
+                src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+            }),
+        meta: ' ',
+        action: () =>
+            h(
+                NButton,
+                {
+                    text: true,
+                    type: 'primary',
+                    onClick: () => {
+                        // chatShowModal.value = true;
+                        // setTimeout(() => {
+                        //     if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(teamId, rid);
+                        // }, 500);
+                        n.destroy()
+                    }
+                },
+                {
+                    default: () => '去查看'
+                }
+            ),
+    })
+}
 const chatContainer = useChatContainer();
-chatContainer.onNewAT = newMessage;
+
+let reconnectCount = 0;
+function initWebSocket() {
+    if (webSocket.value == null) return;
+    webSocket.value.onmessage = async (e) => {
+        const data = JSON.parse(e.data);
+        let message: string = data.message;
+        let senderId: number = data.senderId;
+        let receiverId: number | string = data.receiverId;
+        let teamId: number | string = data.teamId;
+        let currentTime: string = data.time;
+        let msgtype: string = data.type;
+        let rid: number = parseInt(data.rid);
+        if (msgtype == 'doc_aite') {
+            //call doc aite notify api
+            newDocMessage();
+        }
+        if (msgtype == "chat_aite" && senderId != myuid.value) {
+            newMessage(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(", rid);
+        } else {
+            rid = NaN;
+        }
+        //判断是否在recent中
+        let isuser = (teamId == "");
+        let senderName = 'O_O :(';
+        let recent: RecentListModel | undefined;
+        if (isuser) {//私聊信息
+            //首先判断是否是自己发出去的
+            if (senderId == myuid.value) {//自己发送的消息自己收到
+                recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
+                senderName = myname.value;
+            } else {//别人发的消息自己收到
+                recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
+                senderName = recent?.userOrTeamName || "V_V :)";
+            }
+        }
+        //群聊信息
+        else { //统一处理
+            recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
+            const team = allTeams.value.find(ele => ele.teamID == teamId);
+            const name = team?.teamMembers.find(ele => ele.userID == senderId)?.userName;
+            console.log(name);
+            senderName = allTeams.value.find(ele => ele.teamID == teamId)?.teamMembers.find(ele1 => ele1.userID == senderId)?.userName || 'NaN :(';
+        }
+        if (recent == undefined) return;
+        recent.Messages.push({
+            userName: senderName,
+            msg: message,
+            userID: senderId,
+            time: currentTime,
+            imgstr: null,
+            rid: rid
+        });
+
+        if (recvHandler.value != null) {
+            await recvHandler.value(e, recent, senderName);
+        }
+    };
+    webSocket.value.onclose = (_) => {
+        if (reconnectCount > 10) {
+            reconnectCount = 0;
+            message.error('重连超过次数限制 不再重连');
+            return;
+        }
+        try {
+            reconnectCount++;
+            message.error(`WebSocket断开 正在重连 ${reconnectCount}/10`);
+            webSocket.value = new WebSocket(wsURL);
+            initWebSocket();
+        } catch {
+            message.error('重连失败？');
+        }
+    }
+    webSocket.value.onerror = (_) => {
+        message.error('unknown error');
+    }
+}
+onMounted(async () => {
+    if (webSocket.value == null) {
+        //重新加载socket的所有事件
+        try {
+            webSocket.value = new WebSocket(wsURL);
+            initWebSocket();
+        } catch (error) {
+            message.error('webSocket cannot connect to server');
+        }
+    }
+    debugger;
+    let res = await mypost(message, '/team/viewTeam', {});
+    if (!res) {
+        return;
+    }
+    const li: {
+        teamlist: {
+            tid: number;
+            teamname: string;
+            teaminform: string;
+            is_active: boolean;
+        }[]
+    } = res;
+    allTeams.value = [];
+    for (const ateam of li.teamlist) {
+        const teammembers: {
+            userName: string;
+            userID: number;
+        }[] = [];
+        let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
+        if (!mres) return;
+        for (const member of mres.userlist) {
+            teammembers.push({
+                userName: member.username,
+                userID: member.uid
+            });
+        }
+        allTeams.value.push({
+            teamName: ateam.teamname,
+            teamID: ateam.tid,
+            teamMembers: teammembers
+        });
+    }
+})
+
 </script>
 
 <style scoped>

@@ -1,4 +1,3 @@
-import { mypost } from '@/axios/axios';
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
 export type TeamModel = { teamName: string; teamID: number; teamMembers: Array<{ userName: string, userID: number }> };
@@ -29,8 +28,12 @@ export const useChatContainer = defineStore('chatroom', () => {
     const currentChatID = ref({
         id: -1, isuser: true
     });
+    const recvHandler = ref<((e: MessageEvent<any>, recent: RecentListModel, senderName: string) => Promise<void>) | null>(null);
+    const myname = ref('');
+    const msgElements = ref<{ rid: number, element: Element }[]>([]);
     const currentChatName = ref("User");
     const webSocket = ref<WebSocket | null>(null);
-    const onNewAT: Ref<((teamID: number, teamName: string) => void) | null> = ref(null);
-    return { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onNewAT }
+    //const onNewAT: Ref<((teamID: number, teamName: string, rid: number) => void) | null> = ref(null);
+    const onOpenMsgFromNotice: Ref<((teamID: number, rid: number) => void) | null> = ref(null);
+    return { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, msgElements, recvHandler, myname }
 })
