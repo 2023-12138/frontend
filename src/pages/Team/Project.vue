@@ -15,16 +15,15 @@
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="file" tab="文件">
-                        Wonderwall
-                        <button @click="$router.push('/team/1/project/2/doc/1')">
+                        <n-button @click="$router.push('/team/' + $route.params.tid + '/project/2/doc/1')">
                             文档
-                        </button>
+                        </n-button>
                     </n-tab-pane>
                     <n-tab-pane name="setting" tab="设置">
-                        七里香
+                        设置
                     </n-tab-pane>
                     <n-tab-pane name="rubbish bin" tab="回收站">
-                        七里香
+                        回收站
                     </n-tab-pane>
                 </n-tabs>
             </div>

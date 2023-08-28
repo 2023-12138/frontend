@@ -2,7 +2,7 @@
     <div class="member-container">
         <div class="member-top">
             <n-h2>成员管理</n-h2>
-            <div class="member-top-bottom">
+            <div v-if="showButton" class="member-top-bottom">
                 <span>当前团队共{{ data.length }}人&nbsp; ID: {{ $route.params.tid }}</span>
                 <n-button type="primary" @click="showModal = true">添加成员</n-button>
                 <AddMemberModal v-model:show="showModal"></AddMemberModal>
@@ -37,7 +37,7 @@ const teamstore = storeToRefs(teamStore);
 
 watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     axios.post('team/viewUser', {
-        tid: tid
+        tid: tid.value.replace('private', '')
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {                
@@ -65,8 +65,8 @@ watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
 
 const showModal = ref(false)
 const route = useRoute()
-const tid = route.params.tid
-
+const tid = ref(route.params.tid.toString())
+const showButton = ref<boolean>(!(tid.value.toString().startsWith('private')))
 // 用于筛选数据
 const data: Ref<MemberRowData[]> = ref([])
 const preData: Ref<MemberRowData[]> = ref([])
@@ -76,7 +76,7 @@ const preData: Ref<MemberRowData[]> = ref([])
 onMounted(() => {
     console.log("member table mounted");
     axios.post('team/viewUser', {
-        tid: tid
+        tid: tid.value.replace('private', '')
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {                
