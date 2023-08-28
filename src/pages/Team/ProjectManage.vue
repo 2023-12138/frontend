@@ -4,8 +4,8 @@
             <n-h2>项目内容</n-h2>
             <div class="project-top-bottom">
                 <span>共{{ data.length }}个项目&nbsp; ID: {{ $route.params.tid }}</span>
-                <n-button type="primary" @click="showModal=true">添加项目</n-button>
-                <CreateProjectModal v-model:show="showModal"/>
+                <n-button type="primary" @click="showModal = true">添加项目</n-button>
+                <CreateProjectModal v-model:show="showModal" />
             </div>
         </div>
         <div class="project-bottom">
@@ -18,17 +18,19 @@
 </template>
   
 <script setup lang="ts">
-import { ref, Ref } from 'vue'
+import { onMounted, ref, Ref, watch } from 'vue'
 import { useMessage } from 'naive-ui';
-
 import { ProjectRowData } from '@/interfaces/Project/ProjectTable.interface'
 import { columns, paginationRef, handlePageChange } from '@/components/Project/ProjectTable.vue'
 import CreateProjectModal from '@/components/Project/CreateProjectModal.vue';
-
+import { storeToRefs } from 'pinia';
+import { useProjectStore } from '@/store/projectStore'
+import axios from '@/axios/axios';
+import { useRoute } from 'vue-router';
 const showModal = ref(false)
 
-// 测试用
-
+const route = useRoute()
+const tid = ref(route.params.tid.toString())
 const data: Ref<ProjectRowData[]> = ref([])
 // 用于筛选数据
 
@@ -36,8 +38,56 @@ const data: Ref<ProjectRowData[]> = ref([])
 // const getDataIndex = (key: number): number => {
 //     return data.value.findIndex((item) => item.key === key)
 // }
-
+const projectStore = useProjectStore();
+const projectstore = storeToRefs(projectStore);
 const message = useMessage()
+
+watch(projectstore.projectChanged, () => {
+    axios.post('project/viewProject', {
+        tid: tid.value.replace('private', '')
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                data.value = res.data.data.projectlist?.map((item: any) => {
+                    return {
+                        key: tid.value.replace('private', '') + '.' + item.pid,   // pid
+                        projectname: item.project_name,
+                        description: item.project_inform,
+                        creator: item.uid,
+                        isEditing: false,
+                    }
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
+})
+onMounted(() => {
+    axios.post('project/viewProject', {
+        tid: tid.value.replace('private', '')
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                data.value = res.data.data.projectlist?.map((item: any) => {
+                    return {
+                        key: tid.value.replace('private', '') + '.' + item.pid,   // pid
+                        projectname: item.project_name,
+                        description: item.project_inform,
+                        creator: item.uid,
+                        isEditing: false,
+                    }
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
+})
 </script>
   
 <style scoped>
@@ -52,6 +102,7 @@ const message = useMessage()
     justify-content: space-between;
     margin: 10px;
 }
+
 .project-bottom {
 
     display: inline-flex;

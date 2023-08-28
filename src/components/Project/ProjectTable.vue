@@ -1,8 +1,8 @@
 <script lang="ts">
-import { NInput} from "naive-ui";
+import { NInput } from "naive-ui";
 import { Ref, computed, h, nextTick, ref } from "vue";
 import { ProjectRowData, Column } from '@/interfaces/Project/ProjectTable.interface'
-
+import DeleteConfirm from './DeleteConfirm.vue'
 const projectNameInputRef = ref()
 const projectDescriptionInputRef = ref()
 export const columns: Column[] = [
@@ -69,7 +69,18 @@ export const columns: Column[] = [
                 style: 'min-height: 22px',
             }, row.creator)
         }
-    }, 
+    },
+    {
+        title: '',
+        key: 'option',
+        render(row: ProjectRowData) {
+            return h(DeleteConfirm, {
+                buttonText: '删除',
+                id: row.key,
+                // TODO: tid
+            });
+        }
+    }
 ]
 
 // page

@@ -24,10 +24,12 @@ import {
 } from '@vicons/ionicons5'
 import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
+import { useProjectStore } from '@/store/projectStore'
 import { h, Component, watch, ref, Ref, onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
+import axios from '@/axios/axios';
 
 
 //侧边栏部分
@@ -39,7 +41,9 @@ const route = useRoute()
 
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
-const tid = route.params.tid
+const projectStore = useProjectStore();
+const projectstore = storeToRefs(projectStore);
+const tid = ref(route.params.tid.toString())
 const message = useMessage()
 
 onMounted(() => {
@@ -47,13 +51,13 @@ onMounted(() => {
         {
             label: '成员管理',
             key: 'member_management',
-            href: '/team/' + tid + '/member',
+            href: '/team/' + tid.value + '/member',
             icon: renderIcon(BookIcon),
         },
         {
             label: '团队设置',
             key: 'team_setting',
-            href: '/team/' + tid + '/setting',
+            href: '/team/' + tid.value + '/setting',
             icon: renderIcon(BookIcon),
         },
         {
@@ -63,25 +67,93 @@ onMounted(() => {
         {
             label: '项目空间',
             key: 'project_space',
-            href: '/team/' + tid + '/projectmanage',
+            href: '/team/' + tid.value + '/projectmanage',
             icon: renderIcon(FlashOutline),
         },
         {
             label: '项目1',
             key: 'project_1',
-            href: '/team/' + tid + '/project/2',
+            href: '/team/' + tid.value + '/project/2',
             icon: renderIcon(Document),
         },
     ]
+    axios.post('project/viewProject', {
+        tid: tid.value
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                res.data.data.projectlist?.map((item: any) => {
+                    menuOptions.value.push({
+                        label: item.project_name,
+                        key: item.pid,
+                        href: '/team/' + tid.value + '/project/' + item.pid,
+                        icon: renderIcon(Document),
+                    })
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        }
+    })
 })
 
+watch(projectstore.projectChanged, () => {
+    menuOptions.value = [
+        {
+            label: '成员管理',
+            key: 'member_management',
+            href: '/team/' + tid.value + '/member',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            label: '团队设置',
+            key: 'team_setting',
+            href: '/team/' + tid.value + '/setting',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            key: 'header-divider',
+            type: 'divider'
+        },
+        {
+            label: '项目空间',
+            key: 'project_space',
+            href: '/team/' + tid.value + '/projectmanage',
+            icon: renderIcon(FlashOutline),
+        },
+        {
+            label: '项目1',
+            key: 'project_1',
+            href: '/team/' + tid.value + '/project/2',
+            icon: renderIcon(Document),
+        },
+    ]
+    axios.post('project/viewProject', {
+        tid: tid.value
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                res.data.data.projectlist?.map((item: any) => {
+                    menuOptions.value.push({
+                        label: item.project_name,
+                        key: item.pid,
+                        href: '/team/' + tid.value + '/project/' + item.pid,
+                        icon: renderIcon(Document),
+                    })
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        }
+    })
+})
 
 watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     menuOptions.value.forEach((item: any) => {
         if (item.key !== 'header-divider') {
             let list = item.href.split('/')
-            console.log(list)
             list[2] = teamstore.curTeam.value
+            tid.value = teamstore.curTeam.value
             item.href = list.join('/')
         }
     })
@@ -89,34 +161,6 @@ watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
 })
 
 const menuOptions: Ref<any[]> = ref([
-    {
-        label: '成员管理',
-        key: 'member_management',
-        href: '/team/' + tid + '/member',
-        icon: renderIcon(BookIcon),
-    },
-    {
-        label: '团队设置',
-        key: 'team_setting',
-        href: '/team/' + tid + '/setting',
-        icon: renderIcon(BookIcon),
-    },
-    {
-        key: 'header-divider',
-        type: 'divider'
-    },
-    {
-        label: '项目空间',
-        key: 'project_space',
-        href: '/team/' + tid + '/projectmanage',
-        icon: renderIcon(FlashOutline),
-    },
-    {
-        label: '项目1',
-        key: 'project_1',
-        href: '/team/' + tid + '/project/2',
-        icon: renderIcon(Document),
-    },
 ])
 
 function renderMenuLabel(option: MenuOption) {

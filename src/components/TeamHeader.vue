@@ -99,7 +99,7 @@ onMounted(() => {
                 const privateTid = res.data.data.privateTid
                 avatarOptions.value[3].children![0] = {
                     label: '个人空间',
-                    key: 'team.' + privateTid
+                    key: 'team.private' + privateTid
                 }
                 const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
                 teamlist.forEach((item: any, index: number) => {
