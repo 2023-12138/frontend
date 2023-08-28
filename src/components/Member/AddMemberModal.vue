@@ -165,7 +165,6 @@ export default defineComponent({
         });
 
         const customFilter = (query: string, option: { label: string, value: string }): boolean => {
-            console.log(query)
             inputValue.value = query
             return option?.label.indexOf(query) !== -1;
         };

@@ -353,7 +353,8 @@ const login = (e: MouseEvent) => {
     e.preventDefault()
     loginFormRef.value?.validate((errors) => {
         if (!errors) {
-            let privateTid
+            let privateTid: string
+            let flag: boolean = false
             axios.post("/user/login", {
                 "username": loginModel.value.name,
                 "password": loginModel.value.password
@@ -363,10 +364,11 @@ const login = (e: MouseEvent) => {
                     if (res.data.code === 200) {
                         message.success('登录成功')
                         localStorage.setItem('token', res.data.data.token)
-                        localStorage.setItem('uid',res.data.data.uid)
+                        localStorage.setItem('uid', res.data.data.uid)
                         userstore.curUser.value = res.data.data.uid.toString()
                         teamstore.curTeam.value = res.data.data.privateTid.toString()
                         privateTid = res.data.data.privateTid.toString()
+                        flag = true
                     } else {
                         message.warning(res.data.message)
                     }
@@ -374,7 +376,13 @@ const login = (e: MouseEvent) => {
                     message.error("网络错误")
                 }
             }).finally(() => {
-                router.push('/team/private' + privateTid +'/projectmanage')
+                // router.push('/team/private' + privateTid + '/projectmanage')
+                if (flag) {
+                    // setTimeout(() => {
+                    //     router.push('/team/private' + privateTid + '/projectmanage')
+                    // }, 1000)
+                    router.push('/team/private' + privateTid + '/projectmanage')
+                }
             }
             )
         } else {

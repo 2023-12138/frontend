@@ -161,6 +161,7 @@ function avatarHandleSelect(key: string) {
         createTeamModal.value = true
     } else if (key === 'logout') {
         localStorage.removeItem('token')
+        localStorage.removeItem('uid')
         router.push("/")
     } else {
         const tid = key!.split('.')[1]

@@ -6,7 +6,7 @@ let header = localStorage.getItem('token')
 let request = axios.create({
     baseURL: 'http://127.0.0.1:8000/',
     headers: {
-        'Authorization': header
+        'Authorization': header === undefined ? localStorage.getItem('token') : header
     },
     timeout: 5000
 })

@@ -77,14 +77,16 @@ const preData: Ref<MemberRowData[]> = ref([])
 // 前后端逻辑
 onMounted(() => {
     console.log("member table mounted");
+    const routePid = route.params.tid.toString()
+    teamstore.curTeam.value = routePid
     axios.post('team/viewUser', {
-        tid: tid.value.replace('private', '')
+        tid: teamstore.curTeam.value.toString()
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {                
                 data.value = res.data.data.userlist.map((item : any) => {
                     return {
-                        key: tid + '.' + item.uid ,    // tid + uid
+                        key: teamstore.curTeam.value.toString() + '.' + item.uid ,    // tid + uid
                         name: item.name,
                         phone: item.phone,
                         email: item.email,
@@ -199,7 +201,6 @@ const columns: Column[] = [
                 options: options,
                 value: row.rank,
                 onUpdateValue: (v: string) => {
-                    // TODO: row.rank = v
                     if (v === '管理员') {
                         axios.post("team/addAdmin", {
                             tid: row.key.split('.')[0],
