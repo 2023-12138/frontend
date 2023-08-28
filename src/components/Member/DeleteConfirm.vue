@@ -33,7 +33,7 @@ export default defineComponent({
             const tid = props.id?.split('.')[0]
             const uid = props.id?.split('.')[1]
             axios.post('team/deleteUser', {
-                tid : tid?.replace('private', ''),
+                tid : tid,
                 uid : uid,
             }).then(res => {
                 if (res.status === 200) {
