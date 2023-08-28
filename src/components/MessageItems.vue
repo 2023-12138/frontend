@@ -15,7 +15,7 @@
         <div class="dividerVertical"></div>
         <div class="messageContent">
             <div class="messageTitle">
-                在群聊{{ message.tid }}中提到了你
+                在{{ message.type == 'chat' ? '群聊' : '文档' }}{{ message.tid }}中提到了你
             </div>
             <div class="messageText" v-show="textShow[index]">
                 具体消息
