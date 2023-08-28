@@ -27,14 +27,14 @@
 
 <script setup lang='ts'>
 import { useRouter } from 'vue-router';
-import Logo from '@/components/Logo.vue'
-
+import Logo from '@/components/Logo.vue';
 const router = useRouter()
 defineProps<{ header_title: string }>()
 
 const routeGo = (path: string) => {
     router.push(path)
 }
+
 
 </script>
 
