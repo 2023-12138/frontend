@@ -15,7 +15,7 @@
                 </div>
                 <div class="headerRight">
                     <n-button>导出</n-button>
-                    <n-button >保存</n-button>
+                    <n-button @click="save">保存</n-button>
                 </div>
             </div>
         </div>
@@ -47,13 +47,20 @@ import { useRoute } from "vue-router";
 
 const message = useMessage();
 const docEditStore = usedocEditStore();
+const route = useRoute();
 
 let editor:Editor;
 
-onMounted(() => {
+onMounted(async () => {
+    const res = await mypost(message,'/doc/getdoc',{docid:route.params.did})
+    if(!res){
+        return;
+    }
+    
     editor = new Editor(document.getElementById('main') as HTMLElement);
     editor = withUndoRedo(editor); // UndoRedo Plugin
-    editor.insertTextAtCursor('**This is a bold text**\n> tips：You can switch source mode with `cmd+/`');
+    //'**This is a bold text**\n> tips：You can switch source mode with `cmd+/`\n'
+    editor.insertTextAtCursor(res.content);
     console.log(editor);
     console.log(editor.getContent());
     
@@ -71,7 +78,7 @@ const ATOptions = ref([
         value: 'allUser'
     }
 ])
-const route = useRoute();
+
 docEditStore.onAT = async () => {
     //申请成员列表
     const res = await mypost(message,'/team/viewUser',{tid:route.params.tid})
@@ -95,13 +102,27 @@ docEditStore.onAT = async () => {
     }
 }
 
-watch(ATValue,(newValue) => {
+watch(ATValue,async (newValue) => {
     if(newValue!=''){
+        const res = await mypost(message,'/doc/docaite',{"aite": newValue.split('&')[1],"docid": route.params.did})
+        if(!res){
+            return;
+        }
         editor.insertTextAtCursor(newValue.split('&')[0]);
         ATshow.value = false; 
     }
 })
 
+
+//保存事件
+const save = async () => {
+    const content = editor.getContent();
+    const res = await mypost(message,'/doc/savedoc',{"docid": route.params.did,"text": content})
+    if(!res){
+        return;
+    }
+    message.success('保存成功！')
+}
 </script>
 
 <style scoped>
