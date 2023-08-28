@@ -104,7 +104,7 @@ docEditStore.onAT = async () => {
 
 watch(ATValue,async (newValue) => {
     if(newValue!=''){
-        const res = await mypost(message,'/doc/docaite',{"aite": newValue.split('&')[1],"docid": route.params.did})
+        const res = await mypost(message,'/doc/docaite',{"aite": parseInt(newValue.split('&')[1]),"docid": route.params.did})
         if(!res){
             return;
         }
