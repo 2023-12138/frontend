@@ -109,7 +109,6 @@ const TabProp = (tab:string) => ({
         if(!res){
             return;
         }
-        console.log(res);
         let messageList = res.notice_list;
         if(tab == 'chat'){
             chatMessages.value = messageList.map((x:any) => x);

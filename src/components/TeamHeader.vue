@@ -350,7 +350,6 @@ onMounted(async () => {
             message.error('webSocket cannot connect to server');
         }
     }
-    debugger;
     let res = await mypost(message, '/team/viewTeam', {});
     if (!res) {
         return;
