@@ -401,7 +401,7 @@ onMounted(async () => {
 .topNavLeft span {
     margin-left: 15px;
     letter-spacing: 3px;
-    font-family: '宋体', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family:  'Franklin Gothic Medium', 'Arial Narrow', '宋体',Arial, sans-serif;
     font-weight: bolder;
     font-size: 20px;
 }
