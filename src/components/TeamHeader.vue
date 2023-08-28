@@ -57,7 +57,7 @@ import { storeToRefs } from 'pinia';
 import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
-const wsURL = `ws://localhost:8000/ws/chat/${myuid.value}/`;
+const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
 const { webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container); import axios from '@/axios/axios';
 
 //顶部头像下拉框功能
@@ -401,7 +401,7 @@ onMounted(async () => {
 .topNavLeft span {
     margin-left: 15px;
     letter-spacing: 3px;
-    font-family:  'Franklin Gothic Medium', 'Arial Narrow', '宋体',Arial, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', '宋体', Arial, sans-serif;
     font-weight: bolder;
     font-size: 20px;
 }

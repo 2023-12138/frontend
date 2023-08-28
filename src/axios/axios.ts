@@ -4,7 +4,7 @@ import { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
 let header = localStorage.getItem('token')
 
 let request = axios.create({
-    baseURL: 'http://127.0.0.1:8000/',
+    baseURL: 'http://101.43.202.84:7002/',
     headers: {
         'Authorization': header === undefined ? localStorage.getItem('token') : header
     },
@@ -18,7 +18,7 @@ export async function mypost(message: MessageApiInjection, url: string, props: a
             return res.data.data;
         } else {
             let code = res.data.code
-            if(code === 400){
+            if (code === 400) {
                 message.warning(res.data.message)
             }
             return false;
