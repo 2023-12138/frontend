@@ -25,6 +25,7 @@ import { columns, paginationRef, handlePageChange } from '@/components/Project/P
 import CreateProjectModal from '@/components/Project/CreateProjectModal.vue';
 import { storeToRefs } from 'pinia';
 import { useProjectStore } from '@/store/projectStore'
+import { useTeamStore } from '@/store/teamStore'
 import axios from '@/axios/axios';
 import { useRoute } from 'vue-router';
 const showModal = ref(false)
@@ -40,6 +41,8 @@ const data: Ref<ProjectRowData[]> = ref([])
 // }
 const projectStore = useProjectStore();
 const projectstore = storeToRefs(projectStore);
+const teamStore = useTeamStore();
+const teamstore = storeToRefs(teamStore);
 const message = useMessage()
 
 watch(projectstore.projectChanged, () => {
@@ -65,6 +68,32 @@ watch(projectstore.projectChanged, () => {
         }
     })
 })
+
+watch(teamstore.teamChanged, () => {
+    axios.post('project/viewProject', {
+        tid: teamstore.curTeam.value.replace('private', '')
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                data.value = res.data.data.projectlist?.map((item: any) => {
+                    return {
+                        key: teamstore.curTeam.value.replace('private', '') + '.' + item.pid,   // pid
+                        projectname: item.project_name,
+                        description: item.project_inform,
+                        creator: item.uid,
+                        isEditing: false,
+                    }
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
+})
+
+
 onMounted(() => {
     axios.post('project/viewProject', {
         tid: tid.value.replace('private', '')
