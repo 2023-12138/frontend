@@ -102,12 +102,14 @@ onMounted(() => {
                     key: 'team.private' + privateTid
                 }
                 const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
-                teamlist.forEach((item: any, index: number) => {
-                    avatarOptions.value[3].children![index + 2] = {
-                        label: item.teamname,
-                        key: 'team.' + item.tid
-                    }
-                })
+                if (teamlist) {
+                    teamlist.forEach((item: any, index: number) => {
+                        avatarOptions.value[3].children![index + 2] = {
+                            label: item.teamname,
+                            key: 'team.' + item.tid
+                        }
+                    })
+                }
                 avatarOptions.value[3].children!.push({
                     label: '创建团队',
                     key: 'create-team'
@@ -139,22 +141,6 @@ const avatarOptions = ref([
         label: '切换团队',
         key: 'switch-team',
         children: [
-            {
-                label: '个人空间',
-                key: 'private'
-            },
-            {
-                key: 'child-divider',
-                type: 'divider'
-            },
-            {
-                label: '团队1',
-                key: 'team1'
-            },
-            {
-                label: '创建团队',
-                key: 'create-team'
-            },
         ]
     },
     {
@@ -404,7 +390,7 @@ onMounted(async () => {
 .topNavLeft {
     /* background-color: red; */
     width: 15%;
-    min-width:200px;
+    min-width: 200px;
     height: 100px;
     display: flex;
     justify-content: center;

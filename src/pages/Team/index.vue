@@ -72,7 +72,7 @@ onMounted(() => {
         },
     ]
     axios.post('project/viewProject', {
-        tid: tid.value
+        tid: tid.value.replace('private', '')
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {
