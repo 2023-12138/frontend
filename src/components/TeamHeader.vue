@@ -45,7 +45,6 @@ import { ref, h, onMounted } from 'vue';
 
 import { RecentListModel, useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
-import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
 import { MessageCircle } from '@vicons/tabler'
 
