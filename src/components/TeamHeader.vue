@@ -404,6 +404,7 @@ onMounted(async () => {
 .topNavLeft {
     /* background-color: red; */
     width: 15%;
+    min-width:200px;
     height: 100px;
     display: flex;
     justify-content: center;
