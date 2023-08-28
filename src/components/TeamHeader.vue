@@ -97,23 +97,23 @@ onMounted(() => {
         if (res.status === 200) {
             if (res.data.code === 200) {
                 const privateTid = res.data.data.privateTid
-                avatarOptions.value[3].children![0] = {
+                avatarOptions.value[3].children![0] = ({
                     label: '个人空间',
                     key: 'team.private' + privateTid
-                }
+                } as never)
                 const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
                 if (teamlist) {
                     teamlist.forEach((item: any, index: number) => {
-                        avatarOptions.value[3].children![index + 2] = {
+                        avatarOptions.value[3].children![index + 2] = ({
                             label: item.teamname,
                             key: 'team.' + item.tid
-                        }
+                        } as never)
                     })
                 }
-                avatarOptions.value[3].children!.push({
+                avatarOptions.value[3].children!.push(({
                     label: '创建团队',
                     key: 'create-team'
-                })
+                }) as never)
             } else {
                 message.warning(res.data.message)
             }
