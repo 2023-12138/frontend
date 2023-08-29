@@ -1,93 +1,109 @@
 <template>
     <div class="parentContainer">
         <div class="leftChatRoomMenu">
-            <n-tabs style="width: 180px;" :value="selectedTab" placement="bottom" type="bar" animated
-                pane-wrapper-class="paneWrapper" pane-class="pane" justify-content="space-around">
+            <n-tabs 
+                :value="selectedTab" 
+                placement="bottom" 
+                type="bar" 
+                animated 
+                size="large"
+                pane-wrapper-style="width:100%;height:100%;" 
+                pane-class="pane" 
+                justify-content="space-evenly" 
+                tab-style="height:50px;width:132px;justify-content:center;"
+            >
                 <n-tab-pane name="currentmessages" tab="消息">
-                    <n-list hoverable clickable>
-                        <n-list-item style="padding: 15px;width: 180px;" horizontal v-for="item in recentChatList"
-                            @click="startChat(item.id, item.isuser, item.userOrTeamName)">
-                            <div style="display: flex;justify-content: space-around;">
-                                <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                <n-ellipsis style="max-width: 120px; width: 120px;">{{ item.userOrTeamName }}</n-ellipsis>
-                            </div>
-                        </n-list-item>
-                    </n-list>
+                    <n-layout :native-scrollbar="false" style="height: 100%;">
+                        <n-list hoverable clickable>
+                            <n-list-item class="chatListItemContainer" v-for="item in recentChatList"
+                                @click="startChat(item.id, item.isuser, item.userOrTeamName)">
+                                <div class="chatListItem">
+                                    <n-avatar round :size="40" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <div class="chatListItemRight">
+                                        <div class="chatName">{{ item.userOrTeamName }}</div>
+                                        <div class="chatText">最近消息</div>
+                                    </div>
+                                </div>
+                            </n-list-item>
+                        </n-list>
+                    </n-layout>
                 </n-tab-pane>
                 <n-tab-pane name="teams" tab="团队">
-                    <n-list hoverable clickable>
-                        <n-list-item v-for="team in allTeams" @click="onTeamClicked(team.teamID, team.teamName);">
-                            <div class="teamNameContainer">
-                                <n-avatar :size="16" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                <n-ellipsis style="max-width: 80px;width: 100%;">{{ team.teamName }}</n-ellipsis>
-                                <n-dropdown trigger="hover" :options="team2Options(team)">
-                                    <n-popover trigger="hover">
-                                        <template #trigger>
-                                            <n-button strong secondary circle type="primary">
-                                                <template #icon>
-                                                    <n-icon>
-                                                        <ImageOutline />
-                                                    </n-icon>
+                    <n-layout :native-scrollbar="false" style="height: 100%;">
+                        <n-list hoverable clickable>
+                            <n-list-item class="chatListItemContainer" v-for="team in allTeams" @click="onTeamClicked(team.teamID, team.teamName);">
+                                <div class="chatListItem">
+                                    <n-avatar round :size="40" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <div class="chatListItemRight chatTeam">
+                                        <div class="chatName">{{ team.teamName }}</div>
+                                        <n-dropdown trigger="hover" :options="team2Options(team)">
+                                            <n-popover trigger="hover">
+                                                <template #trigger>
+                                                    <n-button strong secondary circle type="primary">
+                                                        <template #icon>
+                                                            <n-icon>
+                                                                <ImageOutline />
+                                                            </n-icon>
+                                                        </template>
+                                                    </n-button>
                                                 </template>
-                                            </n-button>
-                                        </template>
-
-                                        <span>选择团队成员私聊</span>
-                                    </n-popover>
-                                </n-dropdown>
-
-                            </div>
-
-                            <!-- </n-space> -->
-                        </n-list-item>
-                    </n-list>
+                                                <span>选择团队成员私聊</span>
+                                            </n-popover>
+                                        </n-dropdown>
+                                    </div>
+                                </div>
+                            </n-list-item>
+                        </n-list>
+                    </n-layout>
                 </n-tab-pane>
             </n-tabs>
         </div>
-        <n-h3 style="width: 100%; background-color: aliceblue; text-align: center;"
-            v-show="currentChatID.id == -1">选择一个团队或联系人开始聊天</n-h3>
-        <div class="rightChatRoomContainer" v-show="currentChatID.id != -1">
-            <div class="targetUserContainer">
-                <n-h3 class="targetUser">{{ currentChatName }}</n-h3>
-            </div>
-            <div class="rightChatContentContainer">
-                <n-layout class="chatContentLayout">
-                    <n-layout-content class="chatContent" content-style="padding: 24px;">
-                        <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
-                            :rid="msg.rid" :io="io" ref="SetItemRef" />
-                        <!-- <n-card size="medium" style="margin-top: 10px;" v-for="msg in msgList">
-                            <n-space vertical>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <n-h6>{{ msg.userName }}</n-h6>
-                                    <span>{{ msg.time }}</span>
-                                </div>
-                                <span>{{ msg.msg }}</span>
-                            </n-space>
-                        </n-card> -->
-                    </n-layout-content>
-                    <n-layout-footer class="chatToolFooter">
-                        <div class="chatToolContainer">
-                            <n-button strong secondary circle type="primary" class="msg_tool_button">
+        <div class="rightChatRoomContainer">
+            <n-h3 class="empty" v-show="currentChatID.id == -1">选择一个团队或联系人开始聊天</n-h3>
+            <div class="rightChatRoom" v-show="currentChatID.id != -1">
+                <div class="targetUserContainer">
+                    <span class="targetUser">{{ currentChatName }}</span>
+                </div>
+                <div class="rightChatContentContainer">
+                    <div class="chatContent" content-style="padding: 24px;">
+                        <n-layout style="height: 100%;" :native-scrollbar="false">
+                            <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
+                                :rid="msg.rid" :io="io" ref="SetItemRef" />
+                        </n-layout>
+                    </div>
+                    <div class="chatToolFooter">
+                        <div class="chatTools">
+                            <n-button strong quaternary circle type="primary" class="msg_tool_button">
                                 <template #icon>
                                     <n-icon>
                                         <ImageOutline />
                                     </n-icon>
                                 </template>
                             </n-button>
-                            <n-button strong secondary circle type="primary" class="msg_tool_button">
+                            <n-button strong quaternary circle type="primary" class="msg_tool_button">
                                 <template #icon>
                                     <n-icon>
                                         <ImageOutline />
                                     </n-icon>
                                 </template>
                             </n-button>
-                            <n-form @submit="onMsgboxSubmitted" class="msgBoxForm">
-                                <n-mention v-model:value="inputMessage" placeholder="Message" :options="options"
-                                    class="msgBox" />
-                            </n-form>
                         </div>
-                    </n-layout-footer>
-                </n-layout>
+                        <n-form @submit="onMsgboxSubmitted" class="msgBoxForm">
+                            <n-mention 
+                                type="textarea" 
+                                v-model:value="inputMessage" 
+                                placeholder="Message" 
+                                :options="options" 
+                                class="msgBox"
+                                :autosize="{minRows: 3}"
+                            />
+                            <div class="submitButton">
+                                <n-button strong secondary type="primary" @click="onMsgboxSubmitted">发送</n-button>
+                            </div>
+                        </n-form>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -359,32 +375,172 @@ onMounted(async () => {
 });
 </script>
 <style scoped>
-.msg_tool_button {
-    height: 40px;
-    width: 40px;
-    margin-top: 13px;
-    margin-left: 10px;
-}
-
 .parentContainer {
     display: flex;
-    background-color: antiquewhite;
     height: 100%;
+    width: 100%;
+
+    .leftChatRoomMenu {
+        width: 25%;
+        height: 100%;
+        display: flex;
+
+        .n-tabs {
+            width: 100%;
+            height: 100%;
+            justify-content: space-between !important;
+        }
+
+        .chatListItemContainer {
+            min-height: 65px;
+            height: 65px;
+            width: 100%;
+
+            .chatListItem {
+                height: 65px;
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+
+                .chatListItemRight {
+                    width: 70%;
+                    height: 80%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
+
+                    .chatName {
+                        min-width: 50px;
+                        max-width: 125px;
+                        font-size: 16px;
+                        text-overflow: ellipsis;
+                        white-space:nowrap;
+                        overflow:hidden;
+                    }
+
+                    .chatText {
+                        font-size: 13px;
+                        color: #777;
+                        text-overflow: ellipsis;
+                        white-space:nowrap;
+                        overflow:hidden;
+                    }
+                }
+
+                .chatTeam {
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+            }
+        }
+    }
+
+    .rightChatRoomContainer {
+        width: 75%;
+        height: 100%;
+
+        .empty {
+            width: 100%; 
+            height: 100%;
+            background-color: aliceblue; 
+            text-align: center;
+        }
+
+        .rightChatRoom {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-flow: column;
+
+            .targetUserContainer {
+                height: 65px;
+                background-color: #ccc;
+                display: flex;
+                align-items: center;
+                padding-left: 4%;
+
+                .targetUser {
+                    font-size: 18px;
+                }
+            }
+
+            .rightChatContentContainer {
+                height: calc(100% - 65px);
+                width: 100%;
+                /* display: flex;
+                flex-direction: column; */
+
+                .chatContent {
+                    height: 70%;
+                }
+
+                .chatToolFooter {
+                    min-height: 70px;
+                    height: 30%;
+                    display: flex;
+                    flex-direction: column;
+
+                    .chatTools {
+                        height: 25%;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        .msg_tool_button {
+                            max-height: 30px;
+                            max-width: 30px;
+                            margin-left: 5px;
+
+                            &:first-child {
+                                margin-left: 2.7%;
+                            }
+                        }
+                    }
+
+                    .msgBoxForm {
+                        width: 100%;
+                        height: 75%;
+                        .msgBox {
+                            height: calc(100% - 30px);
+                            font-size: 20px;
+                            margin-left: 20px;
+                            text-align: left;
+                            width: calc(100% - 30px);
+
+                            
+                        }
+                        .submitButton {
+                            height: 30px;
+                            width: 100%;
+                            display: flex;
+                            justify-content: flex-end;
+
+                            .n-button {
+                                width: 100px;
+                                height: 100%;
+                                margin-right: 1.3%;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-/* .leftContainer {
-    height: 100%;
-    width: 25%;
-    background-color: #ccc;
-} */
+.n-input-wrapper {
+    height: 500px !important;
+    resize: none !important; 
+}
 
-.leftChatRoomMenu {
-    width: 180px;
-    height: 100%;
-    background-color: #ccc;
-    display: flex;
-    justify-content: flex-end;
+textarea {
+    resize: none !important; 
+}
 
+.pane {
+    width: 100%;
+    height: 100% !important;
 }
 
 .recentMsgContainer {
@@ -393,15 +549,6 @@ onMounted(async () => {
     overflow-y: hidden;
 }
 
-.n-tabs {
-    height: 100% !important;
-    justify-content: space-between !important;
-}
-
-.pane {
-    height: 100%;
-    overflow-y: scroll;
-}
 
 
 .n-tabs.n-tabs--bottom .n-tab-pane {
@@ -413,61 +560,12 @@ onMounted(async () => {
     padding-left: 10px !important;
 }
 
-.rightChatRoomContainer {
-    width: 80%;
-    height: 100%;
-    background-color: blue;
-    display: flex;
-    flex-flow: column;
-}
-
-.targetUserContainer {
-    height: 50px;
-    background-color: #ccc;
-    display: flex;
-}
-
-.targetUser {
-    width: fit-content;
-    margin: 10px;
-}
-
-.rightChatContentContainer {
-    background-color: blue;
-    height: calc(100% - 50px);
-    width: 100%;
-}
-
-.chatContentLayout {
-    background-color: beige;
-    height: 100%;
-}
-
-.chatContent {
-    height: calc(100% - 70px);
-}
-
-.chatToolFooter {
-    height: 70px;
-}
-
 .chatToolContainer {
     display: flex;
     line-height: 70px;
     background-color: #ccc;
     width: 100%;
     height: 70px;
-}
-
-.msgBoxForm {
-    width: 100%;
-}
-
-.msgBox {
-    font-size: 20px;
-    margin-left: 20px;
-    text-align: left;
-    width: calc(100% - 30px)
 }
 
 .teamNameContainer {

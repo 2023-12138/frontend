@@ -9,9 +9,9 @@
             <div class="topNavRightIcon" @click="chatShowModal = true">
                 <n-icon size="25" :component="MessageCircle" />
             </div>
-            <n-modal v-model:show="chatShowModal" class="custom-card" preset="card" style="width: 60vw;height: 85vh;"
+            <n-modal v-model:show="chatShowModal" class="custom-card" preset="card" style="width: 70vw;height: 95vh;"
                 title="聊天室" size="huge" :bordered="false" header-style="padding:20px"
-                content-style="height:70%;padding : 10px">
+                content-style="height:70%;padding : 0 10px 10px;">
                 <ChatForm />
             </n-modal>
 
