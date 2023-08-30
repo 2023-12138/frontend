@@ -5,11 +5,10 @@
                 上传
             </n-button>
         </n-upload-trigger>
-        <n-h3>fuck</n-h3>
     </n-upload>
-    <iframe name="embed_readwrite"
+    <!-- <iframe name="embed_readwrite"
         src="/pad/p/123?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" width="100%"
-        height="600" frameborder="0"></iframe>
+        height="600" frameborder="0"></iframe> -->
 </template>
 
 <script setup lang='ts'>
@@ -28,7 +27,7 @@ const fileList = ref([]);
 
 const customRequest = ({
     file
-}: UploadCustomRequestOptions) => {
+}: UploadCustomRequestOptions) => { 
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);
