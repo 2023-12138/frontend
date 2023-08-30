@@ -15,12 +15,35 @@
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="file" tab="文件">
-                        <n-button @click="$router.push('/team/' + $route.params.tid + '/project/'+ $route.params.pid + '/doc/1')">
-                            文档
-                        </n-button>
-                        <n-button @click="$router.push('/team/' + $route.params.tid + '/project/'+ $route.params.pid + '/design/1')">
-                            设计
-                        </n-button>
+                        <div class="project-card-pane">
+                            <div class="project-card"
+                            @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/doc/1')">
+                                <div class="project-card-top">
+                                    <img src="@/assets/file.svg"  />
+                                </div>
+                                <div class="project-card-bottom">
+                                    文档名字
+                                </div>
+                            </div>
+                            <div class="project-card"
+                            @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/1')">
+                                <div class="project-card-top">
+                                    <img src="@/assets/design.svg"  />
+                                </div>
+                                <div class="project-card-bottom">
+                                    设计名字
+                                </div>
+                            </div>
+                            <div class="project-card"
+                            >
+                                <div class="project-card-top">
+                                    <img src="@/assets/profile.svg"  />
+                                </div>
+                                <div class="project-card-bottom">
+                                    文件夹
+                                </div>
+                            </div>
+                        </div>
                     </n-tab-pane>
                     <n-tab-pane name="setting" tab="设置">
                         设置
@@ -59,5 +82,35 @@
 
 .content {
     width: 100%;
+}
+.project-card-pane {
+    display: flex;
+}
+.project-card {
+    display: flex;
+    align-items: center; 
+    flex-direction: column;
+    width: 150px;
+    margin: 10px;
+}
+.project-card:hover {
+    display: flex;
+    align-items: center; 
+    flex-direction: column;
+    width: 150px;
+    margin: 10px;
+    background-color: #D3D3D3;
+    border-radius: 5%;
+}
+.project-card-top {
+    display: flex;
+    > img {
+        width: 100px;
+    }
+}
+
+.project-card-bottom {
+    display: flex;
+    flex-direction: column;
 }
 </style>
