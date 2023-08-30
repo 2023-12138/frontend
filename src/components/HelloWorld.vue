@@ -1,4 +1,9 @@
 <template>
+    <div style="width: 400px; height: 400px;">
+        <vueCropper ref="cropper" :img="imgbase" centerBox="true" autoCrop="true" outputSize="1" outputType="png"
+            fixedNumber="1" fixedBox="true" autoCropWidth="200" autoCropHeight="200" limitMinSize="50">
+        </vueCropper>
+    </div>
     <n-upload abstract :custom-request="customRequest" :default-file-list="fileList">
         <n-upload-trigger #="{ handleClick }" abstract>
             <n-button @click="handleClick">
@@ -7,45 +12,32 @@
         </n-upload-trigger>
         <n-h3>fuck</n-h3>
     </n-upload>
-    <iframe name="embed_readwrite" src="/pad/p/g.vKCONtxq6JFaMP1a$abc123" width="100%" height="600"
-        frameborder="0"></iframe>
+    <img :src="imgbase" width="200" height="200">
 </template>
 
 <script setup lang='ts'>
 import { UploadCustomRequestOptions } from 'naive-ui';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import axios from 'axios';
 import { useMessengerStore } from '@/store/messengerStore';
+import 'vue-cropper/dist/index.css';
+import { VueCropper } from 'vue-cropper';
 
-const lists = reactive([
-    { id: 1, name: '张三' },
-    { id: 2, name: '李四' },
-    { id: 3, name: '王五' },
-])
-
+const imgbase = ref('');
 const fileList = ref([]);
-
 const customRequest = ({
     file
 }: UploadCustomRequestOptions) => {
-    const formData = new FormData();
-    formData.append('key', file.name);
-    formData.append('file', file.file as File);
-    axios.post('http://101.43.202.84:7002/chat/savefile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-    }).then((res) => {
-        console.log(res);
-    }).catch((err) => console.log(err));
+    const reader = new FileReader()
+    reader.readAsDataURL(file.file as File);
+    reader.onload = function () {
+        imgbase.value = reader.result as string;
+    }
 }
-const messagerStore = useMessengerStore();
+const cropper = ref();
 onMounted(() => {
-    messagerStore.registerMessage('callMe', (str: string) => {
-        return "called " + str;
-    })
-    let ret: string = messagerStore.callMessage('callMe', 'done');
-    console.log(ret);
-})
 
+})
 </script>
 
 <style scoped></style>
