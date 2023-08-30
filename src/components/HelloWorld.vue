@@ -35,7 +35,7 @@ const customRequest = ({
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);
-    axios.post('http://127.0.0.1:8000/chat/savefile', formData, {
+    axios.post('http://101.43.202.84:7002/chat/savefile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     }).then((res) => {
         console.log(res);

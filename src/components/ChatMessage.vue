@@ -118,8 +118,8 @@ const showImgModal = ref(false);
 
         .messageFile {
             width: 220px;
-            height: 100px;
-            background-color: red;
+            height: 80px;
+            background-color: #ccc;
         }
     }
 }
