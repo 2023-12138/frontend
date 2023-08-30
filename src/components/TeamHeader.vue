@@ -58,8 +58,10 @@ import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
-const { chatShowModal, webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container); 
+const { webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container);
 import axios from '@/axios/axios';
+import { useMessengerStore } from '@/store/messengerStore';
+const messengerStore = useMessengerStore();
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -265,6 +267,7 @@ function initWebSocket() {
         let teamId: number | string = data.teamId;
         let currentTime: string = data.time;
         let rid: number = parseInt(data.rid);
+        let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
             newDocMessage();
         }
@@ -275,16 +278,22 @@ function initWebSocket() {
         }
         //判断是否在recent中
         let isuser = (teamId == "");
-        let senderName = 'O_O :(';
         let recent: RecentListModel | undefined;
         if (isuser) {//私聊信息
             //首先判断是否是自己发出去的
             if (senderId == myuid.value) {//自己发送的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
-                senderName = myname.value;
+                if (recent == undefined) {
+                    messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: myname.value });
+                }
+                recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
+
             } else {//别人发的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
-                senderName = recent?.userOrTeamName || "V_V :)";
+                if (recent == undefined) {
+                    messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: senderName });
+                }
+                recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
             }
         }
         //群聊信息
@@ -294,9 +303,15 @@ function initWebSocket() {
             const name = team?.teamMembers.find(ele => ele.userID == senderId)?.userName;
             console.log(name);
             senderName = allTeams.value.find(ele => ele.teamID == teamId)?.teamMembers.find(ele1 => ele1.userID == senderId)?.userName || 'NaN :(';
+            if (recent == undefined) {
+                messengerStore.callMessage('chatform_startchat', { id: senderId, isuser: isuser, targerUName: team?.teamName });
+                recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
+            }
         }
-        if (recent == undefined) return;
-        recent.Messages.push({
+        //在recent中未发现，首先添加到消息中
+
+
+        recent?.Messages.push({
             userName: senderName,
             msg: message,
             userID: senderId,
@@ -306,11 +321,11 @@ function initWebSocket() {
         });
 
         if (recvHandler.value != null) {
-            await recvHandler.value(e, recent, senderName);
+            await recvHandler.value(e, recent as RecentListModel, senderName);
         }
     };
     webSocket.value.onclose = (_) => {
-        if (reconnectCount > 10) {
+        if (reconnectCount > 9) {
             reconnectCount = 0;
             message.error('重连超过次数限制 不再重连');
             return;

@@ -115,9 +115,12 @@ import { ref, onMounted, nextTick, onBeforeUpdate } from 'vue'
 import { ImageOutline } from '@vicons/ionicons5'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
-import { NMention, NTabs, useMessage } from 'naive-ui';
+import { NMention, NTabs, UploadCustomRequestOptions, useMessage } from 'naive-ui';
 import { mypost } from '@/axios/axios';
 import ChatMessage from '@/components/ChatMessage.vue';
+import axios from 'axios';
+import { useMessengerStore } from '@/store/messengerStore';
+const messengerStore = useMessengerStore();
 const container = useChatContainer();
 const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, recvHandler, myname } = storeToRefs(container);
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
@@ -278,9 +281,10 @@ function startChat(id: number, isuser: boolean, targetUName: string) {
     }
 
     changeChatContent(id, isuser);
-
 }
-
+messengerStore.registerMessage('chatform_startchat', (arg: { id: number, isuser: boolean, targetUName: string }) => {
+    startChat(arg.id, arg.isuser, arg.targetUName);
+})
 function changeChatContent(id: number, isuser: boolean) {
     msgList.value = [];
     container.msgElements = [];
@@ -316,19 +320,20 @@ function changeChatContent(id: number, isuser: boolean) {
         });
     }
 }
-onMounted(async () => {
-    onOpenMsgFromNotice.value = (teamID: number, rid: number) => {
+onOpenMsgFromNotice.value = (teamID: number, rid: number) => {
 
-        onTeamClicked(teamID, allTeams.value.find(ele => ele.teamID == teamID)?.teamName || 'O_o :(');
-        //开始滚动然后高亮
-        setTimeout(() => {
-            container.msgElements.find(ele => ele.rid == rid)?.element.scrollIntoView({
-                block: 'nearest',
-                inline: 'nearest',
-                behavior: 'smooth'
-            });
-        }, 1000);
-    };
+    onTeamClicked(teamID, allTeams.value.find(ele => ele.teamID == teamID)?.teamName || 'O_o :(');
+    //开始滚动然后高亮
+    setTimeout(() => {
+        container.msgElements.find(ele => ele.rid == rid)?.element.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest',
+            behavior: 'smooth'
+        });
+    }, 2000);
+};
+onMounted(async () => {
+
     if (webSocket.value == null) {
         // //重新加载socket的所有事件
         // try {
@@ -381,6 +386,44 @@ onMounted(async () => {
 
 
 });
+const picCustomRequest = ({
+    file
+}: UploadCustomRequestOptions) => {
+    const formData = new FormData();
+    formData.append('key', file.name);
+    formData.append('file', file.file as File);
+    axios.post('http://101.43.202.84:7002/chat/savefile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((res) => {
+        console.log(res);
+        webSocket.value?.send(JSON.stringify({
+            type: 'chat_pic', data: {
+                message: res.data.data.url,
+                to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
+                tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
+            }
+        }));
+    }).catch((_) => message.error('文件上传失败'));
+}
+const fileCustomRequest = ({
+    file
+}: UploadCustomRequestOptions) => {
+    const formData = new FormData();
+    formData.append('key', file.name);
+    formData.append('file', file.file as File);
+    axios.post('http://101.43.202.84:7002/chat/savefile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }).then((res) => {
+        console.log(res);
+        webSocket.value?.send(JSON.stringify({
+            type: 'chat_file', data: {
+                message: res.data.data.url,
+                to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
+                tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
+            }
+        }));
+    }).catch((_) => message.error('文件上传失败'));
+}
 </script>
 <style scoped>
 .parentContainer {
