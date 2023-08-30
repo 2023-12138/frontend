@@ -1,17 +1,9 @@
 <template>
     <div class="parentContainer">
         <div class="leftChatRoomMenu">
-            <n-tabs 
-                :value="selectedTab" 
-                placement="bottom" 
-                type="bar" 
-                animated 
-                size="large"
-                pane-wrapper-style="width:100%;height:100%;" 
-                pane-class="pane" 
-                justify-content="space-evenly" 
-                tab-style="height:50px;width:4rem;justify-content:center;"
-            >
+            <n-tabs :value="selectedTab" placement="bottom" type="bar" animated size="large"
+                pane-wrapper-style="width:100%;height:100%;" pane-class="pane" justify-content="space-evenly"
+                tab-style="height:50px;width:4rem;justify-content:center;">
                 <n-tab-pane name="currentmessages" tab="消息">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
                         <n-list hoverable clickable>
@@ -63,7 +55,7 @@
         </div>
         <div class="rightChatRoomContainer">
             <div class="empty" v-show="currentChatID.id == -1">
-                <n-icon :size="70" :component="Empty" color="write"/>
+                <n-icon :size="70" :component="Empty" color="write" />
                 <div>
                     选择一个团队或联系人开始聊天吧
                 </div>
@@ -77,14 +69,16 @@
                     <div class="chatContent" content-style="padding: 24px;">
                         <n-layout style="height: 100%;" :native-scrollbar="false">
                             <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
-                                :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" :type="msg.type" ref="SetItemRef" />
+                                :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" :type="msg.type"
+                                ref="SetItemRef" />
                         </n-layout>
                     </div>
                     <div class="chatToolFooter">
                         <div class="chatTools">
                             <n-upload abstract :custom-request="picCustomRequest" :default-file-list="fileList">
                                 <n-upload-trigger #="{ handleClick }" abstract>
-                                    <n-button @click="handleClick" strong quaternary circle type="primary" class="msg_tool_button">
+                                    <n-button @click="handleClick" strong quaternary circle type="primary"
+                                        class="msg_tool_button">
                                         <template #icon>
                                             <n-icon>
                                                 <ImageOutline />
@@ -238,9 +232,9 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     let currentTime: string = data.time;
     let rid: number = parseInt(data.rid);
     if (msgtype != 'chat_aite') rid = NaN;
-    let messagetype:"text" | "img" | "file" = 'text';
-    if(msgtype == 'chat_pic') messagetype = 'img';
-    else if(msgtype == 'chat_file') messagetype = 'file';
+    let messagetype: "text" | "img" | "file" = 'text';
+    if (msgtype == 'chat_pic') messagetype = 'img';
+    else if (msgtype == 'chat_file') messagetype = 'file';
     //判断是否正在展示
     if (currentChatID.value.id == recent.id) {
         msgList.value.push({
@@ -250,7 +244,7 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
             time: currentTime,
             imgstr: null,
             rid: rid,
-            type:messagetype
+            type: messagetype
         });
     }
 }
@@ -262,7 +256,6 @@ function onTeamClicked(id: number, targetUserName: string) {
     nextTick(() => {
         selectedTab.value = undefined;
     })
-    currentChatID.value = { id: id, isuser: false };
     startChat(id, false, targetUserName);
 }
 function onUserClicked(id: number, targetUserName: string) {
@@ -270,10 +263,10 @@ function onUserClicked(id: number, targetUserName: string) {
     nextTick(() => {
         selectedTab.value = undefined;
     })
-    currentChatID.value = { id: id, isuser: true };
     startChat(id, true, targetUserName);
 }
 function startChat(id: number, isuser: boolean, targetUName: string) {
+    currentChatID.value = { id: id, isuser: isuser };
     if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
         //没找到,问服务器请求历史数据 
         recentChatList.value.push({
@@ -342,7 +335,7 @@ function changeChatContent(id: number, isuser: boolean) {
             time: message.time,
             imgstr: null,
             rid: message.rid,
-            type:message.type
+            type: message.type
         });
     });
     if (!isuser) {
@@ -431,7 +424,7 @@ const picCustomRequest = ({
     file
 }: UploadCustomRequestOptions) => {
     console.log('upload start');
-    
+
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);

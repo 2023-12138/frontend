@@ -173,7 +173,7 @@ function avatarHandleSelect(key: string) {
         const teamname = key!.split('.')[2]
         message.info("切换至团队" + teamname)
         teamstore.curTeam.value = tid
-        teamstore.curTeamName.value = teamname 
+        teamstore.curTeamName.value = teamname
         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
         router.push("/team/" + tid + "/projectmanage")
     }
@@ -287,15 +287,15 @@ function initWebSocket() {
                 recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 if (recent == undefined) {
                     messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: myname.value });
+                    recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 }
-                recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
 
             } else {//别人发的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
                 if (recent == undefined) {
                     messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: senderName });
+                    recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
                 }
-                recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
             }
         }
         //群聊信息
@@ -306,16 +306,16 @@ function initWebSocket() {
             console.log(name);
             senderName = allTeams.value.find(ele => ele.teamID == teamId)?.teamMembers.find(ele1 => ele1.userID == senderId)?.userName || 'NaN :(';
             if (recent == undefined) {
-                messengerStore.callMessage('chatform_startchat', { id: senderId, isuser: isuser, targerUName: team?.teamName });
+                messengerStore.callMessage('chatform_startchat', { id: teamId, isuser: isuser, targetUName: team?.teamName });
                 recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
             }
         }
         //在recent中未发现，首先添加到消息中
 
 
-        let messagetype:"text" | "img" | "file" = 'text';
-    if(msgtype == 'chat_pic') messagetype = 'img';
-    else if(msgtype == 'chat_file') messagetype = 'file';
+        let messagetype: "text" | "img" | "file" = 'text';
+        if (msgtype == 'chat_pic') messagetype = 'img';
+        else if (msgtype == 'chat_file') messagetype = 'file';
         recent?.Messages.push({
             userName: senderName,
             msg: message,
@@ -323,7 +323,7 @@ function initWebSocket() {
             time: currentTime,
             imgstr: null,
             rid: rid,
-            type:messagetype
+            type: messagetype
         });
 
         if (recvHandler.value != null) {
