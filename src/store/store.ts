@@ -16,6 +16,7 @@ export type MessageModel = {
     time: string; //消息发送的时间
     imgstr: string | null;
     rid: number;
+    type:'text' | 'img' | 'file';
 };
 export const useChatContainer = defineStore('chatroom', () => {
     //是否展示

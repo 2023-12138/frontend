@@ -311,13 +311,17 @@ function initWebSocket() {
         //在recent中未发现，首先添加到消息中
 
 
+        let messagetype:"text" | "img" | "file" = 'text';
+    if(msgtype == 'chat_pic') messagetype = 'img';
+    else if(msgtype == 'chat_file') messagetype = 'file';
         recent?.Messages.push({
             userName: senderName,
             msg: message,
             userID: senderId,
             time: currentTime,
             imgstr: null,
-            rid: rid
+            rid: rid,
+            type:messagetype
         });
 
         if (recvHandler.value != null) {

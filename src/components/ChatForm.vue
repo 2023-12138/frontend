@@ -62,7 +62,13 @@
             </n-tabs>
         </div>
         <div class="rightChatRoomContainer">
-            <n-h3 class="empty" v-show="currentChatID.id == -1">选择一个团队或联系人开始聊天</n-h3>
+            <div class="empty" v-show="currentChatID.id == -1">
+                <n-icon :size="70" :component="Empty" color="write"/>
+                <div>
+                    选择一个团队或联系人开始聊天吧
+                </div>
+                <span>（〃｀ 3′〃）</span>
+            </div>
             <div class="rightChatRoom" v-show="currentChatID.id != -1">
                 <div class="targetUserContainer">
                     <span class="targetUser">{{ currentChatName }}</span>
@@ -71,22 +77,26 @@
                     <div class="chatContent" content-style="padding: 24px;">
                         <n-layout style="height: 100%;" :native-scrollbar="false">
                             <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
-                                :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" ref="SetItemRef" />
+                                :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" :type="msg.type" ref="SetItemRef" />
                         </n-layout>
                     </div>
                     <div class="chatToolFooter">
                         <div class="chatTools">
+                            <n-upload abstract :custom-request="picCustomRequest" :default-file-list="fileList">
+                                <n-upload-trigger #="{ handleClick }" abstract>
+                                    <n-button @click="handleClick" strong quaternary circle type="primary" class="msg_tool_button">
+                                        <template #icon>
+                                            <n-icon>
+                                                <ImageOutline />
+                                            </n-icon>
+                                        </template>
+                                    </n-button>
+                                </n-upload-trigger>
+                            </n-upload>
                             <n-button strong quaternary circle type="primary" class="msg_tool_button">
                                 <template #icon>
                                     <n-icon>
-                                        <ImageOutline />
-                                    </n-icon>
-                                </template>
-                            </n-button>
-                            <n-button strong quaternary circle type="primary" class="msg_tool_button">
-                                <template #icon>
-                                    <n-icon>
-                                        <ImageOutline />
+                                        <FilePicture />
                                     </n-icon>
                                 </template>
                             </n-button>
@@ -109,6 +119,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, onBeforeUpdate } from 'vue'
 import { ImageOutline } from '@vicons/ionicons5'
+import { ChatBubblesQuestion20Regular as Empty, DocumentArrowUp16Regular as FilePicture } from '@vicons/fluent'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
 import { NMention, NTabs, UploadCustomRequestOptions, useMessage } from 'naive-ui';
@@ -130,6 +141,7 @@ const message = useMessage();
 const SetItemRef = (el: any) => {
     MessageComponents.push(el);
 }
+const fileList = ref([]);
 onBeforeUpdate(() => {
     MessageComponents = [];
 });
@@ -226,6 +238,9 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     let currentTime: string = data.time;
     let rid: number = parseInt(data.rid);
     if (msgtype != 'chat_aite') rid = NaN;
+    let messagetype:"text" | "img" | "file" = 'text';
+    if(msgtype == 'chat_pic') messagetype = 'img';
+    else if(msgtype == 'chat_file') messagetype = 'file';
     //判断是否正在展示
     if (currentChatID.value.id == recent.id) {
         msgList.value.push({
@@ -234,7 +249,8 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
             userID: senderId,
             time: currentTime,
             imgstr: null,
-            rid: rid
+            rid: rid,
+            type:messagetype
         });
     }
 }
@@ -300,7 +316,8 @@ function changeChatContent(id: number, isuser: boolean) {
             userID: message.userID,
             time: message.time,
             imgstr: null,
-            rid: message.rid
+            rid: message.rid,
+            type:message.type
         });
     });
     if (!isuser) {
@@ -388,6 +405,8 @@ onMounted(async () => {
 const picCustomRequest = ({
     file
 }: UploadCustomRequestOptions) => {
+    console.log('upload start');
+    
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);
@@ -493,8 +512,11 @@ const fileCustomRequest = ({
         .empty {
             width: 100%;
             height: 100%;
-            background-color: aliceblue;
-            text-align: center;
+            background-color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .rightChatRoom {
