@@ -164,6 +164,8 @@ function avatarHandleSelect(key: string) {
         localStorage.removeItem('token')
         localStorage.removeItem('uid')
         router.push("/")
+    } else if (key === 'self-info') {
+        message.info('个人信息')
     } else {
         const tid = key!.split('.')[1]
         message.info("切换团队" + tid)

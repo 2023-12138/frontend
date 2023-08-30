@@ -18,6 +18,9 @@
                         <n-button @click="$router.push('/team/' + $route.params.tid + '/project/'+ $route.params.pid + '/doc/1')">
                             文档
                         </n-button>
+                        <n-button @click="$router.push('/team/' + $route.params.tid + '/project/'+ $route.params.pid + '/design/1')">
+                            设计
+                        </n-button>
                     </n-tab-pane>
                     <n-tab-pane name="setting" tab="设置">
                         设置

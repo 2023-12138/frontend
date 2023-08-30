@@ -44,145 +44,87 @@ const teamstore = storeToRefs(teamStore);
 const projectStore = useProjectStore();
 const projectstore = storeToRefs(projectStore);
 const tid = ref<String>(route.params.tid.toString())
+const isPrivate = ref(tid.value.startsWith('private'))
 const message = useMessage()
+
+const refreshMenu = () => {
+    isPrivate.value = tid.value.startsWith('private')
+    menuOptions.value = isPrivate.value ? 
+    [
+        {
+            label: '个人空间设置',
+            key: 'team_setting',
+            href: '/team/' + tid.value + '/setting',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            key: 'header-divider',
+            type: 'divider'
+        },
+        {
+            label: '项目空间',
+            key: 'project_space',
+            href: '/team/' + tid.value + '/projectmanage',
+            icon: renderIcon(FlashOutline),
+        },
+    ] : 
+    [
+        {
+            label: '成员管理',
+            key: 'member_management',
+            href: '/team/' + tid.value + '/member',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            label: '团队设置',
+            key: 'team_setting',
+            href: '/team/' + tid.value + '/setting',
+            icon: renderIcon(BookIcon),
+        },
+        {
+            key: 'header-divider',
+            type: 'divider'
+        },
+        {
+            label: '项目空间',
+            key: 'project_space',
+            href: '/team/' + tid.value + '/projectmanage',
+            icon: renderIcon(FlashOutline),
+        },
+    ]
+    axios.post('project/viewProject', {
+        tid: tid.value.replace('private', '')
+    }).then(res => {
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                res.data.data.projectlist?.map((item: any) => {
+                    menuOptions.value.push({
+                        label: item.project_name,
+                        key: item.pid,
+                        href: '/team/' + tid.value + '/project/' + item.pid,
+                        icon: renderIcon(Document),
+                    })
+                })
+            } else {
+                message.warning(res.data.message)
+            }
+        }
+    })
+}
 
 onMounted(() => {
     console.log('onMounted hook executed');
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
     tid.value = route.params.tid.toString()
-    menuOptions.value = [
-        {
-            label: '成员管理',
-            key: 'member_management',
-            href: '/team/' + tid.value + '/member',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            label: '团队设置',
-            key: 'team_setting',
-            href: '/team/' + tid.value + '/setting',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            key: 'header-divider',
-            type: 'divider'
-        },
-        {
-            label: '项目空间',
-            key: 'project_space',
-            href: '/team/' + tid.value + '/projectmanage',
-            icon: renderIcon(FlashOutline),
-        },
-    ]
-    axios.post('project/viewProject', {
-        tid: tid.value.replace('private', '')
-    }).then(res => {
-        if (res.status === 200) {
-            if (res.data.code === 200) {
-                res.data.data.projectlist?.map((item: any) => {
-                    menuOptions.value.push({
-                        label: item.project_name,
-                        key: item.pid,
-                        href: '/team/' + tid.value + '/project/' + item.pid,
-                        icon: renderIcon(Document),
-                    })
-                })
-            } else {
-                message.warning(res.data.message)
-            }
-        }
-    })
+    refreshMenu()
 })
 
 watch(projectstore.projectChanged, () => {
-    menuOptions.value = [
-        {
-            label: '成员管理',
-            key: 'member_management',
-            href: '/team/' + tid.value + '/member',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            label: '团队设置',
-            key: 'team_setting',
-            href: '/team/' + tid.value + '/setting',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            key: 'header-divider',
-            type: 'divider'
-        },
-        {
-            label: '项目空间',
-            key: 'project_space',
-            href: '/team/' + tid.value + '/projectmanage',
-            icon: renderIcon(FlashOutline),
-        },
-    ]
-    axios.post('project/viewProject', {
-        tid: tid.value.replace('private', '')
-    }).then(res => {
-        if (res.status === 200) {
-            if (res.data.code === 200) {
-                res.data.data.projectlist?.map((item: any) => {
-                    menuOptions.value.push({
-                        label: item.project_name,
-                        key: item.pid,
-                        href: '/team/' + tid.value + '/project/' + item.pid,
-                        icon: renderIcon(Document),
-                    })
-                })
-            } else {
-                message.warning(res.data.message)
-            }
-        }
-    })
+    refreshMenu()
 })
 
 watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     tid.value = teamstore.curTeam.value
-    menuOptions.value = [
-        {
-            label: '成员管理',
-            key: 'member_management',
-            href: '/team/' + tid.value + '/member',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            label: '团队设置',
-            key: 'team_setting',
-            href: '/team/' + tid.value + '/setting',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            key: 'header-divider',
-            type: 'divider'
-        },
-        {
-            label: '项目空间',
-            key: 'project_space',
-            href: '/team/' + tid.value + '/projectmanage',
-            icon: renderIcon(FlashOutline),
-        },
-    ]
-    axios.post('project/viewProject', {
-        tid: tid.value.toString().replace('private', '')
-    }).then(res => {
-        if (res.status === 200) {
-            if (res.data.code === 200) {
-                res.data.data.projectlist?.map((item: any) => {
-                    menuOptions.value.push({
-                        label: item.project_name,
-                        key: item.pid,
-                        href: '/team/' + tid.value + '/project/' + item.pid,
-                        icon: renderIcon(Document),
-                    })
-                })
-            } else {
-                message.warning(res.data.message)
-            }
-        }
-    })
+    refreshMenu()
 })
 
 const menuOptions: Ref<any[]> = ref([
