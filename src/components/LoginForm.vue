@@ -449,7 +449,7 @@ const register = (e: MouseEvent) => {
                 if (res.status === 200) {
                     if (res.data.code === 200) {
                         message.success('注册成功')
-                        location.reload();
+                        formType.value = 'login'
                     } else {
                         message.warning(res.data.message)
                     }
@@ -519,7 +519,7 @@ const forget = (e: MouseEvent) => {
                 if (res.status === 200) {
                     if (res.data.code === 200) {
                         message.success('找回成功')
-                        location.reload();
+                        formType.value = 'login'
                     } else {
                         message.warning(res.data.message)
                     }

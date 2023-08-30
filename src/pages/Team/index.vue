@@ -3,6 +3,9 @@
         <TeamHeader />
         <div class="bottom">
             <div class="leftSideNav">
+                <div class="leftSideNavHeader">
+                    当前团队:
+                </div>
                 <div class="leftSideNavMenu">
                     <n-menu v-model:options="menuOptions" :render-label="renderMenuLabel" />
                 </div>
@@ -156,8 +159,11 @@ function renderMenuLabel(option: MenuOption) {
     height: 100%;
     /* background-color: black; */
 }
-
+.leftSideNavHeader {
+    padding: 10px;
+}
 .leftSideNavMenu {
+    padding: 10px; 
     ::v-deep(.n-menu-item) {
         margin-top: 6px;
     }

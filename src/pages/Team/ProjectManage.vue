@@ -163,16 +163,14 @@ const refreshData = () => {
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {
+                console.log(res.data)
                 data.value = res.data.data.projectlist?.map((item: any) => {
                     return {
                         key: tid.value.replace('private', '') + '.' + item.pid,   // pid
                         projectname: item.project_name,
                         description: item.project_inform,
-                        creator: item.uid,
+                        creator: item.username,
                         isEditing: false,
-                        onclick: () => {
-                            console.log(tid.value.replace('private', '') + '.' + item.pid)
-                        }
                     }
                 })
             } else {
