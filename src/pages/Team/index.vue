@@ -4,7 +4,12 @@
         <div class="bottom">
             <div class="leftSideNav">
                 <div class="leftSideNavHeader">
-                    当前团队:
+                    <span class="leftSideNavHeaderTop">
+                        当前团队
+                    </span>
+                    <span>
+                        {{ teamName }}
+                    </span>
                 </div>
                 <div class="leftSideNavMenu">
                     <n-menu v-model:options="menuOptions" :render-label="renderMenuLabel" />
@@ -44,6 +49,7 @@ const route = useRoute()
 
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
+const teamName = ref('个人空间')
 const projectStore = useProjectStore();
 const projectstore = storeToRefs(projectStore);
 const tid = ref<String>(route.params.tid.toString())
@@ -51,7 +57,8 @@ const isPrivate = ref(tid.value.startsWith('private'))
 const message = useMessage()
 
 const refreshMenu = () => {
-    isPrivate.value = tid.value.startsWith('private')
+    tid.value = tid.value.toString()
+    isPrivate.value = tid.value.toString().startsWith('private')
     menuOptions.value = isPrivate.value ? 
     [
         {
@@ -127,6 +134,9 @@ watch(projectstore.projectChanged, () => {
 
 watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     tid.value = teamstore.curTeam.value
+    console.log(tid.value)
+    teamName.value = teamstore.curTeamName.value
+    console.log(teamName.value)
     refreshMenu()
 })
 
