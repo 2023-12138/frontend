@@ -4,7 +4,12 @@
         <div class="bottom">
             <div class="leftSideNav">
                 <div class="leftSideNavHeader">
-                    当前团队:
+                    <span class="leftSideNavHeaderTop">
+                        当前团队
+                    </span>
+                    <span>
+                        {{ teamName }}
+                    </span>
                 </div>
                 <div class="leftSideNavMenu">
                     <n-menu v-model:options="menuOptions" :render-label="renderMenuLabel" />
@@ -23,7 +28,6 @@ import type { MenuOption } from 'naive-ui'
 import {
     BookOutline as BookIcon,
     FlashOutline as FlashOutline,
-    Document
 } from '@vicons/ionicons5'
 import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
@@ -33,6 +37,7 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
 import axios from '@/axios/axios';
+import { PeopleTeam16Filled } from '@vicons/fluent';
 
 
 //侧边栏部分
@@ -44,6 +49,7 @@ const route = useRoute()
 
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
+const teamName = ref('个人空间')
 const projectStore = useProjectStore();
 const projectstore = storeToRefs(projectStore);
 const tid = ref<String>(route.params.tid.toString())
@@ -51,11 +57,12 @@ const isPrivate = ref(tid.value.startsWith('private'))
 const message = useMessage()
 
 const refreshMenu = () => {
-    isPrivate.value = tid.value.startsWith('private')
+    tid.value = tid.value.toString()
+    isPrivate.value = tid.value.toString().startsWith('private')
     menuOptions.value = isPrivate.value ? 
     [
         {
-            label: '个人空间设置',
+            label: '个人空间',
             key: 'team_setting',
             href: '/team/' + tid.value + '/setting',
             icon: renderIcon(BookIcon),
@@ -76,7 +83,7 @@ const refreshMenu = () => {
             label: '成员管理',
             key: 'member_management',
             href: '/team/' + tid.value + '/member',
-            icon: renderIcon(BookIcon),
+            icon: renderIcon(PeopleTeam16Filled),
         },
         {
             label: '团队设置',
@@ -105,7 +112,7 @@ const refreshMenu = () => {
                         label: item.project_name,
                         key: item.pid,
                         href: '/team/' + tid.value + '/project/' + item.pid,
-                        icon: renderIcon(Document),
+                        icon: renderIcon(null as any),
                     })
                 })
             } else {
@@ -127,6 +134,9 @@ watch(projectstore.projectChanged, () => {
 
 watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     tid.value = teamstore.curTeam.value
+    console.log(tid.value)
+    teamName.value = teamstore.curTeamName.value
+    console.log(teamName.value)
     refreshMenu()
 })
 
@@ -160,10 +170,25 @@ function renderMenuLabel(option: MenuOption) {
     /* background-color: black; */
 }
 .leftSideNavHeader {
+    height: 13%;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: var(--primary-color) solid;
+    border-bottom-width: 3px;
+    > span:first-child {
+        height: 60%;
+        font-size: large;
+        font-family: "Microsoft Yahei";
+    }
+    span {
+        margin: 10px;
+    }
 }
 .leftSideNavMenu {
     padding: 10px; 
+
     ::v-deep(.n-menu-item) {
         margin-top: 6px;
     }

@@ -276,6 +276,13 @@ function onUserClicked(id: number, targetUserName: string) {
 function startChat(id: number, isuser: boolean, targetUName: string) {
     if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
         //没找到,问服务器请求历史数据 
+        recentChatList.value.push({
+            userOrTeamName: targetUName,
+            id: id,
+            isuser: isuser,
+            lastMsg: null,
+            Messages: []
+        });
         // :todo
         if (isuser) {
             mypost(message, 'chat/getHistory', { senderId: id, tid: '' });
@@ -286,6 +293,19 @@ function startChat(id: number, isuser: boolean, targetUName: string) {
         }
 
         //添加到最近聊天中
+
+    }
+
+    changeChatContent(id, isuser);
+}
+messengerStore.registerMessage('chatform_startchat', (arg: { id: number, isuser: boolean, targetUName: string }) => {
+    //startChat(arg.id, arg.isuser, arg.targetUName);
+    const id = arg.id;
+    const isuser = arg.isuser;
+    const targetUName = arg.targetUName;
+    if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
+        //没找到,问服务器请求历史数据 
+        // :todo
         recentChatList.value.push({
             userOrTeamName: targetUName,
             id: id,
@@ -293,12 +313,17 @@ function startChat(id: number, isuser: boolean, targetUName: string) {
             lastMsg: null,
             Messages: []
         });
-    }
+        if (isuser) {
+            mypost(message, 'chat/getHistory', { senderId: id, tid: '' });
+        } else {
+            //请求team的历史数据
+            // :todo
+            mypost(message, 'chat/getHistory', { tid: id, senderId: '' });
+        }
 
-    changeChatContent(id, isuser);
-}
-messengerStore.registerMessage('chatform_startchat', (arg: { id: number, isuser: boolean, targetUName: string }) => {
-    startChat(arg.id, arg.isuser, arg.targetUName);
+        //添加到最近聊天中
+
+    }
 })
 function changeChatContent(id: number, isuser: boolean) {
     msgList.value = [];

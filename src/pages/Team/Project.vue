@@ -85,32 +85,40 @@
 }
 .project-card-pane {
     display: flex;
+    width: 100%;
+    height: 100%;
 }
 .project-card {
     display: flex;
     align-items: center; 
     flex-direction: column;
-    width: 150px;
+    width: 7vmax;
+    height: 6vmax;
     margin: 10px;
+    padding: 10px;
 }
 .project-card:hover {
     display: flex;
     align-items: center; 
     flex-direction: column;
-    width: 150px;
+    width: 7vmax;
+    height: 6vmax;
     margin: 10px;
+    padding: 10px;
+    
     background-color: #D3D3D3;
     border-radius: 5%;
 }
 .project-card-top {
     display: flex;
     > img {
-        width: 100px;
+        width: 50px;
     }
 }
 
 .project-card-bottom {
     display: flex;
     flex-direction: column;
+    margin: 8px;
 }
 </style>

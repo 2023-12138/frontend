@@ -102,14 +102,14 @@ onMounted(() => {
                 const privateTid = res.data.data.privateTid
                 avatarOptions.value[3].children![0] = ({
                     label: '个人空间',
-                    key: 'team.private' + privateTid
+                    key: 'team.private' + privateTid + '.' + '个人空间'
                 } as never)
                 const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
                 if (teamlist) {
                     teamlist.forEach((item: any, index: number) => {
                         avatarOptions.value[3].children![index + 2] = ({
                             label: item.teamname,
-                            key: 'team.' + item.tid
+                            key: 'team.' + item.tid + '.' + item.teamname
                         } as never)
                     })
                 }
@@ -170,8 +170,10 @@ function avatarHandleSelect(key: string) {
         message.info('个人信息')
     } else {
         const tid = key!.split('.')[1]
-        message.info("切换团队" + tid)
+        const teamname = key!.split('.')[2]
+        message.info("切换至团队" + teamname)
         teamstore.curTeam.value = tid
+        teamstore.curTeamName.value = teamname 
         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
         router.push("/team/" + tid + "/projectmanage")
     }
@@ -331,12 +333,11 @@ function initWebSocket() {
     webSocket.value.onclose = (_) => {
         if (reconnectCount > 9) {
             reconnectCount = 0;
-            message.error('重连超过次数限制 不再重连');
+            message.error('webSocket 重连失败(10/10)，请刷新网页！');
             return;
         }
         try {
             reconnectCount++;
-            message.error(`WebSocket断开 正在重连 ${reconnectCount}/10`);
             webSocket.value = new WebSocket(wsURL);
             initWebSocket();
         } catch {
@@ -344,7 +345,7 @@ function initWebSocket() {
         }
     }
     webSocket.value.onerror = (_) => {
-        message.error('unknown error');
+        //message.error('unknown error');
     }
 }
 onMounted(async () => {
