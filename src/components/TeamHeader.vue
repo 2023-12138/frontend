@@ -327,12 +327,11 @@ function initWebSocket() {
     webSocket.value.onclose = (_) => {
         if (reconnectCount > 9) {
             reconnectCount = 0;
-            message.error('重连超过次数限制 不再重连');
+            message.error('webSocket 重连失败(10/10)，请刷新网页！');
             return;
         }
         try {
             reconnectCount++;
-            message.error(`WebSocket断开 正在重连 ${reconnectCount}/10`);
             webSocket.value = new WebSocket(wsURL);
             initWebSocket();
         } catch {
@@ -340,7 +339,7 @@ function initWebSocket() {
         }
     }
     webSocket.value.onerror = (_) => {
-        message.error('unknown error');
+        //message.error('unknown error');
     }
 }
 onMounted(async () => {
