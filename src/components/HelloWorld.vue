@@ -1,23 +1,21 @@
 <template>
-    <n-upload abstract :custom-request="customRequest" :default-file-list="fileList">
+    <n-upload abstract :custom-request="customRequest" :default-file-list="fileList" ref="up">
         <n-upload-trigger #="{ handleClick }" abstract>
             <n-button @click="handleClick">
                 上传
             </n-button>
         </n-upload-trigger>
-        <n-h3>fuck</n-h3>
+        <n-card style="margin-top: 12px" title="文件列表">
+      <n-upload-file-list />
+    </n-card>
     </n-upload>
-    <iframe name="embed_readwrite"
+    <!-- <iframe name="embed_readwrite"
         src="/pad/p/123?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" width="100%"
-        height="600" frameborder="0"></iframe>
-
-    <n-modal>
-        
-    </n-modal>
+        height="600" frameborder="0"></iframe> -->
 </template>
 
 <script setup lang='ts'>
-import { UploadCustomRequestOptions } from 'naive-ui';
+import { UploadCustomRequestOptions,UploadFileInfo } from 'naive-ui';
 import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import { useMessengerStore } from '@/store/messengerStore';
@@ -29,10 +27,11 @@ const lists = reactive([
 ])
 
 const fileList = ref([]);
+const up = ref();
 
 const customRequest = ({
     file
-}: UploadCustomRequestOptions) => {
+}: UploadCustomRequestOptions) => { 
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);
@@ -40,6 +39,8 @@ const customRequest = ({
         headers: { 'Content-Type': 'multipart/form-data' },
     }).then((res) => {
         console.log(res);
+        console.log(fileList);
+        up.value.clear();
     }).catch((err) => console.log(err));
 }
 const messagerStore = useMessengerStore();
