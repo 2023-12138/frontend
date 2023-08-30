@@ -7,9 +7,8 @@
         </n-upload-trigger>
         <n-h3>fuck</n-h3>
     </n-upload>
-    <iframe name="embed_readwrite"
-        src="/pad/p/123?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" width="100%"
-        height="600" frameborder="0"></iframe>
+    <iframe name="embed_readwrite" src="/pad/p/g.vKCONtxq6JFaMP1a$abc123" width="100%" height="600"
+        frameborder="0"></iframe>
 </template>
 
 <script setup lang='ts'>
