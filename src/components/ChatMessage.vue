@@ -1,16 +1,15 @@
 <template>
-    <div ref="d" class="messageContainer" >
-        <div class="avatar">
+    <div ref="d" class="messageContainer" :class="{myself:isMyself}">
+        <div class="avatar" :class="{myself:isMyself}">
             <n-avatar round :size="35" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
         </div>
-        <div class="messageMain" :class="{myself:isMyself}">
-            <div class="userName">
-                <span style="width:20%">{{ title }}</span>
-                <!-- <span>{{ time }}</span>     -->
+        <div class="messageMain">
+            <div class="userName" :class="{myself:isMyself}">
+                {{ title }}
             </div>
-            <div class="massageText">
-                <div class="triangle"></div>
-                    {{ content }}
+            <div class="massageText" :style="{backgroundColor:(isMyself ? '#82cefd' : '#ccc')}">
+                <div class="triangle" :style="{backgroundColor:(isMyself ? '#82cefd' : '#ccc')}"></div>
+                <div :class="{myself:isMyself}">{{ content }}</div>
             </div>
         </div>
     </div>
@@ -25,7 +24,7 @@ const props = defineProps<{
     rid: number,
     time: string,
     io: IntersectionObserver,
-    isMyself:true                                       //TODO:记得调整
+    isMyself:boolean                                       //TODO:记得调整
 }>();
 const d = ref();
 let ele = d.value as HTMLDivElement;
@@ -64,14 +63,10 @@ onMounted(() => {
         padding-left: 10px;
 
         .userName {
-            display: flex;
-            justify-content: space-between;
-            background-color: green;
+            width: fit-content;
         }
 
         .massageText {
-            /* max-width: calc(50%); */
-            background-color: #ccc;
             border-radius: 5px;
             font-size: 15px;
             display: inline-block;
@@ -82,7 +77,6 @@ onMounted(() => {
             .triangle {
                 height: 0.7em;
                 width: 0.5em;
-                background-color: #ccc;
                 clip-path:polygon(0 50%,100% 0,100% 100%);
                 position: absolute;
                 left: -0.5em;

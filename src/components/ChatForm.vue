@@ -10,7 +10,7 @@
                 pane-wrapper-style="width:100%;height:100%;" 
                 pane-class="pane" 
                 justify-content="space-evenly" 
-                tab-style="height:50px;width:132px;justify-content:center;"
+                tab-style="height:50px;width:8rem;justify-content:center;"
             >
                 <n-tab-pane name="currentmessages" tab="消息">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
@@ -68,7 +68,7 @@
                     <div class="chatContent" content-style="padding: 24px;">
                         <n-layout style="height: 100%;" :native-scrollbar="false">
                             <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
-                                :rid="msg.rid" :io="io" ref="SetItemRef" />
+                                :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" ref="SetItemRef" />
                         </n-layout>
                     </div>
                     <div class="chatToolFooter">
@@ -99,7 +99,7 @@
                                 @keydown="onMsgboxSubmitted"
                             />
                             <div class="submitButton">
-                                <n-button strong secondary type="primary" @click="onMsgboxSubmitted">发送</n-button>
+                                <n-button strong secondary type="primary" @click="sendMessage">发送</n-button>
                             </div>
                         </div>
                     </div>
@@ -153,48 +153,51 @@ const io = new IntersectionObserver(eles => {
 function onMsgboxSubmitted(e: KeyboardEvent) {
     if(e.key === 'Enter' && !e.shiftKey){
         e.preventDefault();
-        if(inputMessage.value.trim() === ''){
-            inputMessage.value = '';
-            message.warning('不能发送空白内容')
-            return;
-        }
-        if (webSocket.value?.readyState != WebSocket.OPEN) {
-            message.error('webSocket Disconnected');
-        }
-        try { //判断@了哪些人
-            let atlist: Array<number> = [];
+        sendMessage();
+    }
+}
+function sendMessage(){
+    if(inputMessage.value.trim() === ''){
+        inputMessage.value = '';
+        message.warning('不能发送空白内容')
+        return;
+    }
+    if (webSocket.value?.readyState != WebSocket.OPEN) {
+        message.error('webSocket Disconnected');
+    }
+    try { //判断@了哪些人
+        let atlist: Array<number> = [];
 
-            if (!currentChatID.value.isuser) {
+        if (!currentChatID.value.isuser) {
 
-                options.value.forEach(option => {
-                    if (inputMessage.value.includes(`@${option.value}`)) {
-                        if (option.value == "全体成员") {
-                            atlist.push(-1);
-                        } else {
-                            const team = allTeams.value.find((ele) => ele.teamID == currentChatID.value.id);
-                            atlist.push(team?.teamMembers.find(ele => ele.userName == option.value)?.userID || NaN);
-                        }
+            options.value.forEach(option => {
+                if (inputMessage.value.includes(`@${option.value}`)) {
+                    if (option.value == "全体成员") {
+                        atlist.push(-1);
+                    } else {
+                        const team = allTeams.value.find((ele) => ele.teamID == currentChatID.value.id);
+                        atlist.push(team?.teamMembers.find(ele => ele.userName == option.value)?.userID || NaN);
                     }
-                });
-            }
-            const newLocal = JSON.stringify({
-                type: 'chat',
-                data: {
-                    message: inputMessage.value,
-                    to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
-                    tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
-                    aite: atlist
                 }
             });
-            console.log(newLocal);
-            webSocket.value?.send(newLocal);
-            inputMessage.value = '';
-
-            message.success('msg send success');
-
-        } catch (error) {
-            message.error('send err');
         }
+        const newLocal = JSON.stringify({
+            type: 'chat',
+            data: {
+                message: inputMessage.value,
+                to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
+                tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
+                aite: atlist
+            }
+        });
+        console.log(newLocal);
+        webSocket.value?.send(newLocal);
+        inputMessage.value = '';
+
+        message.success('msg send success');
+
+    } catch (error) {
+        message.error('send err');
     }
 }
 function team2Options(team: TeamModel) {
