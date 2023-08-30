@@ -11,7 +11,7 @@ import { useRoute } from 'vue-router';
 
 const msg = useMessage()
 const route = useRoute()
-const preUrl = "http://127.0.0.1:8080"
+const preUrl = "http://101.43.224.85"
 const target = ref( preUrl + "/#/" + route.params.did)
 
 watch(() => route.params.pid, () => {
