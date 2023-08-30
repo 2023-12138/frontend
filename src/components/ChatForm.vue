@@ -75,7 +75,7 @@
                     </div>
                     <div class="chatToolFooter">
                         <div class="chatTools">
-                            <n-upload abstract :custom-request="picCustomRequest" :default-file-list="fileList">
+                            <n-upload ref="picupload" abstract :custom-request="picCustomRequest" show-file-list>
                                 <n-upload-trigger #="{ handleClick }" abstract>
                                     <n-button @click="handleClick" strong quaternary circle type="primary"
                                         class="msg_tool_button">
@@ -87,13 +87,17 @@
                                     </n-button>
                                 </n-upload-trigger>
                             </n-upload>
-                            <n-button strong quaternary circle type="primary" class="msg_tool_button">
-                                <template #icon>
-                                    <n-icon>
-                                        <FilePicture />
-                                    </n-icon>
-                                </template>
-                            </n-button>
+                            <n-upload ref="fileupload" abstract :custom-request="fileCustomRequest" :default-file-list="fileList">
+                                <n-upload-trigger #="{ handleClick }" abstract>
+                                    <n-button @click="handleClick" strong quaternary circle type="primary" class="msg_tool_button">
+                                        <template #icon>
+                                            <n-icon>
+                                                <FilePicture />
+                                            </n-icon>
+                                        </template>
+                                    </n-button>
+                                </n-upload-trigger>
+                            </n-upload>
                         </div>
                         <div class="msgBoxForm">
                             <n-mention type="textarea" v-model:value="inputMessage" placeholder="Message" :options="options"
@@ -129,6 +133,8 @@ const options = ref<{
     label: string,
     value: string
 }[]>([]);
+const picupload = ref();
+const fileupload = ref();
 let MessageComponents: any[] = [];
 const inputMessage = ref('');
 const message = useMessage();
@@ -428,7 +434,7 @@ const picCustomRequest = ({
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);
-    axios.post('http://101.43.202.84:7002/chat/savefile', formData, {
+    axios.post('http://127.0.0.1:8000/chat/savefile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     }).then((res) => {
         console.log(res);
@@ -439,6 +445,7 @@ const picCustomRequest = ({
                 tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
             }
         }));
+        picupload.value.clear();
     }).catch((_) => message.error('文件上传失败'));
 }
 const fileCustomRequest = ({
@@ -447,7 +454,7 @@ const fileCustomRequest = ({
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);
-    axios.post('http://101.43.202.84:7002/chat/savefile', formData, {
+    axios.post('http://127.0.0.1:8000/chat/savefile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     }).then((res) => {
         console.log(res);
@@ -458,6 +465,7 @@ const fileCustomRequest = ({
                 tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
             }
         }));
+        fileupload.value.clear();
     }).catch((_) => message.error('文件上传失败'));
 }
 </script>
