@@ -10,7 +10,7 @@
                 pane-wrapper-style="width:100%;height:100%;" 
                 pane-class="pane" 
                 justify-content="space-evenly" 
-                tab-style="height:50px;width:132px;justify-content:center;"
+                tab-style="height:50px;width:4rem;justify-content:center;"
             >
                 <n-tab-pane name="currentmessages" tab="消息">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
