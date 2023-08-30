@@ -24,7 +24,6 @@
 import { ref } from 'vue'
 import { FormInst, useMessage, FormRules } from 'naive-ui'
 import axios from '@/axios/axios'
-import router from '@/routes';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'; 
 import { useProjectStore } from '@/store/projectStore'

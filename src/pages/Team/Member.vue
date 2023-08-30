@@ -118,12 +118,10 @@ const handleUpdateValue = (key: string) => {
 }
 
 
-import { NInput, NSelect } from "naive-ui";
-import { computed, h, nextTick} from "vue";
+import { NSelect } from "naive-ui";
+import { computed, h } from "vue";
 import DeleteConfirm from '@/components/Member/DeleteConfirm.vue'
 import { Column } from '@/interfaces/Member/MemberTable.interface'
-
-const userNameInputRef = ref()
 
 const options = [{
     label: '管理员',
@@ -140,25 +138,8 @@ const columns: Column[] = [
         key: 'username',
         width: 150,
         render(row: MemberRowData) {
-            return row.isEditing ?
-                h(NInput as any, {
-                    ref: userNameInputRef,
-                    value: row.username,
-                    onUpdateValue: (v: string) => {
-                        row.username = v
-                    },
-                    onBlur: () => {
-                        row.isEditing = false
-                        //TODO:前后端
-                    },
-                }) : h('div', {
+            return h('div', {
                     style: 'min-height: 22px',
-                    onClick: () => {
-                        row.isEditing = true
-                        nextTick(() => {
-                            userNameInputRef.value.focus()
-                        })
-                    }
                 }, row.username)
         }
     },

@@ -6,6 +6,7 @@ export interface ProjectRowData {
     description: string;
     creator: string;
     isEditing: boolean;
+    onClick: (key : string) => {};
 }
 
 export interface Column {

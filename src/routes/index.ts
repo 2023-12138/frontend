@@ -36,7 +36,12 @@ const routes: Array<RouteRecordRaw> = [
                     {
                         path:'doc/:did',
                         component: () => import('../pages/Team/Doc.vue')
-                    }
+                    },
+                    {
+                        path: 'design/:did',
+                        component: () => import('../pages/WebDesign.vue')
+                    },
+
                 ]
             }
         ]

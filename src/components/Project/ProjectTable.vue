@@ -1,5 +1,5 @@
 <script lang="ts">
-import { NInput } from "naive-ui";
+import { NButton, NInput } from "naive-ui";
 import { Ref, computed, h, nextTick, ref } from "vue";
 import { ProjectRowData, Column } from '@/interfaces/Project/ProjectTable.interface'
 import DeleteConfirm from './DeleteConfirm.vue'
@@ -74,11 +74,19 @@ export const columns: Column[] = [
         title: '',
         key: 'option',
         render(row: ProjectRowData) {
-            return h(DeleteConfirm, {
-                buttonText: '删除',
-                id: row.key,
-                // TODO: tid
-            });
+            return h('div', [
+                h(DeleteConfirm, {
+                    buttonText: '删除',
+                    id: row.key,
+                    // TODO: tid
+                }),
+                h(NButton, {
+                    style: "margin-left: 10px",
+                    onclick: () => {
+                        console.log(row.key)
+                    }
+                }, "进入")  // 渲染 ComponentB 组件
+            ]);
         }
     }
 ]
