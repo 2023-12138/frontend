@@ -41,7 +41,7 @@
 
 <script setup lang='ts'>
 
-import { ref, h, onMounted } from 'vue';
+import { ref, h, onMounted, Component } from 'vue';
 
 import { RecentListModel, useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
@@ -62,6 +62,28 @@ const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal 
 import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 const messengerStore = useMessengerStore();
+
+const renderOption = (icon: Component) => {
+    return () => h(
+        'div',
+        {
+            style: 'display: flex; align-items: center; padding: 8px 12px;'
+        },
+        [
+            h(NIcon, null, { default: () => h(icon) }),
+            h('div', null, [
+                h('div', null, [h(NText, { depth: 2 }, { default: () => '用户名' })]),
+                h('div', { style: 'font-size: 12px;' }, [
+                    h(
+                        NText,
+                        { depth: 3 },
+                        { default: () => '当前所在团队' }
+                    )
+                ])
+            ])
+        ]
+    )
+}
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -102,21 +124,25 @@ onMounted(() => {
                 const privateTid = res.data.data.privateTid
                 avatarOptions.value[3].children![0] = ({
                     label: '个人空间',
-                    key: 'team.private' + privateTid + '.' + '个人空间'
+                    key: 'team.private' + privateTid + '.' + '个人空间',
                 } as never)
+                avatarOptions.value[3].children![1] = (({
+                    label: '创建团队',
+                    key: 'create-team'
+                }) as never)
+                avatarOptions.value[3].children![2] = (({
+                    key: 'child-divider',
+                    type: 'divider'
+                }) as never)
                 const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
                 if (teamlist) {
                     teamlist.forEach((item: any, index: number) => {
-                        avatarOptions.value[3].children![index + 2] = ({
+                        avatarOptions.value[3].children![index + 3] = ({
                             label: item.teamname,
                             key: 'team.' + item.tid + '.' + item.teamname
                         } as never)
                     })
                 }
-                avatarOptions.value[3].children!.push(({
-                    label: '创建团队',
-                    key: 'create-team'
-                }) as never)
             } else {
                 message.warning(res.data.message)
             }

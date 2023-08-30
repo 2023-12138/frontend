@@ -136,7 +136,7 @@ const columns: Column[] = [
     {
         title: '昵称',
         key: 'username',
-        width: 150,
+        width: 120,
         render(row: MemberRowData) {
             return h('div', {
                     style: 'min-height: 22px',
@@ -146,7 +146,7 @@ const columns: Column[] = [
     {
         title: '姓名',
         key: 'name',
-        width: 150,
+        width: 100,
         render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
@@ -156,7 +156,7 @@ const columns: Column[] = [
     {
         title: '手机',
         key: 'phone',
-        width: 150,
+        width: 130,
         render(row: MemberRowData) {
             return h('div', {
                 style: 'min-height: 22px',
