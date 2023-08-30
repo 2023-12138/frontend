@@ -7,14 +7,22 @@
             <div class="userName" :class="{myself:isMyself}">
                 {{ title }}
             </div>
-            <div v-if="type === 'text'" class="massageText" :style="{backgroundColor:(isMyself ? '#82cefd' : '#ccc')}">
+            <div v-if="type === 'text'" class="messageText" :style="{backgroundColor:(isMyself ? '#82cefd' : '#ccc')}">
                 <div class="triangle" :style="{backgroundColor:(isMyself ? '#82cefd' : '#ccc')}"></div>
                 <div :class="{myself:isMyself}">{{ content }}</div>
             </div>
-            <div v-else-if="type === 'img'">
-                <img :src="content" @click="showImgModal = !showImgModal">
-                <n-modal v-model:show="showImgModal">
-                    <img :src="content">
+            <div v-else-if="type === 'img'" class="messageImg">
+                <img class="img" :src="content" @click="showImgModal = !showImgModal">
+                <n-modal 
+                    v-model:show="showImgModal" 
+                    preset="card"
+                    style="width: 70vw;height: 95vh;"
+                    content-style="height:100%;padding: 0;"
+                    header-style="height:0;"
+                >
+                    <div class="modalImgContainner">
+                        <img class="modalImg" :src="content">
+                    </div>
                 </n-modal>
             </div>
             <div v-else-if="type === 'file'">
@@ -82,7 +90,7 @@ const showImgModal = ref(false);
             width: fit-content;
         }
 
-        .massageText {
+        .messageText {
             border-radius: 5px;
             font-size: 15px;
             display: inline-block;
@@ -99,8 +107,38 @@ const showImgModal = ref(false);
                 top: 0.5em;
             }
         }
+
+        .messageImg {
+            font-size: 0;
+            display: inline-block;
+            max-width: 50%;
+            max-height: 500px;
+
+            .img {
+                width: 100%;
+                height: auto;
+            }
+        }
     }
 }
+
+.modalImgContainner {
+    width: 100%;
+    height: 100%;
+    font-size: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modalImg {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+    }
+}
+
+
 
 .myself {
     transform: rotateY(180deg);

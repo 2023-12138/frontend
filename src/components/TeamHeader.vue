@@ -260,6 +260,7 @@ let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
     webSocket.value.onmessage = async (e) => {
+        debugger;
         let data = JSON.parse(e.data);
         let msgtype: string = data.type;
         data = data.data;

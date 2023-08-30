@@ -167,16 +167,24 @@ function renderMenuLabel(option: MenuOption) {
 .leftSideNav {
     width: 15%;
     height: 100%;
-    /* background-color: black; */
+    background-color: #ebf7ffee;
 }
 .leftSideNavHeader {
     height: 13%;
     padding: 10px;
+    margin: 10px;
+    /* background-color: rgba(139, 223, 251, 0.867); */
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-bottom: var(--primary-color) solid;
-    border-bottom-width: 3px;
+    /* border-bottom: var(--primary-color) solid;
+    border-bottom-width: 3px; */
+    &:hover{
+        background-color: #eeee;
+        transition: 0.2s background-color linear;
+    }
+
     > span:first-child {
         height: 60%;
         font-size: large;
