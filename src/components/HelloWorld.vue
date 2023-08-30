@@ -10,6 +10,10 @@
     <iframe name="embed_readwrite"
         src="/pad/p/123?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" width="100%"
         height="600" frameborder="0"></iframe>
+
+    <n-modal>
+        
+    </n-modal>
 </template>
 
 <script setup lang='ts'>

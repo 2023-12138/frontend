@@ -25,10 +25,6 @@
 <script setup lang='ts'>
 import { NIcon, useMessage } from 'naive-ui'
 import type { MenuOption } from 'naive-ui'
-import {
-    BookOutline as BookIcon,
-    FlashOutline as FlashOutline,
-} from '@vicons/ionicons5'
 import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
 import { useProjectStore } from '@/store/projectStore'
@@ -37,7 +33,9 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
 import axios from '@/axios/axios';
-import { PeopleTeam16Filled } from '@vicons/fluent';
+import { GlobePerson20Regular, PeopleTeam16Filled } from '@vicons/fluent';
+import Box from '@vicons/tabler/es/Box';
+import { MdSettings } from '@vicons/ionicons4';
 
 
 //侧边栏部分
@@ -65,17 +63,13 @@ const refreshMenu = () => {
             label: '个人空间',
             key: 'team_setting',
             href: '/team/' + tid.value + '/setting',
-            icon: renderIcon(BookIcon),
-        },
-        {
-            key: 'header-divider',
-            type: 'divider'
+            icon: renderIcon(GlobePerson20Regular),
         },
         {
             label: '项目空间',
             key: 'project_space',
             href: '/team/' + tid.value + '/projectmanage',
-            icon: renderIcon(FlashOutline),
+            icon: renderIcon(Box),
         },
     ] : 
     [
@@ -89,7 +83,7 @@ const refreshMenu = () => {
             label: '团队设置',
             key: 'team_setting',
             href: '/team/' + tid.value + '/setting',
-            icon: renderIcon(BookIcon),
+            icon: renderIcon(MdSettings),
         },
         {
             key: 'header-divider',
@@ -99,7 +93,7 @@ const refreshMenu = () => {
             label: '项目空间',
             key: 'project_space',
             href: '/team/' + tid.value + '/projectmanage',
-            icon: renderIcon(FlashOutline),
+            icon: renderIcon(Box),
         },
     ]
     axios.post('project/viewProject', {

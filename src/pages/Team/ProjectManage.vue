@@ -12,15 +12,14 @@
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="project" tab="项目">
-                        <n-data-table :key="(row: any) => row.key" :columns="columns" :data="data" :pagination="paginationRef"
-                    @update:page="handlePageChange" 
-                    />
+                        <n-data-table :key="(row: any) => row.key" :columns="columns" :data="data"
+                            :pagination="paginationRef" @update:page="handlePageChange" />
                     </n-tab-pane>
                     <n-tab-pane name="rubbish bin" tab="回收站">
                         回收站
                     </n-tab-pane>
                 </n-tabs>
-                
+
             </div>
         </div>
     </div>
@@ -60,7 +59,7 @@ const columns: Column[] = [
     {
         title: '项目名称',
         key: 'projectname',
-        width: 250,
+        width: 150,
         render(row: ProjectRowData) {
             return row.isEditing ?
                 h(NInput as any, {
@@ -71,7 +70,20 @@ const columns: Column[] = [
                     },
                     onBlur: () => {
                         row.isEditing = false
-                        //TODO:前后端
+                        axios.post('project/renameProject', {
+                            "pid": row.key.split('.')[1],
+                            "project_name": row.projectname
+                        }).then(res => {
+                            if (res.status === 200) {
+                                if (res.data.code === 200) {
+                                    message.success('修改成功')
+                                } else {
+                                    message.warning(res.data.msg)
+                                }
+                            } else {
+                                message.error('服务器错误')
+                            }
+                        })
                     },
                 }) : h('div', {
                     style: 'min-height: 22px',
@@ -98,7 +110,20 @@ const columns: Column[] = [
                     },
                     onBlur: () => {
                         row.isEditing = false
-                        //TODO:前后端
+                        axios.post('project/renameProjectInform', {
+                            "pid": row.key.split('.')[1],
+                            "project_inform": row.description
+                        }).then(res => {
+                            if (res.status === 200) {
+                                if (res.data.code === 200) {
+                                    message.success('修改成功')
+                                } else {
+                                    message.warning(res.data.msg)
+                                }
+                            } else {
+                                message.error('服务器错误')
+                            }
+                        })
                     },
                 }) : h('div', {
                     style: 'min-height: 22px',
@@ -114,7 +139,7 @@ const columns: Column[] = [
     {
         title: '创建者',
         key: 'creator',
-        width: 250,
+        width: 130,
         render(row: ProjectRowData) {
             return h('div', {
                 style: 'min-height: 22px',
@@ -127,7 +152,7 @@ const columns: Column[] = [
         render(row: ProjectRowData) {
             return h('div', {
                 style: "display:flex"
-            },[
+            }, [
                 h(DeleteConfirm, {
                     buttonText: '删除',
                     id: row.key,
@@ -139,7 +164,7 @@ const columns: Column[] = [
                         const pid = row.key.split('.')[1]
                         router.push('/team/' + tid + '/project/' + pid)
                     }
-                }, "进入") 
+                }, "进入")
             ]);
         }
     }
