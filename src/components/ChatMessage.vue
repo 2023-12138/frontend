@@ -11,7 +11,7 @@
                 <div class="triangle" :style="{ backgroundColor: (isMyself ? '#82cefd' : '#ccc') }"></div>
                 <div :class="{ myself: isMyself }">{{ content }}</div>
             </div>
-            <div v-else-if="type === 'img'" class="messageImg">
+            <div v-else-if="type === 'img'" class="messageImg" :class="{ myself: isMyself }">
                 <img class="img" :src="content" @click="showImgModal = !showImgModal">
                 <n-modal v-model:show="showImgModal" preset="card" style="width: 70vw;height: 95vh;"
                     content-style="height:100%;padding: 0;" header-style="height:0;">
@@ -20,8 +20,13 @@
                     </div>
                 </n-modal>
             </div>
-            <div v-else-if="type === 'file'" class="messageFile">
-                
+            <div v-else-if="type === 'file'" class="messageFile" :class="{ myself: isMyself }">
+                <div class="fileName">
+                    <span>{{ content.split('/')[3].split('_')[0] }}</span>
+                </div>
+                <div class="icon">
+                    <n-icon color="blue" :size="40" :component="FilePresentRound"/>
+                </div>
             </div>
         </div>
     </div>
@@ -29,6 +34,7 @@
 <script setup lang="ts">
 import { useChatContainer } from '@/store/store';
 import { onMounted, ref } from 'vue';
+import { FilePresentRound } from '@vicons/material'
 const container = useChatContainer();
 const props = defineProps<{
     title: string,
@@ -69,6 +75,7 @@ const showImgModal = ref(false);
     justify-content: space-around;
     padding: 10px;
     transform-style: preserve-3d;
+    background-color: rgb(245, 245, 245);
 
     .avatar {
         font-size: 0;
@@ -119,7 +126,34 @@ const showImgModal = ref(false);
         .messageFile {
             width: 220px;
             height: 80px;
-            background-color: #ccc;
+            display: flex;
+            border-radius: 5px;
+            background-color: white;
+
+            .fileName {
+                width: 70%;
+                height: 100%;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
+                > span {
+                    margin:10px 10px 10px 17px;
+                    font-size:16px;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2;
+                    overflow: hidden;
+                }
+            }
+
+            .icon {
+                width: 30%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
     }
 }

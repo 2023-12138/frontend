@@ -67,7 +67,7 @@
                 </div>
                 <div class="rightChatContentContainer">
                     <div class="chatContent" content-style="padding: 24px;">
-                        <n-layout style="height: 100%;" :native-scrollbar="false">
+                        <n-layout style="height: 100%;    background-color: rgb(245, 245, 245);" :native-scrollbar="false">
                             <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
                                 :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" :type="msg.type"
                                 ref="SetItemRef" />
@@ -479,6 +479,7 @@ const fileCustomRequest = ({
         width: 25%;
         height: 100%;
         display: flex;
+        background-color: rgb(220, 221, 222);
 
         .n-tabs {
             width: 100%;
@@ -553,7 +554,8 @@ const fileCustomRequest = ({
 
             .targetUserContainer {
                 height: 65px;
-                background-color: #ccc;
+                background-color: #f3f3f3;
+                border-bottom: #cccc 3px solid;
                 display: flex;
                 align-items: center;
                 padding-left: 4%;
