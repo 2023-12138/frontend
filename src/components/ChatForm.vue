@@ -88,19 +88,20 @@
                                 </template>
                             </n-button>
                         </div>
-                        <n-form @submit="onMsgboxSubmitted" class="msgBoxForm">
+                        <div class="msgBoxForm">
                             <n-mention 
                                 type="textarea" 
                                 v-model:value="inputMessage" 
                                 placeholder="Message" 
                                 :options="options" 
                                 class="msgBox"
-                                :autosize="{minRows: 3}"
+                                :autosize="{minRows: 3,maxRows: 3}"
+                                @keydown="onMsgboxSubmitted"
                             />
                             <div class="submitButton">
                                 <n-button strong secondary type="primary" @click="onMsgboxSubmitted">发送</n-button>
                             </div>
-                        </n-form>
+                        </div>
                     </div>
                 </div>
 
@@ -149,45 +150,52 @@ const io = new IntersectionObserver(eles => {
         }
     });
 });
-function onMsgboxSubmitted(e: SubmitEvent) {
-    e.preventDefault();
-    if (webSocket.value?.readyState != WebSocket.OPEN) {
-        message.error('webSocket Disconnected');
-    }
-    try { //判断@了哪些人
-        let atlist: Array<number> = [];
+function onMsgboxSubmitted(e: KeyboardEvent) {
+    if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        if(inputMessage.value.trim() === ''){
+            inputMessage.value = '';
+            message.warning('不能发送空白内容')
+            return;
+        }
+        if (webSocket.value?.readyState != WebSocket.OPEN) {
+            message.error('webSocket Disconnected');
+        }
+        try { //判断@了哪些人
+            let atlist: Array<number> = [];
 
-        if (!currentChatID.value.isuser) {
+            if (!currentChatID.value.isuser) {
 
-            options.value.forEach(option => {
-                if (inputMessage.value.includes(`@${option.value}`)) {
-                    if (option.value == "全体成员") {
-                        atlist.push(-1);
-                    } else {
-                        const team = allTeams.value.find((ele) => ele.teamID == currentChatID.value.id);
-                        atlist.push(team?.teamMembers.find(ele => ele.userName == option.value)?.userID || NaN);
+                options.value.forEach(option => {
+                    if (inputMessage.value.includes(`@${option.value}`)) {
+                        if (option.value == "全体成员") {
+                            atlist.push(-1);
+                        } else {
+                            const team = allTeams.value.find((ele) => ele.teamID == currentChatID.value.id);
+                            atlist.push(team?.teamMembers.find(ele => ele.userName == option.value)?.userID || NaN);
+                        }
                     }
+                });
+            }
+            const newLocal = JSON.stringify({
+                type: 'chat',
+                data: {
+                    message: inputMessage.value,
+                    to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
+                    tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
+                    aite: atlist
                 }
             });
+            console.log(newLocal);
+            webSocket.value?.send(newLocal);
+            inputMessage.value = '';
+
+            message.success('msg send success');
+
+        } catch (error) {
+            message.error('send err');
         }
-        const newLocal = JSON.stringify({
-            type: 'chat',
-            data: {
-                message: inputMessage.value,
-                to_uid: currentChatID.value.isuser ? currentChatID.value.id : '',
-                tid: currentChatID.value.isuser ? '' : currentChatID.value.id, from_uid: myuid.value,
-                aite: atlist
-            }
-        });
-        console.log(newLocal);
-        webSocket.value?.send(newLocal);
-        inputMessage.value = '';
-        message.success('msg send success');
-
-    } catch (error) {
-        message.error('send err');
     }
-
 }
 function team2Options(team: TeamModel) {
     let options: { label: string; key: number; disabled: boolean; props: { onClick: () => void; }; }[] = [];
@@ -342,14 +350,14 @@ onMounted(async () => {
     if (!res) {
         return;
     }
-    const li: {
-        teamlist: {
-            tid: number;
-            teamname: string;
-            teaminform: string;
-            is_active: boolean;
-        }[]
-    } = res;
+    // const li: {
+    //     teamlist: {
+    //         tid: number;
+    //         teamname: string;
+    //         teaminform: string;
+    //         is_active: boolean;
+    //     }[]
+    // } = res;
     // allTeams.value = [];
     // for (const ateam of li.teamlist) {
     //     const teammembers: {

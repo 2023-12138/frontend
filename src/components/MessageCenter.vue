@@ -198,15 +198,15 @@ let tabStyle:Object = {
 
 //提醒红点
 const remindShow = ref(false);
-watch([chatMessages.value,docMessages.value],() => {
+watch([chatMessages.value,docMessages.value],([chatNewValue,docNewVlaue]) => {
     remindShow.value = false;
-    for(const message of chatMessages.value){
+    for(const message of chatNewValue){
         if(message.read == 0){
             remindShow.value = true;
             return;
         }
     }
-    for(const message of docMessages.value){
+    for(const message of docNewVlaue){
         if(message.read == 0){
             remindShow.value = true;
             return;

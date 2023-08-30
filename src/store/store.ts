@@ -18,6 +18,8 @@ export type MessageModel = {
     rid: number;
 };
 export const useChatContainer = defineStore('chatroom', () => {
+    //是否展示
+    const chatShowModal = ref<boolean>(false)
     //团队列表，如果消息列表中有，则展示即可；如果没有，向服务器请求
     const allTeams = ref<TeamModel[]>([]);
     //显示在消息中，最近列表
@@ -35,5 +37,5 @@ export const useChatContainer = defineStore('chatroom', () => {
     const webSocket = ref<WebSocket | null>(null);
     //const onNewAT: Ref<((teamID: number, teamName: string, rid: number) => void) | null> = ref(null);
     const onOpenMsgFromNotice: Ref<((teamID: number, rid: number) => void) | null> = ref(null);
-    return { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, msgElements, recvHandler, myname }
+    return { chatShowModal, recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, msgElements, recvHandler, myname }
 })

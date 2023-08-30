@@ -39,6 +39,9 @@ import { Document } from '@vicons/carbon';
 import { BuildingHome20Filled } from '@vicons/fluent'
 import { mypost } from '@/axios/axios';
 
+import { useChatContainer } from '@/store/store'
+import { storeToRefs } from 'pinia';
+
 let props = defineProps<{
     messages:any[],
     read:number,
@@ -46,6 +49,7 @@ let props = defineProps<{
 }>();
 
 const giveMessage = useMessage();
+const chatContainer = useChatContainer();
 
 //图标
 let color= ref('#82cefd');
@@ -62,6 +66,7 @@ const avatarIcons = (tab:string) => {
 }
 
 //读消息
+const { chatShowModal } = storeToRefs(chatContainer)
 const textShow = ref(Array(props.messages.length).fill(false));
 const readMessage = async (index:number) => {
     if(props.messages[index].read == 0){
@@ -71,6 +76,10 @@ const readMessage = async (index:number) => {
         }
         props.messages[index].read = 1
     }
+    chatShowModal.value = true;
+    setTimeout(() => {
+        if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(props.messages[index].tid, props.messages[index].rid);
+    }, 500);
 }
 
 onMounted(() => {

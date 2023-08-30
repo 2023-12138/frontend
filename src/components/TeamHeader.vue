@@ -58,7 +58,8 @@ import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
-const { webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container); import axios from '@/axios/axios';
+const { chatShowModal, webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container); 
+import axios from '@/axios/axios';
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -179,8 +180,6 @@ const avatarDropdownThemeOverrides = {
 }
 
 //聊天
-
-let chatShowModal = ref(false)
 
 let createTeamModal = ref(false)
 const updateModalStatus = (status: boolean) => {
