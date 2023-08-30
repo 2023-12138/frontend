@@ -102,14 +102,14 @@ onMounted(() => {
                 const privateTid = res.data.data.privateTid
                 avatarOptions.value[3].children![0] = ({
                     label: '个人空间',
-                    key: 'team.private' + privateTid
+                    key: 'team.private' + privateTid + '.' + '个人空间'
                 } as never)
                 const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
                 if (teamlist) {
                     teamlist.forEach((item: any, index: number) => {
                         avatarOptions.value[3].children![index + 2] = ({
                             label: item.teamname,
-                            key: 'team.' + item.tid
+                            key: 'team.' + item.tid + '.' + item.teamname
                         } as never)
                     })
                 }
@@ -170,8 +170,10 @@ function avatarHandleSelect(key: string) {
         message.info('个人信息')
     } else {
         const tid = key!.split('.')[1]
-        message.info("切换团队" + tid)
+        const teamname = key!.split('.')[2]
+        message.info("切换至团队" + teamname)
         teamstore.curTeam.value = tid
+        teamstore.curTeamName.value = teamname
         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
         router.push("/team/" + tid + "/projectmanage")
     }
@@ -258,6 +260,7 @@ let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
     webSocket.value.onmessage = async (e) => {
+        debugger;
         let data = JSON.parse(e.data);
         let msgtype: string = data.type;
         data = data.data;
@@ -285,15 +288,15 @@ function initWebSocket() {
                 recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 if (recent == undefined) {
                     messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: myname.value });
+                    recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 }
-                recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
 
             } else {//别人发的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
                 if (recent == undefined) {
                     messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: senderName });
+                    recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
                 }
-                recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
             }
         }
         //群聊信息
@@ -304,20 +307,24 @@ function initWebSocket() {
             console.log(name);
             senderName = allTeams.value.find(ele => ele.teamID == teamId)?.teamMembers.find(ele1 => ele1.userID == senderId)?.userName || 'NaN :(';
             if (recent == undefined) {
-                messengerStore.callMessage('chatform_startchat', { id: senderId, isuser: isuser, targerUName: team?.teamName });
+                messengerStore.callMessage('chatform_startchat', { id: teamId, isuser: isuser, targetUName: team?.teamName });
                 recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
             }
         }
         //在recent中未发现，首先添加到消息中
 
 
+        let messagetype: "text" | "img" | "file" = 'text';
+        if (msgtype == 'chat_pic') messagetype = 'img';
+        else if (msgtype == 'chat_file') messagetype = 'file';
         recent?.Messages.push({
             userName: senderName,
             msg: message,
             userID: senderId,
             time: currentTime,
             imgstr: null,
-            rid: rid
+            rid: rid,
+            type: messagetype
         });
 
         if (recvHandler.value != null) {

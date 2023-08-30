@@ -101,8 +101,9 @@ const createTeam = (e: MouseEvent) => {
                             key: 'team.' + res.data.data.tid
                         })
                         emitUpdateModal(false)
+                        teamstore.curTeam.value =  res.data.data.tid.toString()
+                        teamstore.curTeamName.value = createTeamModel.value.teamname ? createTeamModel.value.teamname.toString() : '个人空间'
                         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
-                        teamstore.curTeam.value =  res.data.data.tid
                         message.success('创建成功')
                         router.push('/team/' + res.data.data.tid + '/projectmanage')
                         

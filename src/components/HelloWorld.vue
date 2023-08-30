@@ -10,7 +10,9 @@
                 上传
             </n-button>
         </n-upload-trigger>
-        <n-h3>fuck</n-h3>
+        <n-card style="margin-top: 12px" title="文件列表">
+            <n-upload-file-list />
+        </n-card>
     </n-upload>
     <img :src="imgbase" width="200" height="200">
 </template>
