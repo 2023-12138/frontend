@@ -58,7 +58,7 @@ import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
-const { webSocket, recvHandler, allTeams, recentChatList, myname } = storeToRefs(container);
+const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal } = storeToRefs(container);
 import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 const messengerStore = useMessengerStore();

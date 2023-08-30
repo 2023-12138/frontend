@@ -1,24 +1,17 @@
 <template>
     <div class="parentContainer">
         <div class="leftChatRoomMenu">
-            <n-tabs 
-                :value="selectedTab" 
-                placement="bottom" 
-                type="bar" 
-                animated 
-                size="large"
-                pane-wrapper-style="width:100%;height:100%;" 
-                pane-class="pane" 
-                justify-content="space-evenly" 
-                tab-style="height:50px;width:8rem;justify-content:center;"
-            >
+            <n-tabs :value="selectedTab" placement="bottom" type="bar" animated size="large"
+                pane-wrapper-style="width:100%;height:100%;" pane-class="pane" justify-content="space-evenly"
+                tab-style="height:50px;width:8rem;justify-content:center;">
                 <n-tab-pane name="currentmessages" tab="消息">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
                         <n-list hoverable clickable>
                             <n-list-item class="chatListItemContainer" v-for="item in recentChatList"
                                 @click="startChat(item.id, item.isuser, item.userOrTeamName)">
                                 <div class="chatListItem">
-                                    <n-avatar round :size="40" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-avatar round :size="40"
+                                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     <div class="chatListItemRight">
                                         <div class="chatName">{{ item.userOrTeamName }}</div>
                                         <div class="chatText">最近消息</div>
@@ -31,9 +24,11 @@
                 <n-tab-pane name="teams" tab="团队">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
                         <n-list hoverable clickable>
-                            <n-list-item class="chatListItemContainer" v-for="team in allTeams" @click="onTeamClicked(team.teamID, team.teamName);">
+                            <n-list-item class="chatListItemContainer" v-for="team in allTeams"
+                                @click="onTeamClicked(team.teamID, team.teamName);">
                                 <div class="chatListItem">
-                                    <n-avatar round :size="40" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-avatar round :size="40"
+                                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                                     <div class="chatListItemRight chatTeam">
                                         <div class="chatName">{{ team.teamName }}</div>
                                         <n-dropdown trigger="hover" :options="team2Options(team)">
@@ -89,15 +84,8 @@
                             </n-button>
                         </div>
                         <div class="msgBoxForm">
-                            <n-mention 
-                                type="textarea" 
-                                v-model:value="inputMessage" 
-                                placeholder="Message" 
-                                :options="options" 
-                                class="msgBox"
-                                :autosize="{minRows: 3,maxRows: 3}"
-                                @keydown="onMsgboxSubmitted"
-                            />
+                            <n-mention type="textarea" v-model:value="inputMessage" placeholder="Message" :options="options"
+                                class="msgBox" :autosize="{ minRows: 3, maxRows: 3 }" @keydown="onMsgboxSubmitted" />
                             <div class="submitButton">
                                 <n-button strong secondary type="primary" @click="sendMessage">发送</n-button>
                             </div>
@@ -154,13 +142,13 @@ const io = new IntersectionObserver(eles => {
     });
 });
 function onMsgboxSubmitted(e: KeyboardEvent) {
-    if(e.key === 'Enter' && !e.shiftKey){
+    if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
     }
 }
-function sendMessage(){
-    if(inputMessage.value.trim() === ''){
+function sendMessage() {
+    if (inputMessage.value.trim() === '') {
         inputMessage.value = '';
         message.warning('不能发送空白内容')
         return;
@@ -468,16 +456,16 @@ const fileCustomRequest = ({
                         max-width: 125px;
                         font-size: 16px;
                         text-overflow: ellipsis;
-                        white-space:nowrap;
-                        overflow:hidden;
+                        white-space: nowrap;
+                        overflow: hidden;
                     }
 
                     .chatText {
                         font-size: 13px;
                         color: #777;
                         text-overflow: ellipsis;
-                        white-space:nowrap;
-                        overflow:hidden;
+                        white-space: nowrap;
+                        overflow: hidden;
                     }
                 }
 
@@ -495,9 +483,9 @@ const fileCustomRequest = ({
         height: 100%;
 
         .empty {
-            width: 100%; 
+            width: 100%;
             height: 100%;
-            background-color: aliceblue; 
+            background-color: aliceblue;
             text-align: center;
         }
 
@@ -555,6 +543,7 @@ const fileCustomRequest = ({
                     .msgBoxForm {
                         width: 100%;
                         height: 75%;
+
                         .msgBox {
                             height: calc(100% - 30px);
                             font-size: 20px;
@@ -562,8 +551,9 @@ const fileCustomRequest = ({
                             text-align: left;
                             width: calc(100% - 30px);
 
-                            
+
                         }
+
                         .submitButton {
                             height: 30px;
                             width: 100%;
@@ -585,11 +575,11 @@ const fileCustomRequest = ({
 
 .n-input-wrapper {
     height: 500px !important;
-    resize: none !important; 
+    resize: none !important;
 }
 
 textarea {
-    resize: none !important; 
+    resize: none !important;
 }
 
 .pane {
