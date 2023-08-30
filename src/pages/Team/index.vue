@@ -28,7 +28,6 @@ import type { MenuOption } from 'naive-ui'
 import {
     BookOutline as BookIcon,
     FlashOutline as FlashOutline,
-    Document
 } from '@vicons/ionicons5'
 import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
@@ -38,6 +37,7 @@ import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
 import axios from '@/axios/axios';
+import { PeopleTeam16Filled } from '@vicons/fluent';
 
 
 //侧边栏部分
@@ -62,7 +62,7 @@ const refreshMenu = () => {
     menuOptions.value = isPrivate.value ? 
     [
         {
-            label: '个人空间设置',
+            label: '个人空间',
             key: 'team_setting',
             href: '/team/' + tid.value + '/setting',
             icon: renderIcon(BookIcon),
@@ -83,7 +83,7 @@ const refreshMenu = () => {
             label: '成员管理',
             key: 'member_management',
             href: '/team/' + tid.value + '/member',
-            icon: renderIcon(BookIcon),
+            icon: renderIcon(PeopleTeam16Filled),
         },
         {
             label: '团队设置',
@@ -112,7 +112,7 @@ const refreshMenu = () => {
                         label: item.project_name,
                         key: item.pid,
                         href: '/team/' + tid.value + '/project/' + item.pid,
-                        icon: renderIcon(Document),
+                        icon: renderIcon(null as any),
                     })
                 })
             } else {
@@ -170,10 +170,25 @@ function renderMenuLabel(option: MenuOption) {
     /* background-color: black; */
 }
 .leftSideNavHeader {
+    height: 13%;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: var(--primary-color) solid;
+    border-bottom-width: 3px;
+    > span:first-child {
+        height: 60%;
+        font-size: large;
+        font-family: "Microsoft Yahei";
+    }
+    span {
+        margin: 10px;
+    }
 }
 .leftSideNavMenu {
     padding: 10px; 
+
     ::v-deep(.n-menu-item) {
         margin-top: 6px;
     }
