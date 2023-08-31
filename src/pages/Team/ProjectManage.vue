@@ -214,7 +214,23 @@ const columns = [
                         const pid = row.key.split('.')[1]
                         router.push('/team/' + tid + '/project/' + pid)
                     }
-                }, "进入")
+                }, "进入"),
+                h(NButton, {
+                    style: "margin-left: 10px",
+                    onclick: () => {
+                        const pid = row.key.split('.')[1]
+                        axios.post('project/copyProject', {
+                            pid : pid
+                        }).then(res => {
+                            if (res.data.code === 200) {
+                                message.success('复制成功')
+                                refreshData()
+                            } else {
+                                message.warning(res.data.message)
+                            }
+                        })
+                    }
+                }, "复制")
             ]);
         }
     }
@@ -399,6 +415,7 @@ const refreshData = () => {
 }
 
 watch(projectstore.projectChanged, () => {
+    tid.value = teamstore.curTeam.value.toString()
     refreshData()
 })
 
