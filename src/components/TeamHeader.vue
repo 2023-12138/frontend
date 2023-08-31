@@ -593,6 +593,7 @@ const changeAvatar = () => {
         }
         currentAvatar.value = data;
     })
+    changeAvatarModal.value = !changeAvatarModal.value;
 }
 
     //修改密码
@@ -686,6 +687,21 @@ const changePassword = async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.info::before {
+    content: '';
+    width: 80%;
+    height: 2px;
+    background-color: #eeee;
+    position: absolute;
+    left:10%;
+    margin-bottom: 30%;
+}
+
+.info:first-child::before{
+    width: 100%;
+    left: 0;
 }
 
 .infoContentFirst {
