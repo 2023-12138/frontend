@@ -91,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref,onMounted } from 'vue';
+import { ref,onMounted, watch } from 'vue';
 import { mypost } from '@/axios/axios';
 import { useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
@@ -126,6 +126,13 @@ const getFiles = async () => {
 onMounted(() => {
     getFiles();
 })
+watch(
+    () => route.params,
+    () => {
+        getFiles();
+    },
+    { immediate:true }
+)
 
 //新建文件
 const fileName = ref('');
@@ -178,7 +185,6 @@ const createFile = async () => {
     getFiles();
     message.success('创建成功！');
 }
-
 </script>
 
 <style scoped>
