@@ -1,6 +1,6 @@
 <template>
     <div>
-        这是团队设置页面嘻嘻
+        团队设置
         ID: {{ $route.params.tid }}
     </div>
 </template>

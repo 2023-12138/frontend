@@ -226,6 +226,7 @@ watch([chatMessages.value,docMessages.value],([chatNewValue,docNewVlaue]) => {
     align-items:center ;
     margin-right: 20px;
     position:relative;
+    cursor: pointer;
 }
 
 .remind {

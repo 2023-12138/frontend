@@ -4,17 +4,15 @@
             fixedNumber="1" fixedBox="true" autoCropWidth="200" autoCropHeight="200" limitMinSize="50">
         </vueCropper>
     </div>
-    <n-upload abstract :custom-request="customRequest" :default-file-list="fileList">
+    <n-upload ref="avatarUpload" abstract :custom-request="customRequest" :default-file-list="fileList">
         <n-upload-trigger #="{ handleClick }" abstract>
             <n-button @click="handleClick">
                 上传
             </n-button>
         </n-upload-trigger>
-        <n-card style="margin-top: 12px" title="文件列表">
-            <n-upload-file-list />
-        </n-card>
     </n-upload>
-    <img :src="imgbase" width="200" height="200">
+    <n-button @click="confirm">确定</n-button>
+    <img :src="imgres" width="200" height="200">
 </template>
 
 <script setup lang='ts'>
@@ -26,7 +24,10 @@ import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 
 const imgbase = ref('');
+const imgres = ref('');
 const fileList = ref([]);
+const avatarUpload = ref();
+const cropper = ref();
 const customRequest = ({
     file
 }: UploadCustomRequestOptions) => {
@@ -35,11 +36,16 @@ const customRequest = ({
     reader.onload = function () {
         imgbase.value = reader.result as string;
     }
+    avatarUpload.value.clear();
 }
-const cropper = ref();
-onMounted(() => {
 
-})
+const confirm = () => {
+    cropper.value.getCropData(data => {
+        console.log(data);
+        
+        imgres.value = data
+    })
+}
 </script>
 
 <style scoped></style>

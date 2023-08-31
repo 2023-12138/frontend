@@ -443,7 +443,6 @@ const register = (e: MouseEvent) => {
                 "name": registerModel.value.name,
                 "email": registerModel.value.email,
                 "captcha": registerModel.value.captcha,
-                "avatar": "schihefuihweoifh"
             }).then(res => {
                 console.log(res)
                 if (res.status === 200) {
