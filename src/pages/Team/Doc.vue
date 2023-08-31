@@ -20,7 +20,8 @@
             </div>
         </div>
         <div id="main" class="docContainer"><iframe name="embed_readwrite" class="docFrame"
-                src="/pad/p/g.19HytmhetyCGO4oU$abc123" width="100%" height="600" frameborder="0"></iframe>
+                src="/pad/p/auth_session?sessionID=s.481d3540dd8f8021d9b01383c6413971&padID=g.19HytmhetyCGO4oU$abc123"
+                width="100%" height="600" frameborder="0"></iframe>
         </div>
     </div>
     <n-popselect v-model:value="ATValue" size="medium" scrollable :options="ATOptions" :show="ATshow" :x="ATleft"
