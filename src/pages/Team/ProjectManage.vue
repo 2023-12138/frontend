@@ -12,8 +12,20 @@
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="project" tab="项目">
-                        <n-data-table :key="(row: any) => row.key" :columns="columns" :data="data"
-                            :pagination="paginationRef" @update:page="handlePageChange" />
+                        <div class="active-project">
+                            <n-input 
+                            class="active-search" 
+                            placeholder="输入搜索项目" 
+                            clearable
+                            @input="filtProject"
+                            >
+                                <template #prefix>
+                                    <n-icon :component="BoxSearch20Filled" />
+                                </template>
+                            </n-input>
+                            <n-data-table :key="(row: any) => row.key" :columns="columns" :data="preData"
+                                :pagination="paginationRef" @update:page="handlePageChange" />
+                        </div>
                     </n-tab-pane>
                     <n-tab-pane name="rubbish bin" tab="回收站">
                         回收站
@@ -35,11 +47,13 @@ import { useProjectStore } from '@/store/projectStore'
 import { useTeamStore } from '@/store/teamStore'
 import axios from '@/axios/axios';
 import { useRoute } from 'vue-router';
+import { BoxSearch20Filled } from '@vicons/fluent'
 const showModal = ref(false)
 
 const route = useRoute()
 const tid = ref(route.params.tid.toString())
 const data: Ref<ProjectRowData[]> = ref([])
+const preData: Ref<ProjectRowData[]> = ref([])
 
 // 前后端逻辑
 const projectStore = useProjectStore();
@@ -50,16 +64,18 @@ const message = useMessage()
 
 import { NButton, NInput } from "naive-ui";
 import { computed, h, nextTick } from "vue";
-import { Column } from '@/interfaces/Project/ProjectTable.interface'
 import DeleteConfirm from '@/components/Project/DeleteConfirm.vue'
 import router from '@/routes';
 const projectNameInputRef = ref()
 const projectDescriptionInputRef = ref()
-const columns: Column[] = [
+const columns = [
     {
         title: '项目名称',
         key: 'projectname',
-        width: 150,
+        width: 180,
+        sorter(rowA: ProjectRowData, rowB: ProjectRowData) {
+            return rowA.projectname.localeCompare(rowB.projectname)
+        },
         render(row: ProjectRowData) {
             return row.isEditing ?
                 h(NInput as any, {
@@ -99,7 +115,7 @@ const columns: Column[] = [
     {
         title: '描述',
         key: 'description',
-        width: 450,
+        width: 250,
         render(row: ProjectRowData) {
             return row.isEditing ?
                 h(NInput as any, {
@@ -147,6 +163,24 @@ const columns: Column[] = [
         }
     },
     {
+        title: '创建时间',
+        key: 'creatTime',
+        width: 230,
+        sorter(rowA: ProjectRowData, rowB: ProjectRowData) {
+            const dateA = new Date(rowA.creatTime.replace(' ', 'T'));
+            const dateB = new Date(rowB.creatTime.replace(' ', 'T'));
+            console.log(dateA)
+            console.log(dateB)
+            console.log(dateA < dateB)
+            return dateA.getTime() - dateB.getTime()
+        },
+        render(row: ProjectRowData) {
+            return h('div', {
+                style: 'min-height: 22px',
+            }, row.creatTime)
+        }
+    },
+    {
         title: '',
         key: 'option',
         render(row: ProjectRowData) {
@@ -170,8 +204,16 @@ const columns: Column[] = [
     }
 ]
 
-// page
+// filter
+function filtProject(v: string) {
+    if (!v) {
+        preData.value = data.value
+    } else {
+        preData.value = data.value.filter((item) => item.projectname.includes(v))
+    }
+}
 
+// page
 const page: Ref<number> = ref(1)
 const handlePageChange = (curPage: number): void => {
     page.value = curPage
@@ -188,16 +230,18 @@ const refreshData = () => {
     }).then(res => {
         if (res.status === 200) {
             if (res.data.code === 200) {
-                console.log(res.data)
                 data.value = res.data.data.projectlist?.map((item: any) => {
                     return {
                         key: tid.value.replace('private', '') + '.' + item.pid,   // pid
                         projectname: item.project_name,
                         description: item.project_inform,
                         creator: item.username,
+                        creatTime: item.create_time.split('.')[0].replace('T', ' '),
                         isEditing: false,
                     }
                 })
+                preData.value = data.value
+                page.value = 1
             } else {
                 message.warning(res.data.message)
             }
@@ -241,5 +285,13 @@ onMounted(() => {
 
 .content {
     width: 100%;
+}
+
+.active-project {
+    margin: 10px;
+
+    .active-search {
+        margin-bottom: 10px;
+    }
 }
 </style>
