@@ -42,7 +42,8 @@
                 <div class="info">
                     <div class="infoContentFirst">
                         <div class="infoAvatar">
-                            <n-upload ref="avatarUpload" abstract :custom-request="chooseAvatar" :default-file-list="fileList">
+                            <n-upload ref="avatarUpload" abstract :custom-request="chooseAvatar"
+                                :default-file-list="fileList">
                                 <n-upload-trigger #="{ handleClick }" abstract>
                                     <div class="infoAvatarContainer" @click="handleClick">
                                         <n-avatar round :size="45" :src="currentAvatar" />
@@ -60,7 +61,8 @@
                         </div>
                     </div>
                     <div class="operations">
-                        <n-button v-if="!showChangeInput[0]" text type="primary" @click="showChangeInput[0] = !showChangeInput[0]">
+                        <n-button v-if="!showChangeInput[0]" text type="primary"
+                            @click="showChangeInput[0] = !showChangeInput[0]">
                             修改
                         </n-button>
                         <template v-else>
@@ -72,7 +74,7 @@
                             </n-button>
                         </template>
                     </div>
-                </div> 
+                </div>
                 <div class="info">
                     <div class="infoContent">
                         <span>手机号</span>
@@ -80,7 +82,8 @@
                         <n-input v-else v-model:value="changeForm[1]" type="text"></n-input>
                     </div>
                     <div class="operations">
-                        <n-button v-if="!showChangeInput[1]" text type="primary" @click="showChangeInput[1] = !showChangeInput[1]">
+                        <n-button v-if="!showChangeInput[1]" text type="primary"
+                            @click="showChangeInput[1] = !showChangeInput[1]">
                             修改
                         </n-button>
                         <template v-else>
@@ -106,7 +109,8 @@
                     </div>
                 </div>
                 <div class="changePassword">
-                    <n-button text type="primary" style="margin-right: 10%;" @click="changePasswordModal = !changePasswordModal">
+                    <n-button text type="primary" style="margin-right: 10%;"
+                        @click="changePasswordModal = !changePasswordModal">
                         修改密码
                     </n-button>
                 </div>
@@ -114,16 +118,18 @@
             <!-- 修改头像 -->
             <n-modal v-model:show="changeAvatarModal" preset="card" style="width: 30vw;height: 70vh;">
                 <div style="width: 100%; height: 90%;">
-                    <vueCropper ref="cropper" :img="imgbase" centerBox="true" autoCrop="true" outputSize="1" outputType="png"
-                        fixedNumber="1" fixedBox="true" autoCropWidth="200" autoCropHeight="200" limitMinSize="50">
+                    <vueCropper ref="cropper" :img="imgbase" centerBox="true" autoCrop="true" outputSize="1"
+                        outputType="png" fixedNumber="1" fixedBox="true" autoCropWidth="200" autoCropHeight="200"
+                        limitMinSize="50">
                     </vueCropper>
                 </div>
                 <div class="changeAvatarButtons">
                     <n-button strong secondary type="primary" style="margin-top: 20px;width: 20%;" @click="changeAvatar">
-                        确定    
+                        确定
                     </n-button>
-                    <n-button strong secondary type="default" style="margin-top: 20px;width: 20%;" @click="changeAvatarModal = !changeAvatarModal;">
-                        取消 
+                    <n-button strong secondary type="default" style="margin-top: 20px;width: 20%;"
+                        @click="changeAvatarModal = !changeAvatarModal;">
+                        取消
                     </n-button>
                 </div>
             </n-modal>
@@ -131,10 +137,12 @@
             <n-modal title="修改密码" v-model:show="changePasswordModal" preset="card" style="width: 30vw;height: 40vh;">
                 <n-form ref="changePasswordForm" :model="changePasswordModel" :rules="changePasswordRules">
                     <n-form-item path="oldPassword" label="旧密码">
-                        <n-input v-model:value="changePasswordModel.oldPassword" @keydown.enter.prevent placeholder="请输入旧密码" />
+                        <n-input v-model:value="changePasswordModel.oldPassword" @keydown.enter.prevent
+                            placeholder="请输入旧密码" />
                     </n-form-item>
                     <n-form-item path="newPassword" label="新密码">
-                        <n-input v-model:value="changePasswordModel.newPassword" @keydown.enter.prevent placeholder="请输入新密码" />
+                        <n-input v-model:value="changePasswordModel.newPassword" @keydown.enter.prevent
+                            placeholder="请输入新密码" />
                     </n-form-item>
                 </n-form>
                 <div class="submitButtons">
@@ -180,8 +188,8 @@ const messengerStore = useMessengerStore();
 //加载头像以及用户名和当前团队
 const currentAvatar = ref('');
 onMounted(async () => {
-    const res = await mypost(message,'/user/showInfo',{});
-    if(!res){
+    const res = await mypost(message, '/user/showInfo', {});
+    if (!res) {
         return;
     }
     currentAvatar.value = res.info.avatar;
@@ -288,7 +296,6 @@ const avatarOptions = ref([
 const message = useMessage()
 
 async function avatarHandleSelect(key: string) {
-    // message.info(key)
     if (key === 'create-team') {
         createTeamModal.value = true
     } else if (key === 'logout') {
@@ -296,15 +303,15 @@ async function avatarHandleSelect(key: string) {
         localStorage.removeItem('uid')
         router.push("/")
     } else if (key === 'self-info') {
-        const res = await mypost(message,'/user/showInfo',{});
-        if(!res){
+        const res = await mypost(message, '/user/showInfo', {});
+        if (!res) {
             return;
         }
         userName.value = res.info.username;
         phone.value = res.info.phone;
         email.value = res.info.email;
         realName.value = res.info.name;
-        changeForm.value =  [res.info.username,res.info.phone,res.info.email];
+        changeForm.value = [res.info.username, res.info.phone, res.info.email];
         userInfoModal.value = true;
     } else {
         const tid = key!.split('.')[1]
@@ -408,13 +415,14 @@ function initWebSocket() {
         let rid: number = parseInt(data.rid);
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
+            debugger;
             newDocMessage();
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
             newMessage(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(", rid);
-        } else {
-            rid = NaN;
         }
+        if (msgtype != 'chat_aite' && msgtype != 'chat_aite_history')
+            rid = NaN;
         //判断是否在recent中
         let isuser = (teamId == "");
         let recent: RecentListModel | undefined;
@@ -447,7 +455,6 @@ function initWebSocket() {
                 recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
             }
         }
-        //在recent中未发现，首先添加到消息中
 
 
         let messagetype: "text" | "img" | "file" = 'text';
@@ -512,13 +519,15 @@ onMounted(async () => {
         const teammembers: {
             userName: string;
             userID: number;
+            isAdmin: boolean;
         }[] = [];
         let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
         if (!mres) return;
         for (const member of mres.userlist) {
             teammembers.push({
                 userName: member.username,
-                userID: member.uid
+                userID: member.uid,
+                isAdmin: (member.status == 0 || member.status == 1)
             });
         }
         allTeams.value.push({
@@ -535,30 +544,30 @@ const userName = ref('');
 const phone = ref('');
 const email = ref('');
 const realName = ref('');
-const changeForm = ref(['','','']);
-const showChangeInput = ref([false,false,false]);
-const changeInfo = async (index:number) => {
+const changeForm = ref(['', '', '']);
+const showChangeInput = ref([false, false, false]);
+const changeInfo = async (index: number) => {
     //表单验证
     const emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     const phonePattern = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1589]))\d{8}$/
-    if(!phonePattern.test(changeForm.value[1])){
+    if (!phonePattern.test(changeForm.value[1])) {
         message.warning('请输入正确格式的手机号');
         showChangeInput.value[1] = !showChangeInput.value[1];
         changeForm.value[1] = phone.value;
         return;
     }
-    if(!emailPattern.test(changeForm.value[2])){
+    if (!emailPattern.test(changeForm.value[2])) {
         message.warning('请输入正确格式的邮箱');
         showChangeInput.value[2] = !showChangeInput.value[2];
         changeForm.value[2] = email.value;
         return;
     }
-    const res = await mypost(message,'/user/changeInfo',{
+    const res = await mypost(message, '/user/changeInfo', {
         "username": changeForm.value[0],
         "phone": changeForm.value[1],
         "email": changeForm.value[2]
     });
-    if(!res){
+    if (!res) {
         return;
     }
     userName.value = changeForm.value[0];
@@ -567,7 +576,7 @@ const changeInfo = async (index:number) => {
     showChangeInput.value[index] = !showChangeInput.value[index];
     message.success('修改成功！');
 }
-    //修改头像
+//修改头像
 const changeAvatarModal = ref(false)
 const imgbase = ref('');
 const fileList = ref([]);
@@ -586,24 +595,24 @@ const chooseAvatar = ({
     changeAvatarModal.value = !changeAvatarModal.value;
 }
 const changeAvatar = () => {
-    cropper.value.getCropData(async (data:string) => {
-        const res = await mypost(message,'/user/changeAva',{avatar:data});
-        if(!res){
+    cropper.value.getCropData(async (data: string) => {
+        const res = await mypost(message, '/user/changeAva', { avatar: data });
+        if (!res) {
             return;
         }
         currentAvatar.value = data;
     })
 }
 
-    //修改密码
+//修改密码
 const changePasswordModal = ref(false);
-const changePasswordModel = ref({oldPassword:'',newPassword:''});
+const changePasswordModel = ref({ oldPassword: '', newPassword: '' });
 const changePasswordRules = {
-    oldPassword:[
-        {required:true,message: '请输入旧密码'}
+    oldPassword: [
+        { required: true, message: '请输入旧密码' }
     ],
-    newPassword:[
-        {required:true,message: '请输入新密码'}
+    newPassword: [
+        { required: true, message: '请输入新密码' }
     ]
 }
 const changePassword = async () => {
@@ -611,10 +620,10 @@ const changePassword = async () => {
         message,
         '/user/changePwd',
         {
-            "oldPassword":changePasswordModel.value.oldPassword,
-            "newPassword":changePasswordModel.value.newPassword,
+            "oldPassword": changePasswordModel.value.oldPassword,
+            "newPassword": changePasswordModel.value.newPassword,
         });
-    if(!res){
+    if (!res) {
         return;
     }
     message.success('修改成功！')
@@ -691,9 +700,9 @@ const changePassword = async () => {
 .infoContentFirst {
     height: 100%;
     width: 80%;
-    display:flex;
+    display: flex;
     align-items: center;
-    
+
     .infoContent {
         padding-left: 10px;
     }
@@ -702,24 +711,24 @@ const changePassword = async () => {
 .infoAvatar {
     height: 100%;
     width: 20%;
-    display:flex;
+    display: flex;
     justify-content: flex-start;
     align-items: center;
 
     .infoAvatarContainer {
         font-size: 0;
         border-radius: 50%;
-        position:relative;
+        position: relative;
 
         .changeAvatar {
             height: 45px;
             width: 45px;
             background-color: rgba(0, 0, 0, 0.46);
-            font-size:0;
+            font-size: 0;
             border-radius: 50%;
             position: absolute;
-            left:0;
-            top:0;
+            left: 0;
+            top: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -734,16 +743,16 @@ const changePassword = async () => {
     }
 }
 
-.infoContent{
+.infoContent {
     height: 60%;
     width: 70%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
 
-    > span:first-child {
-        font-size:17px;
-        color:rgb(96, 90, 131)
+    >span:first-child {
+        font-size: 17px;
+        color: rgb(96, 90, 131)
     }
 }
 
@@ -781,5 +790,4 @@ const changePassword = async () => {
     .submitButton {
         width: 40%;
     }
-}
-</style>
+}</style>
