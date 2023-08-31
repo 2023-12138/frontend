@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
-export type TeamModel = { teamName: string; teamID: number; teamMembers: Array<{ userName: string, userID: number }> };
+export type TeamModel = { teamName: string; teamID: number; teamMembers: Array<{ userName: string, userID: number, isAdmin: boolean }> };
 export type RecentListModel = {
     //聊天的名称，用户名或者团队名
     userOrTeamName: string;
@@ -16,7 +16,7 @@ export type MessageModel = {
     time: string; //消息发送的时间
     imgstr: string | null;
     rid: number;
-    type:'text' | 'img' | 'file';
+    type: 'text' | 'img' | 'file';
 };
 export const useChatContainer = defineStore('chatroom', () => {
     //是否展示
@@ -37,6 +37,9 @@ export const useChatContainer = defineStore('chatroom', () => {
     const currentChatName = ref("User");
     const webSocket = ref<WebSocket | null>(null);
     //const onNewAT: Ref<((teamID: number, teamName: string, rid: number) => void) | null> = ref(null);
-    const onOpenMsgFromNotice: Ref<((teamID: number, rid: number) => void) | null> = ref(null);
-    return { chatShowModal, recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, msgElements, recvHandler, myname }
+    const onOpenMsgFromNotice: Ref<((teamID: number, rid: number) => void) | null> = ref(null); const options = ref<{
+        label: string,
+        value: string
+    }[]>([]);
+    return { chatShowModal, recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, msgElements, recvHandler, myname, options }
 })

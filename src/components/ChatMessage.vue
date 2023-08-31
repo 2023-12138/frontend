@@ -178,4 +178,22 @@ const showImgModal = ref(false);
 .myself {
     transform: rotateY(180deg);
 }
+
+.remind {
+    animation: dark 1s 1s;
+}
+
+@keyframes drak {
+    0% {}
+
+    50% {
+        background-color: black;
+        transform: rotateZ(30deg);
+    }
+
+    100% {
+        background-color: red;
+    }
+
+}
 </style>

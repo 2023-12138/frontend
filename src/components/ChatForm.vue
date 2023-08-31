@@ -129,12 +129,9 @@ import axios from 'axios';
 import { useMessengerStore } from '@/store/messengerStore';
 const messengerStore = useMessengerStore();
 const container = useChatContainer();
-const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, recvHandler, myname } = storeToRefs(container);
+const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, recvHandler, myname, options } = storeToRefs(container);
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
-const options = ref<{
-    label: string,
-    value: string
-}[]>([]);
+
 const picupload = ref();
 const fileupload = ref();
 let MessageComponents: any[] = [];
@@ -181,11 +178,13 @@ function sendMessage() {
     try { //判断@了哪些人
         let atlist: Array<number> = [];
 
-        if (!currentChatID.value.isuser) {
 
+        if (!currentChatID.value.isuser) {
+            let team = allTeams.value.find(ele => ele.teamID == currentChatID.value.id);
+            let isadmin = team?.teamMembers.find(ele => ele.userID == myuid.value)?.isAdmin;
             options.value.forEach(option => {
                 if (inputMessage.value.includes(`@${option.value}`)) {
-                    if (option.value == "全体成员") {
+                    if (option.value == "全体成员" && isadmin) {
                         atlist.push(-1);
                     } else {
                         const team = allTeams.value.find((ele) => ele.teamID == currentChatID.value.id);
@@ -231,9 +230,10 @@ function team2Options(team: TeamModel) {
 }
 
 async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderName: string) {
-    debugger;
+    //debugger;
     let data = JSON.parse(e.data);
     let msgtype: string = data.type;
+    if (msgtype == 'chat_aite_history') msgtype = 'chat_aite';
     data = data.data;
     //message,senderId,teamId,time
     let message: string = data.message;
@@ -275,6 +275,7 @@ function onUserClicked(id: number, targetUserName: string) {
     startChat(id, true, targetUserName);
 }
 function startChat(id: number, isuser: boolean, targetUName: string) {
+    if (currentChatID.value.id == id && currentChatID.value.isuser == isuser) return;
     currentChatID.value = { id: id, isuser: isuser };
     if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
         //没找到,问服务器请求历史数据 
@@ -329,6 +330,7 @@ messengerStore.registerMessage('chatform_startchat', (arg: { id: number, isuser:
 })
 function changeChatContent(id: number, isuser: boolean) {
     msgList.value = [];
+    console.log('content changing');
     container.msgElements = [];
     const chat = recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser);
     if (chat == undefined) {
@@ -351,11 +353,14 @@ function changeChatContent(id: number, isuser: boolean) {
         let team = allTeams.value.find((ele) => ele.teamID == id);
         if (team == undefined) return;
         options.value = [];
-        options.value.push({
-            label: '全体成员',
-            value: '全体成员'
-        });
+        debugger;
+        if (team.teamMembers.find(ele => ele.userID == myuid.value)?.isAdmin)
+            options.value.push({
+                label: '全体成员',
+                value: '全体成员'
+            });
         team.teamMembers.forEach(member => {
+            if (member.userID == myuid.value) return;
             options.value.push({
                 label: member.userName,
                 value: member.userName,
@@ -364,21 +369,22 @@ function changeChatContent(id: number, isuser: boolean) {
     }
 }
 onOpenMsgFromNotice.value = (teamID: number, rid: number) => {
-
     onTeamClicked(teamID, allTeams.value.find(ele => ele.teamID == teamID)?.teamName || 'O_o :(');
     //开始滚动然后高亮
     setTimeout(() => {
-        //debugger;
-        container.msgElements.find(ele => ele.rid == rid)?.element.scrollIntoView({
-
+        debugger;
+        let element = container.msgElements.reverse().find(ele => ele.rid == rid)?.element;
+        element?.scrollIntoView({
             block: 'nearest',
             inline: 'nearest',
             behavior: 'smooth'
         });
-    }, 2000);
+        element?.classList.add('remind');
+        console.log(element);
+
+    }, 500);
 };
 onMounted(async () => {
-
     if (webSocket.value == null) {
         // //重新加载socket的所有事件
         // try {
@@ -400,34 +406,6 @@ onMounted(async () => {
     if (!res) {
         return;
     }
-    // const li: {
-    //     teamlist: {
-    //         tid: number;
-    //         teamname: string;
-    //         teaminform: string;
-    //         is_active: boolean;
-    //     }[]
-    // } = res;
-    // allTeams.value = [];
-    // for (const ateam of li.teamlist) {
-    //     const teammembers: {
-    //         userName: string;
-    //         userID: number;
-    //     }[] = [];
-    //     let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
-    //     if (!mres) return;
-    //     for (const member of mres.userlist) {
-    //         teammembers.push({
-    //             userName: member.username,
-    //             userID: member.uid
-    //         });
-    //     }
-    //     allTeams.value.push({
-    //         teamName: ateam.teamname,
-    //         teamID: ateam.tid,
-    //         teamMembers: teammembers
-    //     });
-    // }
 
 
 });

@@ -298,13 +298,14 @@ function initWebSocket() {
         let rid: number = parseInt(data.rid);
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
+            debugger;
             newDocMessage();
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
             newMessage(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(", rid);
-        } else {
-            rid = NaN;
         }
+        if (msgtype != 'chat_aite' && msgtype != 'chat_aite_history')
+            rid = NaN;
         //判断是否在recent中
         let isuser = (teamId == "");
         let recent: RecentListModel | undefined;
@@ -337,7 +338,6 @@ function initWebSocket() {
                 recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
             }
         }
-        //在recent中未发现，首先添加到消息中
 
 
         let messagetype: "text" | "img" | "file" = 'text';
@@ -402,13 +402,15 @@ onMounted(async () => {
         const teammembers: {
             userName: string;
             userID: number;
+            isAdmin: boolean;
         }[] = [];
         let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
         if (!mres) return;
         for (const member of mres.userlist) {
             teammembers.push({
                 userName: member.username,
-                userID: member.uid
+                userID: member.uid,
+                isAdmin: (member.status == 0 || member.status == 1)
             });
         }
         allTeams.value.push({
