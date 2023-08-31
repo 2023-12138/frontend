@@ -403,6 +403,7 @@ watch(projectstore.projectChanged, () => {
 })
 
 watch(teamstore.teamChanged, () => {
+    tid.value = teamstore.curTeam.value.toString()
     refreshData()
 })
 
