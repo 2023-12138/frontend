@@ -24,7 +24,7 @@
                 <n-config-provider :theme-overrides="avatarDropdownThemeOverrides">
                     <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
                         @select="avatarHandleSelect" style="border-radius: 9px;width: 200px;">
-                        <n-avatar round :size="40" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                        <n-avatar round :size="40" :src="currentAvatar" />
                     </n-dropdown>
                 </n-config-provider>
             </div>
@@ -37,17 +37,21 @@
             </n-modal>
 
             <!-- 个人信息modal -->
-            <n-modal v-model:show="userInfoModal" class="custom-card" preset="card" style="width: 30vw;height: 90vh;"
+            <n-modal v-model:show="userInfoModal" class="custom-card" preset="card" style="width: 25vw;height: 80vh;"
                 title="个人信息" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%;">
                 <div class="info">
                     <div class="infoContentFirst">
                         <div class="infoAvatar">
-                            <div class="infoAvatarContainer" @click="changeAvatarModal = !changeAvatarModal">
-                                <n-avatar round :size="45" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                                <div class="changeAvatar">
-                                    <n-icon color="white" :size="30" :component="IosReverseCamera" />
-                                </div>
-                            </div>
+                            <n-upload ref="avatarUpload" abstract :custom-request="chooseAvatar" :default-file-list="fileList">
+                                <n-upload-trigger #="{ handleClick }" abstract>
+                                    <div class="infoAvatarContainer" @click="handleClick">
+                                        <n-avatar round :size="45" :src="currentAvatar" />
+                                        <div class="changeAvatar">
+                                            <n-icon color="white" :size="30" :component="IosReverseCamera" />
+                                        </div>
+                                    </div>
+                                </n-upload-trigger>
+                            </n-upload>
                         </div>
                         <div class="infoContent">
                             <span>昵称</span>
@@ -68,7 +72,7 @@
                             </n-button>
                         </template>
                     </div>
-                </div>
+                </div> 
                 <div class="info">
                     <div class="infoContent">
                         <span>手机号</span>
@@ -91,32 +95,56 @@
                 </div>
                 <div class="info">
                     <div class="infoContent">
-                        <span>邮箱</span>
-                        <span v-if="!showChangeInput[2]">{{ email }}</span>
-                        <n-input v-else v-model:value="changeForm[2]" type="text"></n-input>
-                    </div>
-                    <div class="operations">
-                        <n-button v-if="!showChangeInput[2]" text type="primary" @click="showChangeInput[2] = !showChangeInput[2]">
-                            修改
-                        </n-button>
-                        <template v-else>
-                            <n-button text type="primary" @click="changeInfo(2)" style="margin-right: 10%;">
-                                保存
-                            </n-button>
-                            <n-button text type="default" @click="showChangeInput[2] = !showChangeInput[2]">
-                                取消
-                            </n-button>
-                        </template>
+                        <span>真实姓名</span>
+                        <span>{{ realName }}</span>
                     </div>
                 </div>
                 <div class="info">
-                    <div class="operations">
-                        <span>修改密码</span>
+                    <div class="infoContent">
+                        <span>邮箱</span>
+                        <span>{{ email }}</span>
                     </div>
                 </div>
+                <div class="changePassword">
+                    <n-button text type="primary" style="margin-right: 10%;" @click="changePasswordModal = !changePasswordModal">
+                        修改密码
+                    </n-button>
+                </div>
             </n-modal>
-            <n-modal v-model:show="changeAvatarModal" preset="card" style="width: 50vw;height: 90vh;">
-
+            <!-- 修改头像 -->
+            <n-modal v-model:show="changeAvatarModal" preset="card" style="width: 30vw;height: 70vh;">
+                <div style="width: 100%; height: 90%;">
+                    <vueCropper ref="cropper" :img="imgbase" centerBox="true" autoCrop="true" outputSize="1" outputType="png"
+                        fixedNumber="1" fixedBox="true" autoCropWidth="200" autoCropHeight="200" limitMinSize="50">
+                    </vueCropper>
+                </div>
+                <div class="changeAvatarButtons">
+                    <n-button strong secondary type="primary" style="margin-top: 20px;width: 20%;" @click="changeAvatar">
+                        确定    
+                    </n-button>
+                    <n-button strong secondary type="default" style="margin-top: 20px;width: 20%;" @click="changeAvatarModal = !changeAvatarModal;">
+                        取消 
+                    </n-button>
+                </div>
+            </n-modal>
+            <!-- 修改密码 -->
+            <n-modal title="修改密码" v-model:show="changePasswordModal" preset="card" style="width: 30vw;height: 40vh;">
+                <n-form ref="changePasswordForm" :model="changePasswordModel" :rules="changePasswordRules">
+                    <n-form-item path="oldPassword" label="旧密码">
+                        <n-input v-model:value="changePasswordModel.oldPassword" @keydown.enter.prevent placeholder="请输入旧密码" />
+                    </n-form-item>
+                    <n-form-item path="newPassword" label="新密码">
+                        <n-input v-model:value="changePasswordModel.newPassword" @keydown.enter.prevent placeholder="请输入新密码" />
+                    </n-form-item>
+                </n-form>
+                <div class="submitButtons">
+                    <n-button type="info" class="submitButton" @click="changePassword">
+                        确定
+                    </n-button>
+                    <n-button type="default" class="submitButton" @click="changePasswordModal = !changePasswordModal">
+                        取消
+                    </n-button>
+                </div>
             </n-modal>
         </div>
     </div>
@@ -125,9 +153,8 @@
 <script setup lang='ts'>
 
 import { ref, h, onMounted } from 'vue';
-
 import { RecentListModel, useChatContainer } from '@/store/store'
-import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
+import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification, UploadCustomRequestOptions } from 'naive-ui'
 import { useTeamStore } from '@/store/teamStore'
 import { MessageCircle } from '@vicons/tabler'
 import { IosReverseCamera } from '@vicons/ionicons4'
@@ -145,29 +172,21 @@ const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
 const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal } = storeToRefs(container);
 import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
+import 'vue-cropper/dist/index.css';
+import { VueCropper } from 'vue-cropper';
+
 const messengerStore = useMessengerStore();
 
-// const renderOption = (icon: Component) => {
-//     return () => h(
-//         'div',
-//         {
-//             style: 'display: flex; align-items: center; padding: 8px 12px;'
-//         },
-//         [
-//             h(NIcon, null, { default: () => h(icon) }),
-//             h('div', null, [
-//                 h('div', null, [h(NText, { depth: 2 }, { default: () => '用户名' })]),
-//                 h('div', { style: 'font-size: 12px;' }, [
-//                     h(
-//                         NText,
-//                         { depth: 3 },
-//                         { default: () => '当前所在团队' }
-//                     )
-//                 ])
-//             ])
-//         ]
-//     )
-// }
+//加载头像以及用户名和当前团队
+const currentAvatar = ref('');
+onMounted(async () => {
+    const res = await mypost(message,'/user/showInfo',{});
+    if(!res){
+        return;
+    }
+    currentAvatar.value = res.info.avatar;
+    userName.value = res.info.name;
+})
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -180,15 +199,15 @@ function renderCustomHeader() {
             h(NAvatar, {
                 round: true,
                 style: 'margin-right: 12px;',
-                src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/demo1.JPG'
+                src: currentAvatar.value
             }),
             h('div', null, [
-                h('div', null, [h(NText, { depth: 2 }, { default: () => '用户名' })]),
+                h('div', null, [h(NText, { depth: 2 }, { default: () => userName.value })]),
                 h('div', { style: 'font-size: 12px;' }, [
                     h(
                         NText,
                         { depth: 3 },
-                        { default: () => '当前所在团队' }
+                        { default: () => teamstore.curTeamName.value }
                     )
                 ])
             ])
@@ -281,10 +300,11 @@ async function avatarHandleSelect(key: string) {
         if(!res){
             return;
         }
-        userName.value = res.info.name;
+        userName.value = res.info.username;
         phone.value = res.info.phone;
         email.value = res.info.email;
-        changeForm.value =  [res.info.name,res.info.phone,res.info.email];
+        realName.value = res.info.name;
+        changeForm.value =  [res.info.username,res.info.phone,res.info.email];
         userInfoModal.value = true;
     } else {
         const tid = key!.split('.')[1]
@@ -514,10 +534,25 @@ const userInfoModal = ref(false);
 const userName = ref('');
 const phone = ref('');
 const email = ref('');
+const realName = ref('');
 const changeForm = ref(['','','']);
 const showChangeInput = ref([false,false,false]);
 const changeInfo = async (index:number) => {
     //表单验证
+    const emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    const phonePattern = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1589]))\d{8}$/
+    if(!phonePattern.test(changeForm.value[1])){
+        message.warning('请输入正确格式的手机号');
+        showChangeInput.value[1] = !showChangeInput.value[1];
+        changeForm.value[1] = phone.value;
+        return;
+    }
+    if(!emailPattern.test(changeForm.value[2])){
+        message.warning('请输入正确格式的邮箱');
+        showChangeInput.value[2] = !showChangeInput.value[2];
+        changeForm.value[2] = email.value;
+        return;
+    }
     const res = await mypost(message,'/user/changeInfo',{
         "username": changeForm.value[0],
         "phone": changeForm.value[1],
@@ -526,12 +561,64 @@ const changeInfo = async (index:number) => {
     if(!res){
         return;
     }
+    userName.value = changeForm.value[0];
+    phone.value = changeForm.value[1];
+    email.value = changeForm.value[2];
     showChangeInput.value[index] = !showChangeInput.value[index];
+    message.success('修改成功！');
 }
     //修改头像
 const changeAvatarModal = ref(false)
+const imgbase = ref('');
+const fileList = ref([]);
+const avatarUpload = ref();
+const cropper = ref();
+const chooseAvatar = ({
+    file
+}: UploadCustomRequestOptions) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file.file as File);
+    reader.onload = function () {
+        debugger;
+        imgbase.value = reader.result as string;
+    }
+    avatarUpload.value.clear();
+    changeAvatarModal.value = !changeAvatarModal.value;
+}
 const changeAvatar = () => {
+    cropper.value.getCropData(async (data:string) => {
+        const res = await mypost(message,'/user/changeAva',{avatar:data});
+        if(!res){
+            return;
+        }
+        currentAvatar.value = data;
+    })
+}
 
+    //修改密码
+const changePasswordModal = ref(false);
+const changePasswordModel = ref({oldPassword:'',newPassword:''});
+const changePasswordRules = {
+    oldPassword:[
+        {required:true,message: '请输入旧密码'}
+    ],
+    newPassword:[
+        {required:true,message: '请输入新密码'}
+    ]
+}
+const changePassword = async () => {
+    const res = await mypost(
+        message,
+        '/user/changePwd',
+        {
+            "oldPassword":changePasswordModel.value.oldPassword,
+            "newPassword":changePasswordModel.value.newPassword,
+        });
+    if(!res){
+        return;
+    }
+    message.success('修改成功！')
+    changePasswordModal.value = false;
 }
 
 </script>
@@ -585,15 +672,12 @@ const changeAvatar = () => {
     justify-content: center;
     align-items: center;
     margin-right: 20px;
-}
-
-.search {
-    margin-left: 3%;
-    width: 50%;
+    cursor: pointer;
 }
 
 .avatar {
     margin-right: 1.5%;
+    cursor: pointer;
 }
 
 .info {
@@ -609,6 +693,10 @@ const changeAvatar = () => {
     width: 80%;
     display:flex;
     align-items: center;
+    
+    .infoContent {
+        padding-left: 10px;
+    }
 }
 
 .infoAvatar {
@@ -665,5 +753,33 @@ const changeAvatar = () => {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.changeAvatarButtons {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.changePassword {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 0;
+    bottom: 1%;
+}
+
+.submitButtons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+
+    .submitButton {
+        width: 40%;
+    }
 }
 </style>
