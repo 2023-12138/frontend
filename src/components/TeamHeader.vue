@@ -35,18 +35,102 @@
                 <CreateTeamForm v-model:avatarOptions="avatarOptions" @updateModalStatus="updateModalStatus">
                 </CreateTeamForm>
             </n-modal>
+
+            <!-- 个人信息modal -->
+            <n-modal v-model:show="userInfoModal" class="custom-card" preset="card" style="width: 30vw;height: 90vh;"
+                title="个人信息" size="huge" :bordered="false" header-style="padding:20px" content-style="height:70%;">
+                <div class="info">
+                    <div class="infoContentFirst">
+                        <div class="infoAvatar">
+                            <div class="infoAvatarContainer" @click="changeAvatarModal = !changeAvatarModal">
+                                <n-avatar round :size="45" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                <div class="changeAvatar">
+                                    <n-icon color="white" :size="30" :component="IosReverseCamera" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="infoContent">
+                            <span>昵称</span>
+                            <span v-if="!showChangeInput[0]">{{ userName }}</span>
+                            <n-input v-else v-model:value="changeForm[0]" type="text"></n-input>
+                        </div>
+                    </div>
+                    <div class="operations">
+                        <n-button v-if="!showChangeInput[0]" text type="primary" @click="showChangeInput[0] = !showChangeInput[0]">
+                            修改
+                        </n-button>
+                        <template v-else>
+                            <n-button text type="primary" @click="changeInfo(0)" style="margin-right: 10%;">
+                                保存
+                            </n-button>
+                            <n-button text type="default" @click="showChangeInput[0] = !showChangeInput[0]">
+                                取消
+                            </n-button>
+                        </template>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="infoContent">
+                        <span>手机号</span>
+                        <span v-if="!showChangeInput[1]">{{ phone }}</span>
+                        <n-input v-else v-model:value="changeForm[1]" type="text"></n-input>
+                    </div>
+                    <div class="operations">
+                        <n-button v-if="!showChangeInput[1]" text type="primary" @click="showChangeInput[1] = !showChangeInput[1]">
+                            修改
+                        </n-button>
+                        <template v-else>
+                            <n-button text type="primary" @click="changeInfo(1)" style="margin-right: 10%;">
+                                保存
+                            </n-button>
+                            <n-button text type="default" @click="showChangeInput[1] = !showChangeInput[1]">
+                                取消
+                            </n-button>
+                        </template>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="infoContent">
+                        <span>邮箱</span>
+                        <span v-if="!showChangeInput[2]">{{ email }}</span>
+                        <n-input v-else v-model:value="changeForm[2]" type="text"></n-input>
+                    </div>
+                    <div class="operations">
+                        <n-button v-if="!showChangeInput[2]" text type="primary" @click="showChangeInput[2] = !showChangeInput[2]">
+                            修改
+                        </n-button>
+                        <template v-else>
+                            <n-button text type="primary" @click="changeInfo(2)" style="margin-right: 10%;">
+                                保存
+                            </n-button>
+                            <n-button text type="default" @click="showChangeInput[2] = !showChangeInput[2]">
+                                取消
+                            </n-button>
+                        </template>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="operations">
+                        <span>修改密码</span>
+                    </div>
+                </div>
+            </n-modal>
+            <n-modal v-model:show="changeAvatarModal" preset="card" style="width: 50vw;height: 90vh;">
+
+            </n-modal>
         </div>
     </div>
 </template>
 
 <script setup lang='ts'>
 
-import { ref, h, onMounted, Component } from 'vue';
+import { ref, h, onMounted } from 'vue';
 
 import { RecentListModel, useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification } from 'naive-ui'
 import { useTeamStore } from '@/store/teamStore'
 import { MessageCircle } from '@vicons/tabler'
+import { IosReverseCamera } from '@vicons/ionicons4'
 
 import Logo from '@/components/Logo.vue';
 import ChatForm from '@/components/ChatForm.vue'
@@ -63,27 +147,27 @@ import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 const messengerStore = useMessengerStore();
 
-const renderOption = (icon: Component) => {
-    return () => h(
-        'div',
-        {
-            style: 'display: flex; align-items: center; padding: 8px 12px;'
-        },
-        [
-            h(NIcon, null, { default: () => h(icon) }),
-            h('div', null, [
-                h('div', null, [h(NText, { depth: 2 }, { default: () => '用户名' })]),
-                h('div', { style: 'font-size: 12px;' }, [
-                    h(
-                        NText,
-                        { depth: 3 },
-                        { default: () => '当前所在团队' }
-                    )
-                ])
-            ])
-        ]
-    )
-}
+// const renderOption = (icon: Component) => {
+//     return () => h(
+//         'div',
+//         {
+//             style: 'display: flex; align-items: center; padding: 8px 12px;'
+//         },
+//         [
+//             h(NIcon, null, { default: () => h(icon) }),
+//             h('div', null, [
+//                 h('div', null, [h(NText, { depth: 2 }, { default: () => '用户名' })]),
+//                 h('div', { style: 'font-size: 12px;' }, [
+//                     h(
+//                         NText,
+//                         { depth: 3 },
+//                         { default: () => '当前所在团队' }
+//                     )
+//                 ])
+//             ])
+//         ]
+//     )
+// }
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -184,7 +268,7 @@ const avatarOptions = ref([
 
 const message = useMessage()
 
-function avatarHandleSelect(key: string) {
+async function avatarHandleSelect(key: string) {
     // message.info(key)
     if (key === 'create-team') {
         createTeamModal.value = true
@@ -193,7 +277,15 @@ function avatarHandleSelect(key: string) {
         localStorage.removeItem('uid')
         router.push("/")
     } else if (key === 'self-info') {
-        message.info('个人信息')
+        const res = await mypost(message,'/user/showInfo',{});
+        if(!res){
+            return;
+        }
+        userName.value = res.info.name;
+        phone.value = res.info.phone;
+        email.value = res.info.email;
+        changeForm.value =  [res.info.name,res.info.phone,res.info.email];
+        userInfoModal.value = true;
     } else {
         const tid = key!.split('.')[1]
         const teamname = key!.split('.')[2]
@@ -210,8 +302,6 @@ const avatarDropdownThemeOverrides = {
         "borderRadius": "9px"
     }
 }
-
-//聊天
 
 let createTeamModal = ref(false)
 const updateModalStatus = (status: boolean) => {
@@ -419,6 +509,31 @@ onMounted(async () => {
     }
 })
 
+//个人信息
+const userInfoModal = ref(false);
+const userName = ref('');
+const phone = ref('');
+const email = ref('');
+const changeForm = ref(['','','']);
+const showChangeInput = ref([false,false,false]);
+const changeInfo = async (index:number) => {
+    //表单验证
+    const res = await mypost(message,'/user/changeInfo',{
+        "username": changeForm.value[0],
+        "phone": changeForm.value[1],
+        "email": changeForm.value[2]
+    });
+    if(!res){
+        return;
+    }
+    showChangeInput.value[index] = !showChangeInput.value[index];
+}
+    //修改头像
+const changeAvatarModal = ref(false)
+const changeAvatar = () => {
+
+}
+
 </script>
 
 <style scoped>
@@ -479,5 +594,76 @@ onMounted(async () => {
 
 .avatar {
     margin-right: 1.5%;
+}
+
+.info {
+    height: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.infoContentFirst {
+    height: 100%;
+    width: 80%;
+    display:flex;
+    align-items: center;
+}
+
+.infoAvatar {
+    height: 100%;
+    width: 20%;
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .infoAvatarContainer {
+        font-size: 0;
+        border-radius: 50%;
+        position:relative;
+
+        .changeAvatar {
+            height: 45px;
+            width: 45px;
+            background-color: rgba(0, 0, 0, 0.46);
+            font-size:0;
+            border-radius: 50%;
+            position: absolute;
+            left:0;
+            top:0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+        }
+
+        &:hover .changeAvatar {
+            cursor: pointer;
+            opacity: 1;
+            transition: .3s linear;
+        }
+    }
+}
+
+.infoContent{
+    height: 60%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    > span:first-child {
+        font-size:17px;
+        color:rgb(96, 90, 131)
+    }
+}
+
+.operations {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 </style>
