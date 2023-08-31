@@ -19,23 +19,17 @@
                 </div>
             </div>
         </div>
-        <div id="main"></div>
+        <div id="main" class="docContainer"><iframe name="embed_readwrite" class="docFrame"
+                src="/pad/p/g.19HytmhetyCGO4oU$abc123" width="100%" height="600" frameborder="0"></iframe>
+        </div>
     </div>
-    <n-popselect 
-        v-model:value="ATValue" 
-        size="medium"
-        scrollable 
-        :options="ATOptions" 
-        :show="ATshow" 
-        :x="ATleft" 
-        :y="ATtop+ATheight/2+2" 
-        trigger="manual"
-    >
+    <n-popselect v-model:value="ATValue" size="medium" scrollable :options="ATOptions" :show="ATshow" :x="ATleft"
+        :y="ATtop + ATheight / 2 + 2" trigger="manual">
     </n-popselect>
 </template>
 
 <script setup lang='ts'>
-import { onMounted,ref,watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Editor, withUndoRedo } from "@/editor/index";
 import { usedocEditStore } from '@/store/docEditStore.ts'
 
@@ -49,21 +43,23 @@ const message = useMessage();
 const docEditStore = usedocEditStore();
 const route = useRoute();
 
-let editor:Editor;
+let editor: Editor;
 
 onMounted(async () => {
-    const res = await mypost(message,'/doc/getdoc',{docid:route.params.did})
-    if(!res){
+    //设置cookies
+    document.cookie = "sessionID=s.481d3540dd8f8021d9b01383c6413971;SameSite=None;Secure";
+    const res = await mypost(message, '/doc/getdoc', { docid: route.params.did })
+    if (!res) {
         return;
     }
-    
-    editor = new Editor(document.getElementById('main') as HTMLElement);
-    editor = withUndoRedo(editor); // UndoRedo Plugin
+
+    //editor = new Editor(document.getElementById('main') as HTMLElement);
+    //editor = withUndoRedo(editor); // UndoRedo Plugin
     //'**This is a bold text**\n> tips：You can switch source mode with `cmd+/`\n'
-    editor.insertTextAtCursor(res.content);
-    console.log(editor);
-    console.log(editor.getContent());
-    
+    //editor.insertTextAtCursor(res.content);
+    //console.log(editor);
+    //console.log(editor.getContent());
+
 })
 
 //AT事件
@@ -81,14 +77,14 @@ const ATOptions = ref([
 
 docEditStore.onAT = async () => {
     //申请成员列表
-    const res = await mypost(message,'/team/viewUser',{tid:route.params.tid})
-    if(!res){
+    const res = await mypost(message, '/team/viewUser', { tid: route.params.tid })
+    if (!res) {
         return;
     }
     ATValue.value = '';
     ATOptions.value.splice(1);
-    for(const member of res.userlist){
-        ATOptions.value.push({label:member.username,value:member.username+'&'+member.uid});
+    for (const member of res.userlist) {
+        ATOptions.value.push({ label: member.username, value: member.username + '&' + member.uid });
     }
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
@@ -102,14 +98,14 @@ docEditStore.onAT = async () => {
     }
 }
 
-watch(ATValue,async (newValue) => {
-    if(newValue!=''){
-        const res = await mypost(message,'/doc/docaite',{"aite": parseInt(newValue.split('&')[1]),"docid": route.params.did})
-        if(!res){
+watch(ATValue, async (newValue) => {
+    if (newValue != '') {
+        const res = await mypost(message, '/doc/docaite', { "aite": parseInt(newValue.split('&')[1]), "docid": route.params.did })
+        if (!res) {
             return;
         }
         editor.insertTextAtCursor(newValue.split('&')[0]);
-        ATshow.value = false; 
+        ATshow.value = false;
     }
 })
 
@@ -117,8 +113,8 @@ watch(ATValue,async (newValue) => {
 //保存事件
 const save = async () => {
     const content = editor.getContent();
-    const res = await mypost(message,'/doc/savedoc',{"docid": route.params.did,"text": content})
-    if(!res){
+    const res = await mypost(message, '/doc/savedoc', { "docid": route.params.did, "text": content })
+    if (!res) {
         return;
     }
     message.success('保存成功！')
@@ -126,7 +122,6 @@ const save = async () => {
 </script>
 
 <style scoped>
-
 .container {
     width: 100%;
     height: 100%;
@@ -139,14 +134,14 @@ const save = async () => {
     width: 100%;
     height: 50px;
     background-color: #ddd;
-    display:flex;
+    display: flex;
     justify-content: center;
 }
 
 .headerContainer {
-    width:70%;
+    width: 100%;
     height: 100%;
-    display:flex;
+    display: flex;
 }
 
 .headerLeft {
@@ -156,11 +151,12 @@ const save = async () => {
     align-items: center;
 }
 
-.back{
+.back {
     font-size: 0;
     margin-left: 10px;
 }
-.back:hover{
+
+.back:hover {
     cursor: pointer;
 }
 
@@ -176,7 +172,7 @@ const save = async () => {
     opacity: 0.5;
 }
 
-.editTitle:hover{
+.editTitle:hover {
     cursor: pointer;
     opacity: 1;
     transition: 0.1s opacity linear
@@ -190,8 +186,8 @@ const save = async () => {
     align-items: center;
 }
 
-.headerRight > * {
-    margin-right:10px;
+.headerRight>* {
+    margin-right: 10px;
 }
 
 #main {
@@ -211,5 +207,15 @@ const save = async () => {
     opacity: 0.5;
     left: 0;
     top: 0;
+}
+
+.docContainer {
+    height: 100%;
+    width: 100%;
+}
+
+.docFrame {
+    height: 100%;
+    width: 100%;
 }
 </style>
