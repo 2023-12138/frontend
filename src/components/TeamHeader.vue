@@ -177,7 +177,7 @@ import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
-const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal } = storeToRefs(container);
+const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal, userAvatars } = storeToRefs(container);
 import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 import 'vue-cropper/dist/index.css';
@@ -515,6 +515,7 @@ onMounted(async () => {
         }[]
     } = res;
     allTeams.value = [];
+    userAvatars.value = [];
     for (const ateam of li.teamlist) {
         const teammembers: {
             userName: string;
@@ -529,6 +530,7 @@ onMounted(async () => {
                 userID: member.uid,
                 isAdmin: (member.status == 0 || member.status == 1)
             });
+
         }
         allTeams.value.push({
             teamName: ateam.teamname,
@@ -790,4 +792,5 @@ const changePassword = async () => {
     .submitButton {
         width: 40%;
     }
-}</style>
+}
+</style>
