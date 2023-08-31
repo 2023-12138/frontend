@@ -87,9 +87,11 @@
                                     </n-button>
                                 </n-upload-trigger>
                             </n-upload>
-                            <n-upload ref="fileupload" abstract :custom-request="fileCustomRequest" :default-file-list="fileList">
+                            <n-upload ref="fileupload" abstract :custom-request="fileCustomRequest"
+                                :default-file-list="fileList">
                                 <n-upload-trigger #="{ handleClick }" abstract>
-                                    <n-button @click="handleClick" strong quaternary circle type="primary" class="msg_tool_button">
+                                    <n-button @click="handleClick" strong quaternary circle type="primary"
+                                        class="msg_tool_button">
                                         <template #icon>
                                             <n-icon>
                                                 <FilePicture />
@@ -229,6 +231,7 @@ function team2Options(team: TeamModel) {
 }
 
 async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderName: string) {
+    debugger;
     let data = JSON.parse(e.data);
     let msgtype: string = data.type;
     data = data.data;
@@ -365,7 +368,9 @@ onOpenMsgFromNotice.value = (teamID: number, rid: number) => {
     onTeamClicked(teamID, allTeams.value.find(ele => ele.teamID == teamID)?.teamName || 'O_o :(');
     //开始滚动然后高亮
     setTimeout(() => {
+        //debugger;
         container.msgElements.find(ele => ele.rid == rid)?.element.scrollIntoView({
+
             block: 'nearest',
             inline: 'nearest',
             behavior: 'smooth'

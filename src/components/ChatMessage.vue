@@ -25,7 +25,7 @@
                     <span>{{ content.split('/')[3].split('_')[0] }}</span>
                 </div>
                 <div class="icon">
-                    <n-icon color="blue" :size="40" :component="FilePresentRound"/>
+                    <n-icon color="blue" :size="40" :component="FilePresentRound" />
                 </div>
             </div>
         </div>
@@ -47,10 +47,9 @@ const props = defineProps<{
 }>();
 
 const d = ref();
-let ele = d.value as HTMLDivElement;
 
 onMounted(() => {
-    container.msgElements.push({ rid: props.rid, element: ele });
+    container.msgElements.push({ rid: props.rid, element: d.value });
     d.value.scrollIntoView({
         block: 'nearest',
         inline: 'nearest',
@@ -137,9 +136,9 @@ const showImgModal = ref(false);
                 justify-content: flex-start;
                 align-items: center;
 
-                > span {
-                    margin:10px 10px 10px 17px;
-                    font-size:16px;
+                >span {
+                    margin: 10px 10px 10px 17px;
+                    font-size: 16px;
                     display: -webkit-box;
                     -webkit-box-orient: vertical;
                     -webkit-line-clamp: 2;
