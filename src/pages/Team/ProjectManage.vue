@@ -399,6 +399,7 @@ const refreshData = () => {
 }
 
 watch(projectstore.projectChanged, () => {
+    tid.value = teamstore.curTeam.value.toString()
     refreshData()
 })
 
