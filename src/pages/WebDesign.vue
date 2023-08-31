@@ -5,26 +5,24 @@
 </template>
   
 <script setup lang="ts">
-import { useMessage } from 'naive-ui';
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router';
 
-const msg = useMessage()
 const route = useRoute()
-const preUrl = "http://101.43.224.85"
-const target = ref( preUrl + "/#/" + route.params.did)
+const preUrl = "http://127.0.0.1:8080"
+const target = ref( preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token'))
 
 watch(() => route.params.pid, () => {
-    target.value = preUrl + "/#/" + route.params.did
+    target.value = preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token')
 })
 
 watch(() => route.params.did, () => {
-    target.value = preUrl + "/#/" + route.params.did
+    target.value = preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token')
 })
 
 onMounted(() => {
     // 在组件加载完成后，获取 iframe 元素并进行操作
-    target.value = preUrl + "/#/" + route.params.did
+    target.value = preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token')
 })
 
 </script>
