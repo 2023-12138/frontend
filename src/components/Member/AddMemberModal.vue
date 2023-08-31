@@ -15,7 +15,7 @@
 import { defineComponent, h, ref, watch } from 'vue'
 import { NIcon, NTag, SelectRenderLabel, SelectRenderTag, useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia'; 
+import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
 import axios from '@/axios/axios';
 import { UserAddOutlined } from '@vicons/antd';
@@ -33,7 +33,7 @@ export default defineComponent({
             // label放置用户名，value放置用户id
             {
                 label: '用户名',
-                value: '用户id',
+                value: '用户id.用户名',
                 disabled: true
             }
         ]
@@ -42,21 +42,17 @@ export default defineComponent({
         const message = useMessage()
         const onPositiveClick = () => {
             if (selectedValues.value) {
-                let flag = true
-                selectedValues.value.map((item, index) => {
+                selectedValues.value.map((item) => {
                     axios.post('team/inviteUser', {
-                        "uid": item,
+                        "uid": item.split('.')[0],
                         "tid": tid
                     }).then(res => {
                         if (res.status === 200) {
-                            if (res.data.code !== 200) {
-                                flag = false
-                                message.warning(res.data.message)
-                            }
-
-                            if (index === selectedValues.value.length && flag) {
+                            if (res.data.code === 200) {
                                 teamstore.teamChanged.value = !(teamstore.teamChanged.value)
-                                message.success("邀请成功")
+                                message.success("邀请" + item.split('.')[1] + "成功")
+                            } else {
+                                message.warning(res.data.message)
                             }
                         } else {
                             message.error("服务器错误")
@@ -150,7 +146,7 @@ export default defineComponent({
                                 options.value = res.data.data.userlist.map((item: any) => {
                                     return {
                                         label: item.username,
-                                        value: item.uid
+                                        value: item.uid + '.' + item.username
                                     }
                                 })
                             }
