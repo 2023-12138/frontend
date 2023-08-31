@@ -2,7 +2,7 @@
     <router-view v-if="$route.params.did"></router-view>
     <div v-else class="project-container">
         <div class="project-top">
-            <n-h2>项目1</n-h2>
+            <n-h2>{{ projectName }}</n-h2>
             <div class="project-top-bottom">
                 <span>
                     TID: {{ $route.params.tid }}
@@ -66,15 +66,17 @@
                     </n-tab-pane>
 
                     <n-tab-pane name="design" tab="原型设计">
-                        <div class="project-card"
-                            @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/1')"
-                            v-for="design in designList"
-                            >
-                            <div class="project-card-top">
-                                <img src="@/assets/design.svg" />
-                            </div>
-                            <div class="project-card-bottom">
-                                {{ design.protoname }}
+                        <div class="project-card-pane">
+                            <div class="project-card"
+                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/1')"
+                                v-for="design in designList"
+                                >
+                                <div class="project-card-top">
+                                    <img src="@/assets/design.svg" />
+                                </div>
+                                <div class="project-card-bottom">
+                                    {{ design.protoname }}
+                                </div>
                             </div>
                         </div>
                     </n-tab-pane>
@@ -123,13 +125,27 @@ const getFiles = async () => {
     designList.value = designRes.protolist;
     folderAndDocList.value = allFileRes.filelist;
 }
+
+// 项目名称
+const projectName = ref('')
+
+const getProject = async () => {
+    const curProject = await mypost(message,'/project/getProject',{pid:route.params.pid});
+    if (!curProject) {
+        return ;
+    }
+    projectName.value = curProject.project.project_name
+}
+
 onMounted(() => {
     getFiles();
+    getProject();
 })
 watch(
     () => route.params,
     () => {
         getFiles();
+        getProject();
     },
     { immediate:true }
 )
@@ -214,6 +230,7 @@ const createFile = async () => {
     display: flex;
     width: 100%;
     height: 100%;
+    flex-wrap:wrap;
 }
 
 .project-card {
