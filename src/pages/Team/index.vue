@@ -128,9 +128,7 @@ watch(projectstore.projectChanged, () => {
 
 watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     tid.value = teamstore.curTeam.value
-    console.log(tid.value)
     teamName.value = teamstore.curTeamName.value
-    console.log(teamName.value)
     refreshMenu()
 })
 

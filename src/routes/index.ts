@@ -41,7 +41,10 @@ const routes: Array<RouteRecordRaw> = [
                         path: 'design/:did',
                         component: () => import('../pages/WebDesign.vue')
                     },
-
+                    {
+                        path: 'folder/:fid',
+                        component: () => import('../pages/Team/Project.vue'),
+                    }
                 ]
             }
         ]

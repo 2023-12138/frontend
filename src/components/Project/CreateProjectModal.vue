@@ -27,6 +27,7 @@ import axios from '@/axios/axios'
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia'; 
 import { useProjectStore } from '@/store/projectStore'
+import { useTeamStore } from '@/store/teamStore';
 
 interface createProjectModelType {
     projectname: string | null
@@ -61,10 +62,13 @@ const createProjectRules: FormRules = {
 
 const projectStore = useProjectStore();
 const projectstore = storeToRefs(projectStore);
+const teamStore = useTeamStore();
+const teamstore = storeToRefs(teamStore);
 const createProject = () => {
     createProjectFormRef.value?.validate((errors) => {
         if (!errors) {
             console.log(createProjectModel.value)
+            tid.value = teamstore.curTeam.value.toString()
             axios.post('project/createProject', {
                 "project_name": createProjectModel.value.projectname,
                 "project_inform": createProjectModel.value.projectdescription,

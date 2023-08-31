@@ -19,8 +19,8 @@
                 </div>
             </div>
         </div>
-        <div id="main" class="docContainer"><iframe name="embed_readwrite" class="docFrame"
-                src="/pad/p/g.19HytmhetyCGO4oU$abc123" width="100%" height="600" frameborder="0"></iframe>
+        <div id="main" class="docContainer">
+            <iframe name="embed_readwrite" class="docFrame" :src="src" width="100%" height="600" frameborder="0"></iframe>
         </div>
     </div>
     <n-popselect v-model:value="ATValue" size="medium" scrollable :options="ATOptions" :show="ATshow" :x="ATleft"
@@ -44,14 +44,18 @@ const docEditStore = usedocEditStore();
 const route = useRoute();
 
 let editor: Editor;
-
+let src = ref('');
 onMounted(async () => {
-    //设置cookies
-    document.cookie = "sessionID=s.481d3540dd8f8021d9b01383c6413971;SameSite=None;Secure";
-    const res = await mypost(message, '/doc/getdoc', { docid: route.params.did })
+
+
+    const res = await mypost(message, '/doc/opendoc', { docid: route.params.did })
     if (!res) {
         return;
     }
+    src.value = `/pad/p/auth_session?sessionID=${res.sessionid}&padID=${res.padid}`;
+
+
+    //设置cookies
 
     //editor = new Editor(document.getElementById('main') as HTMLElement);
     //editor = withUndoRedo(editor); // UndoRedo Plugin
