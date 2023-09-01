@@ -17,6 +17,7 @@ export type MessageModel = {
     imgstr: string | null;
     rid: number;
     type: 'text' | 'img' | 'file';
+    isAite: boolean;
 };
 export const useChatContainer = defineStore('chatroom', () => {
     //是否展示

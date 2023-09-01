@@ -73,13 +73,26 @@
             <div class="rightChatRoom" v-show="currentChatID.id != -1">
                 <div class="targetUserContainer">
                     <span class="targetUser">{{ currentChatName }}</span>
+                    <n-button class="searchButton" quaternary circle type="info" @click="showSearchModal = true">
+                        <template #icon>
+                            <n-icon>
+                                <Search />
+                            </n-icon>
+                        </template>
+                    </n-button>
+                    <n-modal v-model:show="showSearchModal" transform-origin="center" preset="card"
+                        content-style="padding: 0;" header-style="padding: 0px;display: none;"
+                        style="width: 40vw; min-width: 30vw; margin-top: 80px;" size="huge">
+                        <n-auto-complete clear-after-select @select="searchSelected" v-model:value="searchValue"
+                            :options="searchOptions" placeholder="输入内容搜索" :render-label="renderSearchLabel" size="large" />
+                    </n-modal>
                 </div>
                 <div class="rightChatContentContainer">
                     <div class="chatContent" content-style="padding: 24px;">
                         <n-layout style="height: 100%;    background-color: rgb(245, 245, 245);" :native-scrollbar="false">
                             <ChatMessage v-for=" msg  in  msgList " :title="msg.userName" :content="msg.msg"
                                 :time="msg.time" :rid="msg.rid" :io="io" :is-myself="msg.userName == myname"
-                                :type="msg.type" ref="SetItemRef" :uid="msg.userID" />
+                                :type="msg.type" ref="SetItemRef" :uid="msg.userID" :isAite="msg.isAite" />
                         </n-layout>
                     </div>
                     <div class="chatToolFooter">
@@ -126,12 +139,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, onBeforeUpdate } from 'vue'
-import { ImageOutline, PeopleSharp } from '@vicons/ionicons5'
+import { ref, onMounted, nextTick, onBeforeUpdate, computed, h, VNodeChild } from 'vue'
+import { ImageOutline, PeopleSharp, Search } from '@vicons/ionicons5'
 import { ChatBubblesQuestion20Regular as Empty, DocumentArrowUp16Regular as FilePicture } from '@vicons/fluent'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
-import { NMention, NTabs, UploadCustomRequestOptions, useMessage } from 'naive-ui';
+import { NAvatar, NEllipsis, NMention, NTabs, SelectOption, UploadCustomRequestOptions, useMessage } from 'naive-ui';
 import { mypost } from '@/axios/axios';
 import ChatMessage from '@/components/ChatMessage.vue';
 import axios from 'axios';
@@ -149,11 +162,45 @@ const message = useMessage();
 const SetItemRef = (el: any) => {
     MessageComponents.push(el);
 }
+const showSearchModal = ref(false);
 const fileList = ref([]);
 onBeforeUpdate(() => {
     MessageComponents = [];
 });
-
+const searchValue = ref('');
+const searchOptions = computed(() => {
+    const toret: {
+        label: string;
+        value: string;
+    }[] = [];
+    msgList.value.forEach(msg => {
+        if (msg.msg.includes(searchValue.value) && msg.type == "text")
+            toret.push({
+                label: `${msg.userName} : ${msg.msg}`,
+                value: `${msg.userID},${msg.rid}`
+            });
+    });
+    return toret;
+});
+const renderSearchLabel = (option: SelectOption): VNodeChild => [
+    h('div', { style: 'display:flex;align-items:center;margin:3px;padding:3px;' }, [
+        h(NAvatar, { round: true, src: userAvatars.value.get(parseInt(option?.value?.toString().split(',')[0] as string)), style: 'margin-right:10px;' }),
+        h(NEllipsis, { style: 'max-width: 80%' }, option.label)
+    ])
+];
+function searchSelected(value: string) {
+    console.log(value);
+    showSearchModal.value = false;
+    setTimeout(() => {
+        let element = container.msgElements.reverse().find(ele => ele.rid == parseInt(value.split(',')[1]))?.element;
+        element?.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest',
+            behavior: 'smooth'
+        });
+        element?.classList.add('remind');
+    }, 500);
+}
 const selectedTab = ref<string | undefined>(undefined);
 const io = new IntersectionObserver(eles => {
     eles.forEach(ioe => {
@@ -249,7 +296,8 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     let senderId: number = data.senderId;
     let currentTime: string = data.time;
     let rid: number = parseInt(data.rid);
-    if (msgtype != 'chat_aite') rid = NaN;
+    let isaite = false;
+    if (msgtype == 'chat_aite' || msgtype == 'chat_aite_history') isaite = true;
     let messagetype: "text" | "img" | "file" = 'text';
     if (msgtype == 'chat_pic') messagetype = 'img';
     else if (msgtype == 'chat_file') messagetype = 'file';
@@ -263,7 +311,8 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
             time: currentTime,
             imgstr: null,
             rid: rid,
-            type: messagetype
+            type: messagetype,
+            isAite: isaite
         });
     }
 }
@@ -356,7 +405,8 @@ function changeChatContent(id: number, isuser: boolean) {
             time: message.time,
             imgstr: null,
             rid: message.rid,
-            type: message.type
+            type: message.type,
+            isAite: message.isAite
         });
     });
     if (!isuser) {
@@ -552,9 +602,15 @@ const fileCustomRequest = ({
                 display: flex;
                 align-items: center;
                 padding-left: 4%;
+                justify-content: space-between;
 
                 .targetUser {
                     font-size: 18px;
+                }
+
+                .searchButton {
+                    margin-right: 20px;
+
                 }
             }
 
