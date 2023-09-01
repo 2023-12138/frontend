@@ -422,8 +422,8 @@ function initWebSocket() {
         if (msgtype == "chat_aite" && senderId != myuid.value) {
             newMessage(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(", rid);
         }
-        if (msgtype != 'chat_aite' && msgtype != 'chat_aite_history')
-            rid = NaN;
+        // if (msgtype != 'chat_aite' && msgtype != 'chat_aite_history')
+        //     rid = NaN;
         //判断是否在recent中
         let isuser = (teamId == "");
         let recent: RecentListModel | undefined;
@@ -462,6 +462,8 @@ function initWebSocket() {
         let messagetype: "text" | "img" | "file" = 'text';
         if (msgtype == 'chat_pic') messagetype = 'img';
         else if (msgtype == 'chat_file') messagetype = 'file';
+        let isaite = false;
+        if (msgtype == 'chat_aite' || msgtype == 'chat_aite_history') isaite = true;
         recent?.Messages.push({
             userName: senderName,
             msg: message,
@@ -469,7 +471,8 @@ function initWebSocket() {
             time: currentTime,
             imgstr: null,
             rid: rid,
-            type: messagetype
+            type: messagetype,
+            isAite: isaite
         });
 
         if (recvHandler.value != null) {

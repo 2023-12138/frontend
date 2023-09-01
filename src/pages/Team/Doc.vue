@@ -30,7 +30,7 @@
 
 <script setup lang='ts'>
 import { onMounted, ref, watch } from "vue";
-import { Editor, withUndoRedo } from "@/editor/index";
+import { Editor } from "@/editor/index";
 import { usedocEditStore } from '@/store/docEditStore.ts'
 
 import { ArrowBackSharp } from '@vicons/ionicons5';

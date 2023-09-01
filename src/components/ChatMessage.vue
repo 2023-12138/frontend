@@ -44,6 +44,7 @@ const props = defineProps<{
     time: string,
     io: IntersectionObserver,
     isMyself: boolean,
+    isAite: boolean,
     type: "text" | "img" | "file"
 }>();
 
@@ -58,8 +59,7 @@ onMounted(() => {
     });
     console.log(`rid:${props.rid} msg:${props.content} recved `);
     console.log(d.value);
-    if (Number.isNaN(props.rid)) return;
-    if (d.value != undefined) {
+    if (d.value != undefined && props.isAite) {
         d.value['rid'] = props.rid;
         props.io.observe(d.value);
     }
