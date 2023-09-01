@@ -6,7 +6,7 @@ export const useAxiosStore = defineStore('axiosStore', {
   state: () => ({
     axiosInstance: axios.create({
       baseURL: 'http://101.43.202.84:7002/',
-      timeout: 5000,
+      timeout: 50000,
       headers: {
         'Authorization': localStorage.getItem('token') || '',
       },
