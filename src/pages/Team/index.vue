@@ -163,7 +163,7 @@ function renderMenuLabel(option: MenuOption) {
 .leftSideNavHeader {
     height: 13%;
     padding: 10px;
-    margin: 10px;
+    margin: 10px 10px 0 10px;
     /* background-color: rgba(139, 223, 251, 0.867); */
     border-radius: 5px;
     display: flex;
@@ -171,9 +171,11 @@ function renderMenuLabel(option: MenuOption) {
     align-items: center;
     /* border-bottom: var(--primary-color) solid;
     border-bottom-width: 3px; */
+    
     &:hover{
         background-color: #eeee;
         transition: 0.2s background-color linear;
+        cursor: pointer;
     }
 
     > span:first-child {
@@ -186,7 +188,7 @@ function renderMenuLabel(option: MenuOption) {
     }
 }
 .leftSideNavMenu {
-    padding: 10px; 
+    padding: 0 10px 0 10px; 
 
     ::v-deep(.n-menu-item) {
         margin-top: 6px;
