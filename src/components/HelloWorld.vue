@@ -17,11 +17,12 @@
 
 <script setup lang='ts'>
 import { UploadCustomRequestOptions } from 'naive-ui';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, nextTick } from 'vue';
 import axios from 'axios';
 import { useMessengerStore } from '@/store/messengerStore';
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
+import intro from "@/intro/introConfig";
 
 const imgbase = ref('');
 const imgres = ref('');
@@ -46,6 +47,35 @@ const confirm = () => {
         imgres.value = data
     })
 }
+
+onMounted(() => {
+    nextTick(() => {
+        intro.setOptions({
+            steps: [
+              {
+                element: document.querySelector('#step1') as HTMLElement, // 定位到相应的元素位置，如果不设置element，则默认展示在屏幕中央
+                title: 'Welcome', // 标题
+                intro: 'Hello World! 👋' // 内容
+              },
+              {
+                element: document.querySelector('#step2'),
+                intro: '有关如何配置/自定义该项目的指南和方法，请查看vue-cli文档。'
+              },
+              {
+                element: document.querySelector('#step3'),
+                intro: '已安装的cli插件'
+              },
+              {
+                title: "开始体验吧！",
+                intro: `<img src="interesting.GIF" alt="" style="width: 100%;margin: auto" class="specialImg"/>`
+              },
+            ]
+      });
+      nextTick(() => {
+        intro.start();
+      })
+    })
+})
 </script>
 
 <style scoped></style>

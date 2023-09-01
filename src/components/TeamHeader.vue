@@ -6,7 +6,7 @@
         </div>
         <div class="topNavRight">
             <!-- 聊天 -->
-            <div class="topNavRightIcon" @click="chatShowModal = true">
+            <div class="topNavRightIcon" @click="chatShowModal = true" id="intostep2">
                 <n-icon size="25" :component="MessageCircle" />
             </div>
             <n-modal v-model:show="chatShowModal" class="custom-card" preset="card" style="width: 70vw;height: 95vh;"
@@ -367,7 +367,7 @@ const newMessage = (teamId: number, teamName: string, rid: number) => {
             ),
     })
 }
-const newDocMessage = (/*teamId: number, teamName: string, rid: number*/) => {
+const newDocMessage = (docid:number) => {
     const n = notification.create({
         title: `你在文档中被@了`,
         avatar: () =>
@@ -388,6 +388,7 @@ const newDocMessage = (/*teamId: number, teamName: string, rid: number*/) => {
                         // setTimeout(() => {
                         //     if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(teamId, rid);
                         // }, 500);
+                        router.push('/')
                         n.destroy()
                     }
                 },
@@ -416,7 +417,8 @@ function initWebSocket() {
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
             debugger;
-            newDocMessage();
+            newDocMessage(data.docid);
+            return;
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
             newMessage(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(", rid);

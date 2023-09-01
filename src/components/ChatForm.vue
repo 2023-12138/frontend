@@ -230,7 +230,7 @@ function team2Options(team: TeamModel) {
 }
 
 async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderName: string) {
-    //debugger;
+    debugger;
     let data = JSON.parse(e.data);
     let msgtype: string = data.type;
     if (msgtype == 'chat_aite_history') msgtype = 'chat_aite';
@@ -353,7 +353,6 @@ function changeChatContent(id: number, isuser: boolean) {
         let team = allTeams.value.find((ele) => ele.teamID == id);
         if (team == undefined) return;
         options.value = [];
-        debugger;
         if (team.teamMembers.find(ele => ele.userID == myuid.value)?.isAdmin)
             options.value.push({
                 label: '全体成员',
@@ -372,7 +371,6 @@ onOpenMsgFromNotice.value = (teamID: number, rid: number) => {
     onTeamClicked(teamID, allTeams.value.find(ele => ele.teamID == teamID)?.teamName || 'O_o :(');
     //开始滚动然后高亮
     setTimeout(() => {
-        debugger;
         let element = container.msgElements.reverse().find(ele => ele.rid == rid)?.element;
         element?.scrollIntoView({
             block: 'nearest',

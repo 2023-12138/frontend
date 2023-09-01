@@ -3,7 +3,7 @@
         <TeamHeader />
         <div class="bottom">
             <div class="leftSideNav">
-                <div class="leftSideNavHeader">
+                <div class="leftSideNavHeader" id="intostep1">
                     <span class="leftSideNavHeaderTop">
                         当前团队
                     </span>
@@ -28,7 +28,8 @@ import type { MenuOption } from 'naive-ui'
 import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
 import { useProjectStore } from '@/store/projectStore'
-import { h, Component, watch, ref, Ref, onMounted } from 'vue'
+
+import { h, Component, watch, ref, Ref, onMounted,nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
 import TeamHeader from '@/components/TeamHeader.vue'
@@ -36,6 +37,62 @@ import axios from '@/axios/axios';
 import { GlobePerson20Regular, PeopleTeam16Filled } from '@vicons/fluent';
 import Box from '@vicons/tabler/es/Box';
 import { MdSettings } from '@vicons/ionicons4';
+
+import intro from "@/intro/introConfig";
+import { useUserStore } from '@/store/userStore';
+
+const userStore = useUserStore();
+const { isNew } = storeToRefs(userStore);
+//新手引导
+const startIntro = () => {
+    nextTick(() => {
+        intro.setOptions({
+            steps: [
+                {
+                title: "欢迎来到.......!",
+                intro: '让我们开始吧！O(∩_∩)O'
+              },
+              {
+                element: document.querySelector('#intostep1') as HTMLElement, // 定位到相应的元素位置，如果不设置element，则默认展示在屏幕中央
+                title: '这里可以看到自己当前所在的团队', // 标题
+                intro: '当然现在是自己的个人空间啦',
+                position: 'right'
+              },
+              {
+                element: document.querySelector('#intostep2') as HTMLElement,
+                intro: '在这里可以和你加入的所有团队及其成员聊天',
+                position: 'left'
+              },
+              {
+                element: document.querySelector('#intostep3') as HTMLElement,
+                intro: '这里会有你的消息通知',
+                position: 'left'
+              },
+              {
+                element: document.querySelector('#intostep4') as HTMLElement,
+                intro: '在这里可以看到当前团队的所有项目'
+              },
+              {
+                element: document.querySelector('#intostep5') as HTMLElement,
+                intro: '点击即可创建你的新项目',
+                position: 'left'
+              },
+              {
+                title: "立即开始体验吧！",
+                intro: '(☆▽☆)'
+              },
+            ]
+      });
+      nextTick(() => {
+        intro.start();
+      })
+    })
+}
+onMounted(() => {
+    if(isNew.value){
+        startIntro();
+    }
+})
 
 
 //侧边栏部分

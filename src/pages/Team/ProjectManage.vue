@@ -4,11 +4,11 @@
             <n-h2>项目内容</n-h2>
             <div class="project-top-bottom">
                 <span>共{{ data.length }}个项目&nbsp; ID: {{ $route.params.tid }}</span>
-                <n-button type="primary" @click="showModal = true">添加项目</n-button>
+                <n-button type="primary" @click="showModal = true" id="intostep5">添加项目</n-button>
                 <CreateProjectModal v-model:show="showModal" />
             </div>
         </div>
-        <div class="project-bottom">
+        <div class="project-bottom" id="intostep4">
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="project" tab="项目">
