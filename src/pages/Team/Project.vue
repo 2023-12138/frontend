@@ -30,10 +30,6 @@
                             </div>
                             <span>给你的{{ createFileValue }}起个名字吧&nbsp;(。・∀・)ノ</span>
                             <n-input v-model:value="fileName" placeholder="请输入文件名" />
-                            <n-select v-if="createFileValue === '原型设计'" 
-                            v-model:value="modelValue" 
-                            :options="createProtoOptions" 
-                            />
                             <n-button secondary type="info" @click="createFile">确定</n-button>
                         </div>
                     </div>
@@ -191,21 +187,6 @@ const fileName = ref('');
 const createFileValue = ref('原型设计');
 const isInFolder = ref(false);
 const createFileOptions = [
-    {
-        value: "原型设计",
-        label: "原型设计"
-    },
-    {
-        value: '共享文档',
-        label: '共享文档'
-    },
-    {
-        value: '文件夹',
-        label: '文件夹'
-    }
-]
-const modelValue = ref('默认模板')
-const createProtoOptions = [
     {
         value: "原型设计",
         label: "原型设计"
@@ -384,6 +365,8 @@ const chooseProtoTemplate = (index:number) => {
 }
 
 .project-card-top {
+    width:100%;
+    height: 60%;
     display: flex;
 
     >img {
