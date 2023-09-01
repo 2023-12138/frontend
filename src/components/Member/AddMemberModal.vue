@@ -2,7 +2,7 @@
     <n-modal :mask-closable="false" preset="dialog" positive-text="邀请" negative-text="取消" @positive-click="onPositiveClick"
         @negative-click="onNegativeClick">
         <template #header>
-            <span class="header">邀请成员</span>
+            <span class="add-member-header">邀请成员</span>
         </template>
         <div class="content">
             <n-select multiple :options="options" :render-label="renderLabel" :render-tag="renderMultipleSelectTag"
@@ -180,7 +180,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.header {
+.add-member-header {
     display: flex;
     justify-content: center;
 }

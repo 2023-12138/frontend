@@ -185,9 +185,6 @@ const columns = [
         sorter(rowA: ProjectRowData, rowB: ProjectRowData) {
             const dateA = new Date(rowA.creatTime.replace(' ', 'T'));
             const dateB = new Date(rowB.creatTime.replace(' ', 'T'));
-            console.log(dateA)
-            console.log(dateB)
-            console.log(dateA < dateB)
             return dateA.getTime() - dateB.getTime()
         },
         render(row: ProjectRowData) {
@@ -224,6 +221,7 @@ const columns = [
                         }).then(res => {
                             if (res.data.code === 200) {
                                 message.success('复制成功')
+                                projectstore.projectChanged.value = !(projectstore.projectChanged.value)
                                 refreshData()
                             } else {
                                 message.warning(res.data.message)
@@ -415,12 +413,16 @@ const refreshData = () => {
 }
 
 watch(projectstore.projectChanged, () => {
-    tid.value = teamstore.curTeam.value.toString()
+    if (teamstore.curTeam.value.toString() !== '-1'){
+        tid.value = teamstore.curTeam.value.toString()
+    }
     refreshData()
 })
 
 watch(teamstore.teamChanged, () => {
-    tid.value = teamstore.curTeam.value.toString()
+    if (teamstore.curTeam.value.toString() !== '-1'){
+        tid.value = teamstore.curTeam.value.toString()
+    }
     refreshData()
 })
 

@@ -2,7 +2,7 @@
     <div class="layout">
         <TeamHeader />
         <div class="bottom">
-            <div class="leftSideNav">
+            <div class="leftSideNav" v-if="showMenu">
                 <div class="leftSideNavHeader">
                     <span class="leftSideNavHeaderTop">
                         当前团队
@@ -53,7 +53,7 @@ const projectstore = storeToRefs(projectStore);
 const tid = ref<String>(route.params.tid.toString())
 const isPrivate = ref(tid.value.startsWith('private'))
 const message = useMessage()
-
+const showMenu = ref(!location.pathname.includes('protopreview'))
 const refreshMenu = () => {
     tid.value = tid.value.toString()
     isPrivate.value = tid.value.toString().startsWith('private')
@@ -117,6 +117,8 @@ const refreshMenu = () => {
 }
 
 onMounted(() => {
+    console.log(location.pathname)
+    showMenu.value = (!location.pathname.includes('protopreview'))
     tid.value = route.params.tid.toString()
     refreshMenu()
 })
@@ -129,6 +131,10 @@ watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     tid.value = teamstore.curTeam.value
     teamName.value = teamstore.curTeamName.value
     refreshMenu()
+})
+
+watch(() => route.params, () => {
+    showMenu.value = (!location.pathname.includes('protopreview'))
 })
 
 const menuOptions: Ref<any[]> = ref([

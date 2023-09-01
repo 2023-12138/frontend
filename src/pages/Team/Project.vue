@@ -65,7 +65,7 @@
                     <n-tab-pane name="design" tab="原型设计">
                         <div class="project-card-pane">
                             <div class="project-card"
-                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/1')"
+                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/' + design.protoid)"
                                 v-for="design in designList">
                                 <div class="project-card-top">
                                     <img src="@/assets/design.svg" />
@@ -170,6 +170,7 @@ const createFile = async () => {
     let url = '/project/createProto';
     let data: {
         pid: string,
+        modelid?: string,
         dirname?: string,
         docname?: string,
         protoname?: string,
@@ -191,6 +192,7 @@ const createFile = async () => {
         data.dirname = fileName.value;
     } else {
         data.protoname = fileName.value;
+        data.modelid = '1'
     }
     const res = await mypost(message, url, data);
     if (!res) {

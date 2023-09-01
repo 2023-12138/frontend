@@ -44,6 +44,10 @@ const routes: Array<RouteRecordRaw> = [
                     {
                         path: 'folder/:fid',
                         component: () => import('../pages/Team/Project.vue'),
+                    },
+                    {
+                        path: 'protopreview/:did/:token/key',
+                        component: () => import('../pages/ProtoPreview.vue')
                     }
                 ]
             }
