@@ -186,7 +186,7 @@ const title = ref("FusionCode");
 
             .intro-left-bottom {
                 width: 100%;
-                margin: 20px;
+                margin-top: 30px;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
