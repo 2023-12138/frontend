@@ -177,7 +177,7 @@ import { mypost } from '@/axios/axios';
 const container = useChatContainer();
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 const wsURL = `ws://101.43.202.84:7002/ws/chat/${myuid.value}/`;
-const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal } = storeToRefs(container);
+const { webSocket, recvHandler, allTeams, recentChatList, myname, chatShowModal, userAvatars } = storeToRefs(container);
 import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 import 'vue-cropper/dist/index.css';
@@ -403,7 +403,7 @@ let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
     webSocket.value.onmessage = async (e) => {
-        //debugger;
+        debugger;
         let data = JSON.parse(e.data);
         let msgtype: string = data.type;
         data = data.data;
@@ -415,8 +415,9 @@ function initWebSocket() {
         let rid: number = parseInt(data.rid);
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
-            debugger;
+            //debugger;
             newDocMessage();
+            return;
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
             newMessage(parseInt(teamId.toString()), allTeams.value.find((ele) => ele.teamID == teamId)?.teamName || "NoF :(", rid);
@@ -440,6 +441,7 @@ function initWebSocket() {
                 if (recent == undefined) {
                     messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: senderName });
                     recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
+
                 }
             }
         }
@@ -529,6 +531,7 @@ onMounted(async () => {
                 userID: member.uid,
                 isAdmin: (member.status == 0 || member.status == 1)
             });
+            userAvatars.value.set(member.uid, member.avatar);
         }
         allTeams.value.push({
             teamName: ateam.teamname,
@@ -588,7 +591,7 @@ const chooseAvatar = ({
     const reader = new FileReader()
     reader.readAsDataURL(file.file as File);
     reader.onload = function () {
-        debugger;
+        //debugger;
         imgbase.value = reader.result as string;
     }
     avatarUpload.value.clear();
@@ -704,11 +707,11 @@ const changePassword = async () => {
     height: 2px;
     background-color: #eeee;
     position: absolute;
-    left:10%;
+    left: 10%;
     margin-bottom: 30%;
 }
 
-.info:first-child::before{
+.info:first-child::before {
     width: 100%;
     left: 0;
 }
@@ -806,4 +809,5 @@ const changePassword = async () => {
     .submitButton {
         width: 40%;
     }
-}</style>
+}
+</style>
