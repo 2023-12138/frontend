@@ -84,7 +84,8 @@
                         content-style="padding:0;border-radius:10px;" header-style="padding: 0px;display: none;"
                         style="width: 40vw; min-width: 30vw; margin-top: 80px; border-radius: 20px;" size="huge">
                         <div class="searchContainer">
-                            <n-icon size="30" color="#82cefd">
+                            <n-icon size="30" color="#82cefd"
+                                style="position: absolute; z-index:4; top: 50%; transform: translate(0,-50%);">
                                 <Search />
                             </n-icon>
                             <n-auto-complete class="autocmp" clear-after-select @select="searchSelected"
@@ -526,6 +527,10 @@ const fileCustomRequest = ({
     --n-box-shadow-focus: 'none' !important;
 }
 
+.autocmp :deep(.n-input__input) {
+    margin-left: 20px;
+}
+
 
 .parentContainer {
     display: flex;
@@ -742,9 +747,10 @@ textarea {
 }
 
 .searchContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+
     padding: 10px;
 }
 </style>
