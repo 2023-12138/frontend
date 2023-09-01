@@ -367,7 +367,7 @@ const newMessage = (teamId: number, teamName: string, rid: number) => {
             ),
     })
 }
-const newDocMessage = (docid:number) => {
+const newDocMessage = (pid:number,tid:number,docid:number) => {
     const n = notification.create({
         title: `你在文档中被@了`,
         avatar: () =>
@@ -388,7 +388,7 @@ const newDocMessage = (docid:number) => {
                         // setTimeout(() => {
                         //     if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(teamId, rid);
                         // }, 500);
-                        router.push('/')
+                        router.push(`/team/${tid}/project/${pid}/doc/${docid}`);
                         n.destroy()
                     }
                 },
@@ -417,7 +417,7 @@ function initWebSocket() {
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
             debugger;
-            newDocMessage(data.docid);
+            newDocMessage(data.pid,data.tid,data.docid);
             return;
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {

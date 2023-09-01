@@ -22,7 +22,7 @@
             </div>
             <div v-else-if="type === 'file'" class="messageFile" :class="{ myself: isMyself }" @click="download">
                 <div class="fileName">
-                    <span>{{ content.split('/')[3].split('_')[0] }}</span>
+                    <span>{{ content.split('_')[1] }}</span>
                 </div>
                 <div class="icon">
                     <n-icon color="blue" :size="40" :component="FilePresentRound" />
@@ -73,8 +73,9 @@ const download = () => {
     const link = document.createElement('a'); // 创建一个 a 标签用来模拟点击事件	
     link.style.display = 'none';
     link.href = props.content;
-    link.setAttribute('download', props.content.split('/')[3].split('_')[0]);
-    console.log(props.content.split('/')[3].split('_')[0]);
+    let name = props.content.split('_')[1].toString();
+    link.setAttribute('download', name);
+    console.log(name);
     
     document.body.appendChild(link)
     link.click()
