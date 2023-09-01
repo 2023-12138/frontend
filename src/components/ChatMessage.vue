@@ -1,7 +1,7 @@
 <template>
     <div ref="d" class="messageContainer" :class="{ myself: isMyself }">
         <div class="avatar" :class="{ myself: isMyself }">
-            <n-avatar round :size="35" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+            <n-avatar round :size="35" :src="container.userAvatars.get(props.uid)" />
         </div>
         <div class="messageMain">
             <div class="userName" :class="{ myself: isMyself }">
@@ -37,6 +37,7 @@ import { onMounted, ref } from 'vue';
 import { FilePresentRound } from '@vicons/material'
 const container = useChatContainer();
 const props = defineProps<{
+    uid: number,
     title: string,
     content: string,
     rid: number,

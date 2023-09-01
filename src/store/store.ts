@@ -41,6 +41,6 @@ export const useChatContainer = defineStore('chatroom', () => {
         label: string,
         value: string
     }[]>([]);
-    const userAvatars = ref<Map<number, string>>();
+    const userAvatars = ref<Map<number, string>>(new Map());
     return { chatShowModal, recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, msgElements, recvHandler, myname, options, userAvatars }
 })
