@@ -86,6 +86,40 @@
             </div>
         </div>
     </div>
+    <div style="height: 100vh;">
+        <div class="intro">
+            <div class="intro-left-container">
+                <div class="intro-left">
+                    <div class="intro-left-top">
+                        <n-gradient-text :gradient="{
+                            from: '#000', to: 'rgb(0,0,0)'
+                        }" style="font-size: 48px;font-weight: 600;" type="info">
+                            团队聊天
+                        </n-gradient-text>
+                        <n-gradient-text :gradient="{
+                            from: '#000', to: 'rgb(0,0,0)'
+                        }" style="font-size: 18px;" type="info">
+                            开发细节,自由交流
+                        </n-gradient-text>
+                    </div>
+                    <div class="intro-left-bottom">
+                        <div class="intro-left-bottom-text">
+                            · 实时聊天，可进行团队及私聊
+                        </div>
+                        <div class="intro-left-bottom-text">
+                            · 支持文件、图片格式交流
+                        </div>
+                        <!-- <div>
+                            · 一键导入Axure文件，快速迁移至墨刀
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="intro-right">
+                <img src="@/assets/chat.png" width="700">
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang='ts'>
