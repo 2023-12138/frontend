@@ -44,14 +44,14 @@ const docEditStore = usedocEditStore();
 const route = useRoute();
 
 let editor: Editor;
-let src = ref('');
+let src = ref<string | undefined>(undefined);
 onMounted(async () => {
-
-
-    const res = await mypost(message, '/doc/opendoc', { docid: route.params.did })
+    debugger;
+    const res = await mypost(message, '/doc/openDoc', { docid: route.params.did })
     if (!res) {
         return;
     }
+    debugger;
     src.value = `/pad/p/auth_session?sessionID=${res.sessionid}&padID=${res.padid}`;
 
 
@@ -195,7 +195,7 @@ const save = async () => {
 }
 
 #main {
-    width: 70%;
+    width: 100%;
     height: calc(100% - 50px);
     display: flex;
     justify-content: center;

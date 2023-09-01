@@ -7,11 +7,17 @@
                 <n-tab-pane name="currentmessages" tab="消息">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
                         <n-list hoverable clickable>
-                            <n-list-item class="chatListItemContainer" v-for="item in recentChatList"
+                            <n-list-item class="chatListItemContainer" v-for="item in  recentChatList "
                                 @click="startChat(item.id, item.isuser, item.userOrTeamName)">
                                 <div class="chatListItem">
-                                    <n-avatar round :size="40"
-                                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-avatar v-if="item.isuser" round :size="40" color="#82cefd"
+                                        :src="userAvatars.get(item.id)">
+                                    </n-avatar>
+                                    <n-avatar v-else round :size="40" color="#82cefd">
+                                        <n-icon>
+                                            <PeopleSharp />
+                                        </n-icon>
+                                    </n-avatar>
                                     <div class="chatListItemRight">
                                         <div class="chatName">{{ item.userOrTeamName }}</div>
                                         <div class="chatText">最近消息</div>
@@ -24,11 +30,14 @@
                 <n-tab-pane name="teams" tab="团队">
                     <n-layout :native-scrollbar="false" style="height: 100%;">
                         <n-list hoverable clickable>
-                            <n-list-item class="chatListItemContainer" v-for="team in allTeams"
+                            <n-list-item class="chatListItemContainer" v-for=" team  in  allTeams "
                                 @click="onTeamClicked(team.teamID, team.teamName);">
                                 <div class="chatListItem">
-                                    <n-avatar round :size="40"
-                                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                    <n-avatar round :size="40" color="#82cefd">
+                                        <n-icon>
+                                            <PeopleSharp />
+                                        </n-icon>
+                                    </n-avatar>
                                     <div class="chatListItemRight chatTeam">
                                         <div class="chatName">{{ team.teamName }}</div>
                                         <n-dropdown trigger="hover" :options="team2Options(team)">
@@ -68,9 +77,9 @@
                 <div class="rightChatContentContainer">
                     <div class="chatContent" content-style="padding: 24px;">
                         <n-layout style="height: 100%;    background-color: rgb(245, 245, 245);" :native-scrollbar="false">
-                            <ChatMessage v-for="msg in msgList" :title="msg.userName" :content="msg.msg" :time="msg.time"
-                                :rid="msg.rid" :io="io" :is-myself="msg.userName == myname" :type="msg.type"
-                                ref="SetItemRef" />
+                            <ChatMessage v-for=" msg  in  msgList " :title="msg.userName" :content="msg.msg"
+                                :time="msg.time" :rid="msg.rid" :io="io" :is-myself="msg.userName == myname"
+                                :type="msg.type" ref="SetItemRef" :uid="msg.userID" />
                         </n-layout>
                     </div>
                     <div class="chatToolFooter">
@@ -118,7 +127,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, onBeforeUpdate } from 'vue'
-import { ImageOutline } from '@vicons/ionicons5'
+import { ImageOutline, PeopleSharp } from '@vicons/ionicons5'
 import { ChatBubblesQuestion20Regular as Empty, DocumentArrowUp16Regular as FilePicture } from '@vicons/fluent'
 import { RecentListModel, TeamModel, useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
@@ -129,7 +138,7 @@ import axios from 'axios';
 import { useMessengerStore } from '@/store/messengerStore';
 const messengerStore = useMessengerStore();
 const container = useChatContainer();
-const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, recvHandler, myname, options } = storeToRefs(container);
+const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, recvHandler, myname, options, userAvatars } = storeToRefs(container);
 const myuid = ref(parseInt(localStorage.getItem('uid') || '-1'));
 
 const picupload = ref();
@@ -246,6 +255,7 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     else if (msgtype == 'chat_file') messagetype = 'file';
     //判断是否正在展示
     if (currentChatID.value.id == recent.id) {
+        debugger;
         msgList.value.push({
             userName: senderName,
             msg: message,
@@ -353,6 +363,7 @@ function changeChatContent(id: number, isuser: boolean) {
         let team = allTeams.value.find((ele) => ele.teamID == id);
         if (team == undefined) return;
         options.value = [];
+        //debugger;
         if (team.teamMembers.find(ele => ele.userID == myuid.value)?.isAdmin)
             options.value.push({
                 label: '全体成员',
@@ -371,6 +382,7 @@ onOpenMsgFromNotice.value = (teamID: number, rid: number) => {
     onTeamClicked(teamID, allTeams.value.find(ele => ele.teamID == teamID)?.teamName || 'O_o :(');
     //开始滚动然后高亮
     setTimeout(() => {
+        //debugger;
         let element = container.msgElements.reverse().find(ele => ele.rid == rid)?.element;
         element?.scrollIntoView({
             block: 'nearest',
