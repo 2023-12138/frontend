@@ -4,11 +4,11 @@
             <n-h2>项目内容</n-h2>
             <div class="project-top-bottom">
                 <span>共{{ data.length }}个项目&nbsp; ID: {{ $route.params.tid }}</span>
-                <n-button type="primary" @click="showModal = true">添加项目</n-button>
+                <n-button type="primary" @click="showModal = true" id="intostep5">添加项目</n-button>
                 <CreateProjectModal v-model:show="showModal" />
             </div>
         </div>
-        <div class="project-bottom">
+        <div class="project-bottom" id="intostep4">
             <div class="content">
                 <n-tabs type="line" animated>
                     <n-tab-pane name="project" tab="项目">
@@ -79,7 +79,7 @@ const message = useMessage()
 
 import { NButton, NInput } from "naive-ui";
 import { computed, h, nextTick } from "vue";
-import DeleteConfirm from '@/components/Project/DeleteConfirm.vue'
+import DeleteConfirm from '@/components/Project/ProjectDeleteConfirm.vue'
 import router from '@/routes';
 const projectNameInputRef = ref()
 const projectDescriptionInputRef = ref()
@@ -185,9 +185,6 @@ const columns = [
         sorter(rowA: ProjectRowData, rowB: ProjectRowData) {
             const dateA = new Date(rowA.creatTime.replace(' ', 'T'));
             const dateB = new Date(rowB.creatTime.replace(' ', 'T'));
-            console.log(dateA)
-            console.log(dateB)
-            console.log(dateA < dateB)
             return dateA.getTime() - dateB.getTime()
         },
         render(row: ProjectRowData) {
@@ -224,6 +221,7 @@ const columns = [
                         }).then(res => {
                             if (res.data.code === 200) {
                                 message.success('复制成功')
+                                projectstore.projectChanged.value = !(projectstore.projectChanged.value)
                                 refreshData()
                             } else {
                                 message.warning(res.data.message)
@@ -415,12 +413,16 @@ const refreshData = () => {
 }
 
 watch(projectstore.projectChanged, () => {
-    tid.value = teamstore.curTeam.value.toString()
+    if (teamstore.curTeam.value.toString() !== '-1'){
+        tid.value = teamstore.curTeam.value.toString()
+    }
     refreshData()
 })
 
 watch(teamstore.teamChanged, () => {
-    tid.value = teamstore.curTeam.value.toString()
+    if (teamstore.curTeam.value.toString() !== '-1'){
+        tid.value = teamstore.curTeam.value.toString()
+    }
     refreshData()
 })
 

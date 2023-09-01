@@ -1,12 +1,11 @@
 <template>
     <div class="topNav">
         <div class="topNavLeft">
-            <Logo></Logo>
-            <span>融创云开发</span>
+            <img src="@/assets/FUSIONCUDE-LONG1.png" height="90" width="220">
         </div>
-        <div class="topNavRight">
+        <div class="topNavRight" v-if="showMenu">
             <!-- 聊天 -->
-            <div class="topNavRightIcon" @click="chatShowModal = true">
+            <div class="topNavRightIcon" @click="chatShowModal = true" id="intostep2">
                 <n-icon size="25" :component="MessageCircle" />
             </div>
             <n-modal v-model:show="chatShowModal" class="custom-card" preset="card" style="width: 70vw;height: 95vh;"
@@ -160,7 +159,7 @@
 
 <script setup lang='ts'>
 
-import { ref, h, onMounted } from 'vue';
+import { ref, h, onMounted, watch } from 'vue';
 import { RecentListModel, useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification, UploadCustomRequestOptions } from 'naive-ui'
 import { useTeamStore } from '@/store/teamStore'
@@ -182,11 +181,18 @@ import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
+import { useRoute } from 'vue-router';
 
 const messengerStore = useMessengerStore();
 
 //加载头像以及用户名和当前团队
 const currentAvatar = ref('');
+const showMenu = ref(!location.pathname.includes('protopreview'))
+const route = useRoute()
+watch(() => route.params, () => {
+    showMenu.value = (!location.pathname.includes('protopreview'))
+})
+
 onMounted(async () => {
     const res = await mypost(message, '/user/showInfo', {});
     if (!res) {
@@ -367,7 +373,7 @@ const newMessage = (teamId: number, teamName: string, rid: number) => {
             ),
     })
 }
-const newDocMessage = (/*teamId: number, teamName: string, rid: number*/) => {
+const newDocMessage = (pid:number,tid:number,docid:number) => {
     const n = notification.create({
         title: `你在文档中被@了`,
         avatar: () =>
@@ -388,6 +394,7 @@ const newDocMessage = (/*teamId: number, teamName: string, rid: number*/) => {
                         // setTimeout(() => {
                         //     if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(teamId, rid);
                         // }, 500);
+                        router.push(`/team/${tid}/project/${pid}/doc/${docid}`);
                         n.destroy()
                     }
                 },
@@ -415,8 +422,8 @@ function initWebSocket() {
         let rid: number = parseInt(data.rid);
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
-            //debugger;
-            newDocMessage();
+            debugger;
+            newDocMessage(data.pid,data.tid,data.docid);
             return;
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
@@ -656,7 +663,7 @@ const changePassword = async () => {
 
 .topNavLeft {
     /* background-color: red; */
-    width: 15%;
+    width: 35%;
     min-width: 200px;
     height: 100px;
     display: flex;

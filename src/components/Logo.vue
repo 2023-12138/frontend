@@ -1,11 +1,16 @@
 <template>
-    <n-icon id="logo" size="30" color="black">
-        <game-controller />
-    </n-icon>
+    <span class="image">
+        <img src="@/assets/logo.png" width="45" height="45">
+    </span>
 </template>
 
 <script setup lang='ts'>
-import { GameController } from '@vicons/ionicons5'
+
 </script>
 
-<style scoped></style>
+<style scoped>
+.image {
+    margin-left: 20px;
+    border-radius: 2px;
+}
+</style>

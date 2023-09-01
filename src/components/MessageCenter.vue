@@ -1,7 +1,7 @@
 <template>
     <n-popover :overlap="overlap" placement="bottom" trigger="click" style="border-radius: 6px;">
         <template #trigger>
-            <div class="bellIcon">
+            <div class="bellIcon" id="intostep3">
                 <n-icon size="25" :component="BellRegular" />
                 <div class="remind" v-show="remindShow"></div>
             </div>

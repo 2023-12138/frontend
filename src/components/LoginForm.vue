@@ -368,10 +368,10 @@ const login = (e: MouseEvent) => {
                         localStorage.setItem('token', res.data.data.token)
                         localStorage.setItem('uid', res.data.data.uid)
                         userstore.curUser.value = res.data.data.uid.toString()
+                        userstore.isNew.value = parseInt(res.data.data.logincnt) == 1;
                         teamstore.curTeam.value = res.data.data.privateTid.toString()
                         privateTid = res.data.data.privateTid.toString()
                         axiosStore.updateAuthorizationHeader(res.data.data.token) 
-                        console.log(axios.defaults)
                         flag = true
                     } else {
                         message.warning(res.data.message)

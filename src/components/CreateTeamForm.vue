@@ -104,7 +104,6 @@ const createTeam = (e: MouseEvent) => {
                         teamstore.curTeam.value =  res.data.data.tid.toString()
                         teamstore.curTeamName.value = createTeamModel.value.teamname ? createTeamModel.value.teamname.toString() : '个人空间'
                         teamstore.teamChanged.value = !(teamstore.teamChanged.value)
-                        console.log(teamstore.curTeam.value);
                         
                         message.success('创建成功')
                         router.push('/team/' + res.data.data.tid + '/projectmanage')

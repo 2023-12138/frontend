@@ -293,7 +293,7 @@ function team2Options(team: TeamModel) {
 }
 
 async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderName: string) {
-    //debugger;
+    debugger;
     let data = JSON.parse(e.data);
     let msgtype: string = data.type;
     if (msgtype == 'chat_aite_history') msgtype = 'chat_aite';

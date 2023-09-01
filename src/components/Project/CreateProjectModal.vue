@@ -67,8 +67,10 @@ const teamstore = storeToRefs(teamStore);
 const createProject = () => {
     createProjectFormRef.value?.validate((errors) => {
         if (!errors) {
-            console.log(createProjectModel.value)
-            tid.value = teamstore.curTeam.value.toString()
+            if (teamstore.curTeam.value.toString() !== '-1'){
+                tid.value = teamstore.curTeam.value.toString()
+            }
+            
             axios.post('project/createProject', {
                 "project_name": createProjectModel.value.projectname,
                 "project_inform": createProjectModel.value.projectdescription,
