@@ -8,12 +8,12 @@
                     TID: {{ $route.params.tid }}
                     PID: {{ $route.params.pid }}
                 </span>
-                <n-popover trigger="click" placement="bottom-end">
+                <n-popover :show="showCreateFile" trigger="manual" placement="bottom-end">
                     <template #trigger>
                         <n-button type="primary"
-                            @click="$route.params.fid ? isInFolder = true : isInFolder = false">新建文件</n-button>
+                            @click="$route.params.fid ? isInFolder = true : isInFolder = false;showCreateFile = !showCreateFile">新建文件</n-button>
                     </template>
-                    <div class="createFileContainer">
+                    <div class="createFileContainer" :style="{'height':createFileValue != '文件夹' ? '210px' : '170px'}">
                         <div class="createFileTop">
                             <n-radio-group v-model:value="createFileValue" name="radiobuttongroup1"
                                 class="createFileRightButtons">
@@ -24,6 +24,10 @@
                             </n-radio-group>
                         </div>
                         <div class="createFileButtom">
+                            <div class="docTemplate" v-show="createFileValue != '文件夹'">
+                                <n-button type="primary" @click="createFileValue == '共享文档' ? changeTemplateModal = true : changeProtoTemplateModal = true">选择模板</n-button>
+                                <span>{{ createFileValue == '共享文档' ? templateValue : protoTemplateValue }}</span>
+                            </div>
                             <span>给你的{{ createFileValue }}起个名字吧&nbsp;(。・∀・)ノ</span>
                             <n-input v-model:value="fileName" placeholder="请输入文件名" />
                             <n-select v-if="createFileValue === '原型设计'" 
@@ -65,7 +69,6 @@
                             </div>
                         </div>
                     </n-tab-pane>
-
                     <n-tab-pane name="design" tab="原型设计">
                         <div class="project-card-pane">
                             <div class="project-card"
@@ -90,10 +93,40 @@
             </div>
         </div>
     </div>
+    <n-modal title="选择模板" v-model:show="changeTemplateModal" preset="card" style="width: 60vw;height: 90vh;" 
+        content-style="height:70%;width:100%" header-style="text-align:center;font-size:24px">
+        <n-scrollbar style="max-height: 100%">
+            <div class="templateContainer">
+                <div class="templateCard" v-for="(template,index) in templates" :key="index" @click="chooseDocTemplate(index)">
+                    <div class="templateImgContainer">
+                        <img class="templateImg" :src="template.img">
+                    </div>
+                    <div class="templateName">
+                        <span>{{ template.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </n-scrollbar>
+    </n-modal>
+    <n-modal title="选择模板" v-model:show="changeProtoTemplateModal" preset="card" style="width: 60vw;height: 90vh;" 
+        content-style="height:70%;width:100%" header-style="text-align:center;font-size:24px">
+        <n-scrollbar style="max-height: 100%">
+            <div class="templateContainer">
+                <div class="templateCard" v-for="(template,index) in protoTemplates" :key="index" @click="chooseProtoTemplate(index)">
+                    <div class="templateImgContainer">
+                        <img class="templateImg" :src="template.img">
+                    </div>
+                    <div class="templateName">
+                        <span>{{ template.name }}</span>
+                    </div>
+                </div>
+            </div>
+        </n-scrollbar>
+    </n-modal>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch,Ref } from 'vue';
 import { mypost } from '@/axios/axios';
 import { useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
@@ -102,8 +135,8 @@ const message = useMessage();
 const route = useRoute();
 
 //获取项目下文档、原型、回收站内容
-const folderAndDocList = ref([]);
-const designList = ref([]);
+const folderAndDocList:Ref<any[]> = ref([]);
+const designList:Ref<any[]> = ref([]);
 // const rubbishBinList = ref([]);
 const allFileList = ref([]);
 const projectFolderID = ref(0);//当前项目作为一个最大的文件夹，其文件夹编号
@@ -153,6 +186,7 @@ watch(
 )
 
 //新建文件
+const showCreateFile = ref(false);
 const fileName = ref('');
 const createFileValue = ref('原型设计');
 const isInFolder = ref(false);
@@ -189,16 +223,18 @@ const createFile = async () => {
     let url = '/project/createProto';
     let data: {
         pid: string,
-        modelid?: string,
         dirname?: string,
         docname?: string,
         protoname?: string,
         father?: number,
-        depth?: number
+        depth?: number,
+        template?: string,
+        modelid?:number,
     } = { pid: route.params.pid.toString() };
     if (createFileValue.value === '共享文档') {
         url = '/doc/createdoc';
         data.docname = fileName.value;
+        data.template = templateValue.value;
         if (route.params.fid) {
             data.father = parseInt(route.params.fid.toString());
             data.depth = 2;
@@ -211,7 +247,7 @@ const createFile = async () => {
         data.dirname = fileName.value;
     } else {
         data.protoname = fileName.value;
-        data.modelid = '1'
+        data.modelid = protoTemplateNumber.value;
     }
     const res = await mypost(message, url, data);
     if (!res) {
@@ -219,6 +255,84 @@ const createFile = async () => {
     }
     getFiles();
     message.success('创建成功！');
+    showCreateFile.value = false;
+}
+
+//选择文档以及原型模板
+const changeTemplateModal = ref(false);
+const changeProtoTemplateModal = ref(false);
+const templateValue = ref('空白文档');
+const protoTemplateValue = ref('空白页面');
+const protoTemplateNumber = ref(1);
+const templates = [
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E7%A9%BA%E7%99%BD%E6%96%87%E6%A1%A3.png',
+        name:'空白文档'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E9%A1%B9%E7%9B%AE%E8%AE%A1%E5%88%92%E4%B9%A6.png',
+        name:'项目计划书'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E%E4%B9%A6.png',
+        name:'架构设计说明书'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E5%B7%A5%E4%BD%9C%E5%91%A8%E6%8A%A5.png',
+        name:'工作周报'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86%E4%B9%A6.png',
+        name:'项目管理书'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E4%BC%9A%E8%AE%AE%E7%BA%AA%E8%A6%81.png',
+        name:'会议纪要'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E9%9C%80%E6%B1%82%E8%A7%84%E6%A0%BC%E8%AF%B4%E6%98%8E%E4%B9%A6.png',
+        name:'需求规格说明书'
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E9%9C%80%E6%B1%82%E8%B0%83%E7%A0%94%E6%8A%A5%E5%91%8A.png',
+        name:'需求调研报告'
+    }
+]
+const protoTemplates = [
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/%E7%A9%BA%E7%99%BD%E6%96%87%E6%A1%A3.png',
+        name:'空白文档',
+        key:1
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/1.png',
+        name:'登录模板',
+        key:7
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/2.png',
+        name:'数据后台模板',
+        key:8
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/3.png',
+        name:'App个人中心模板',
+        key:9
+    },
+    {
+        img:'http://rzyi06q9n.hb-bkt.clouddn.com/4.png',
+        name:'注册模板',
+        key:10
+    }
+]
+const chooseDocTemplate = (index:number) => {
+    templateValue.value = templates[index].name;
+    changeTemplateModal.value = false;
+}
+const chooseProtoTemplate = (index:number) => {
+    protoTemplateValue.value = protoTemplates[index].name;
+    protoTemplateNumber.value = protoTemplates[index].key;
+    changeProtoTemplateModal.value = false;
 }
 </script>
 
@@ -257,8 +371,8 @@ const createFile = async () => {
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
-    width: 7vmax;
-    height: 6vmax;
+    width: 9vmax;
+    height: 8vmax;
     margin: 10px;
     padding: 10px;
 }
@@ -273,7 +387,7 @@ const createFile = async () => {
     display: flex;
 
     >img {
-        width: 50px;
+        width: 100%;
     }
 }
 
@@ -281,6 +395,9 @@ const createFile = async () => {
     display: flex;
     flex-direction: column;
     margin: 8px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
 }
 
 /* 创建文件 */
@@ -310,11 +427,71 @@ const createFile = async () => {
 
     .createFileButtom {
         width: 100%;
-        height: 80%;
+        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
+
+        .docTemplate {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+    }
+}
+
+/* 文档模板 */
+.templateContainer {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    .templateCard {
+        width: 24%;
+        height: 40%;
+        margin: 1.6% 4%;
+        border-radius: 20px;
+        box-shadow: 5px 5px 10px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+
+        &:hover {
+            cursor: pointer;
+            transform:translateY(-5px);
+            transform:scale(1.01,1.01);
+            box-shadow: 5px 5px 20px;
+            transition: .1s all linear;
+        }
+
+        .templateImgContainer {
+            height: 80%;
+            width: 100%;
+            font-size: 0;
+            border-radius: 20px 20px 0 0;
+            overflow: hidden;
+
+            .templateImg {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        .templateName {
+            height: 20%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 666;
+        }
     }
 }
 </style>

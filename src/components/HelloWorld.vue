@@ -11,15 +11,13 @@
             </n-button>
         </n-upload-trigger>
     </n-upload>
-    <n-button @click="confirm">确定</n-button>
+    <n-button>确定</n-button>
     <img :src="imgres" width="200" height="200">
 </template>
 
 <script setup lang='ts'>
 import { UploadCustomRequestOptions } from 'naive-ui';
-import { onMounted, reactive, ref, nextTick } from 'vue';
-import axios from 'axios';
-import { useMessengerStore } from '@/store/messengerStore';
+import { onMounted, ref, nextTick } from 'vue';
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 import intro from "@/intro/introConfig";
@@ -40,14 +38,6 @@ const customRequest = ({
     avatarUpload.value.clear();
 }
 
-const confirm = () => {
-    cropper.value.getCropData(data => {
-        console.log(data);
-        
-        imgres.value = data
-    })
-}
-
 onMounted(() => {
     nextTick(() => {
         intro.setOptions({
@@ -58,11 +48,11 @@ onMounted(() => {
                 intro: 'Hello World! 👋' // 内容
               },
               {
-                element: document.querySelector('#step2'),
+                element: document.querySelector('#step2') as HTMLElement,
                 intro: '有关如何配置/自定义该项目的指南和方法，请查看vue-cli文档。'
               },
               {
-                element: document.querySelector('#step3'),
+                element: document.querySelector('#step3') as HTMLElement,
                 intro: '已安装的cli插件'
               },
               {

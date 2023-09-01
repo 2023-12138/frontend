@@ -3,7 +3,7 @@
         <div class="header">
             <div class="headerContainer">
                 <div class="headerLeft">
-                    <div class="back">
+                    <div class="back" @click="$router.go(-1)">
                         <n-icon size="29" :component="ArrowBackSharp" />
                     </div>
                     <div class="title">
