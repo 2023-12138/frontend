@@ -53,7 +53,7 @@
                                     <img src="@/assets/profile.svg" />
                                 </div>
                                 <div class="project-card-bottom">
-                                    {{ folder.filename }}
+                                    <n-ellipsis style="max-width: 100%;">{{ folder.filename }}</n-ellipsis>
                                 </div>
                             </div>
                             <div class="project-card"
@@ -64,7 +64,7 @@
                                     <img src="@/assets/file.svg" />
                                 </div>
                                 <div class="project-card-bottom">
-                                    {{ doc.filename }}
+                                    <n-ellipsis style="max-width: 100%;">{{ doc.filename }}</n-ellipsis>
                                 </div>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                                     <img src="@/assets/design.svg" />
                                 </div>
                                 <div class="project-card-bottom">
-                                    {{ design.protoname }}
+                                    <n-ellipsis style="max-width: 100%;">{{ design.protoname }}</n-ellipsis>
                                 </div>
                             </div>
                         </div>
@@ -392,8 +392,9 @@ const chooseProtoTemplate = (index:number) => {
 }
 
 .project-card-bottom {
+    width: 80%;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     margin: 8px;
     text-overflow: ellipsis;
     overflow: hidden;
