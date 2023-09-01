@@ -27,7 +27,7 @@ import LoginForm from '@/components/LoginForm.vue';
 <style scoped>
 .login-out-container{
     position: relative;
-    background-image:linear-gradient(90deg, #ebebeb, #f5f7f6);
+    background-image: url('@/assets/background.png');
     height: 100vh;
     display: flex;
     justify-content: center;

@@ -110,7 +110,7 @@ const projectstore = storeToRefs(projectStore);
 const tid = ref<String>(route.params.tid.toString())
 const isPrivate = ref(tid.value.startsWith('private'))
 const message = useMessage()
-const showMenu = ref(!location.pathname.includes('protopreview'))
+const showMenu = ref(!(location.pathname.includes('protopreview') || location.pathname.includes('design')))
 const refreshMenu = () => {
     tid.value = tid.value.toString()
     isPrivate.value = tid.value.toString().startsWith('private')
@@ -175,7 +175,7 @@ const refreshMenu = () => {
 
 onMounted(() => {
     console.log(location.pathname)
-    showMenu.value = (!location.pathname.includes('protopreview'))
+    showMenu.value = (!(location.pathname.includes('protopreview') || location.pathname.includes('design')))
     tid.value = route.params.tid.toString()
     refreshMenu()
 })
@@ -191,7 +191,7 @@ watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
 })
 
 watch(() => route.params, () => {
-    showMenu.value = (!location.pathname.includes('protopreview'))
+    showMenu.value = (!(location.pathname.includes('protopreview') || location.pathname.includes('design')))
 })
 
 const menuOptions: Ref<any[]> = ref([
@@ -267,7 +267,7 @@ function renderMenuLabel(option: MenuOption) {
 
 /* 主窗口 */
 .main {
-    width: 85%;
+    width: 100%;
     height: 100%;
 }
 </style>

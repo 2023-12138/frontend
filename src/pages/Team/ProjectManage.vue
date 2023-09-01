@@ -79,7 +79,7 @@ const message = useMessage()
 
 import { NButton, NInput } from "naive-ui";
 import { computed, h, nextTick } from "vue";
-import DeleteConfirm from '@/components/Project/DeleteConfirm.vue'
+import DeleteConfirm from '@/components/Project/ProjectDeleteConfirm.vue'
 import router from '@/routes';
 const projectNameInputRef = ref()
 const projectDescriptionInputRef = ref()

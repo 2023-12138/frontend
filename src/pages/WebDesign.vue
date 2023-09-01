@@ -14,7 +14,7 @@
                         <n-modal v-model:show="showExportModal">
                             <n-card style="width: 600px" title="生成链接" :bordered="false" size="huge" role="dialog"
                                 aria-modal="true">
-                                {{ link }}          
+                                <a :href="link">{{ link }} </a>
                             </n-card>
                         </n-modal>
                     </div>
@@ -35,7 +35,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
-const preUrl = "http://127.0.0.1:8080"
+const preUrl = "http://101.43.224.85:81"
 const target = ref(preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token') + '/true')
 const showExportModal = ref(false)
 const message = useMessage()
@@ -44,8 +44,8 @@ const exportPreview = () => {
     axios.post('project/makelink', {
     }).then(res => {
         if (res.data.code === 200) {
-            link.value = 'http://127.0.0.1:5173/team/' + route.params.tid + '/project/' + route.params.pid + '/protopreview/' 
-            + route.params.did + '/' + res.data.data.token + '/key'
+            link.value = 'http://127.0.0.1:5173/team/' + route.params.tid + '/project/' + route.params.pid + '/protopreview/'
+                + route.params.did + '/' + res.data.data.token + '/key'
             showExportModal.value = true
         } else {
             message.warning(res.data.message)
@@ -63,6 +63,19 @@ watch(() => route.params.did, () => {
 onMounted(() => {
     // 在组件加载完成后，获取 iframe 元素并进行操作
     target.value = preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token') + '/true'
+    window.addEventListener('beforeunload', (_event) => {
+        console.log('beforeunload add ')
+        // 执行你的函数或操作
+        const baseUrl = 'http://101.43.202.84:7002/'
+        const config = {
+            headers: {
+                Authorization: route.params.token.toString(),
+            },
+        }
+        axios.post(baseUrl + 'project/exitProto', {
+            protoid: route.params.did.toString(),
+        }, config)
+    })
 })
 
 </script>
