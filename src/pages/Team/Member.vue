@@ -36,8 +36,10 @@ const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
 
 watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
-    tid.value = teamstore.curTeam.value.toString()
-    console.log(tid)
+    if (teamstore.curTeam.value.toString() !== '-1') {
+        tid.value = teamstore.curTeam.value.toString()
+    }
+    
     axios.post('team/viewUser', {
         tid: tid.value.replace('private', '')
     }).then(res => {

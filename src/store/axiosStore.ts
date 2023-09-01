@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 
 export const useAxiosStore = defineStore('axiosStore', {
+  persist: true,
   state: () => ({
     axiosInstance: axios.create({
       baseURL: 'http://101.43.202.84:7002/',
