@@ -17,7 +17,74 @@
                 </div>
             </div>
         </div>
-
+    </div>
+    <div style="height: 100vh;">
+        <div class="intro">
+            <div class="intro-left-container">
+                <div class="intro-left">
+                    <div class="intro-left-top">
+                        <n-gradient-text :gradient="{
+                            from: '#000', to: 'rgb(0,0,0)'
+                        }" style="font-size: 48px;font-weight: 600;" type="info">
+                            原型设计
+                        </n-gradient-text>
+                        <n-gradient-text :gradient="{
+                            from: '#000', to: 'rgb(0,0,0)'
+                        }" style="font-size: 18px;" type="info">
+                            产品需求,协同设计
+                        </n-gradient-text>
+                    </div>
+                    <div class="intro-left-bottom">
+                        <div class="intro-left-bottom-text">
+                            · 创造高保真交互原型,还原实际产品体验
+                        </div>
+                        <div class="intro-left-bottom-text">
+                            · 整合页面原型,需求逻辑清晰可见
+                        </div>
+                        <!-- <div>
+                            · 一键导入Axure文件，快速迁移至墨刀
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="intro-right">
+                <img src="@/assets/proto.png" width="700">
+            </div>
+        </div>
+    </div>
+    <div style="height: 100vh;width: 100vw;">
+        <div class="intro">
+            <div class="intro-right">
+                <img src="@/assets/doc.png" width="700">
+            </div>
+            <div class="intro-left-container">
+                <div class="intro-left">
+                    <div class="intro-left-top">
+                        <n-gradient-text :gradient="{
+                            from: '#000', to: 'rgb(0,0,0)'
+                        }" style="font-size: 48px;font-weight: 600;" type="info">
+                            共享文档
+                        </n-gradient-text>
+                        <n-gradient-text :gradient="{
+                            from: '#000', to: 'rgb(0,0,0)'
+                        }" style="font-size: 18px;" type="info">
+                            开发文件,协同编辑
+                        </n-gradient-text>
+                    </div>
+                    <div class="intro-left-bottom">
+                        <div class="intro-left-bottom-text">
+                            · 支持Markdown语法,单栏渲染
+                        </div>
+                        <div class="intro-left-bottom-text">
+                            · 实时协同编辑,合作无障碍
+                        </div>
+                        <!-- <div>
+                            · 一键导入Axure文件，快速迁移至墨刀
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -55,5 +122,56 @@ const title = ref("FusionCode");
     padding-right: 50px;
     border-radius: 10px;
     margin-right: 20px;
+}
+
+.intro {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-image: url('@/assets/background.png');
+
+    .intro-left-container {
+        width: 35%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .intro-left {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-direction: column;
+
+            .intro-left-top {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                align-items: center;
+            }
+
+            .intro-left-bottom {
+                width: 100%;
+                margin: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .intro-left-bottom-text {
+                    font-size: 18px;
+                }
+            }
+
+        }
+    }
+
+    .intro-right {
+        width: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
 }
 </style>
