@@ -117,7 +117,6 @@ const refreshMenu = () => {
 }
 
 onMounted(() => {
-    console.log('onMounted hook executed');
     tid.value = route.params.tid.toString()
     refreshMenu()
 })
