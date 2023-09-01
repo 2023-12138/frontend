@@ -52,7 +52,7 @@ onMounted(async () => {
         return;
     }
     debugger;
-    src.value = `/pad/p/auth_session?sessionID=${res.sessionid}&padID=${res.padid}`;
+    src.value = `/pad/auth_session?sessionID=${res.sessionid}&padName=${res.padname}&groupID=${res.groupid}`;
 
 
     //设置cookies
