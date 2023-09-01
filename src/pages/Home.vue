@@ -16,8 +16,6 @@
                     <n-button @click="router.push('/document')" class="loginbutton">阅读文档</n-button>
                 </div>
             </div>
-
-
         </div>
 
     </div>
@@ -46,7 +44,7 @@ const title = ref("FusionCode");
     align-items: center;
     height: calc(100% - 70px);
     width: 100%;
-    background-color: whitesmoke;
+    background-image: url('@/assets/background.png');
 }
 
 .loginbutton {

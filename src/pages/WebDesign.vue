@@ -35,7 +35,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
-const preUrl = "http://127.0.0.1:8080"
+const preUrl = "http://101.43.224.85:81"
 const target = ref(preUrl + "/#/" + route.params.did + '/' + localStorage.getItem('token') + '/true')
 const showExportModal = ref(false)
 const message = useMessage()

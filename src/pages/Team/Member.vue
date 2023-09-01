@@ -122,7 +122,7 @@ const handleUpdateValue = (key: string) => {
 
 import { NSelect } from "naive-ui";
 import { computed, h } from "vue";
-import DeleteConfirm from '@/components/Member/DeleteConfirm.vue'
+import DeleteConfirm from '@/components/Member/MemberDeleteConfirm.vue'
 import { Column } from '@/interfaces/Member/MemberTable.interface'
 
 const options = [{

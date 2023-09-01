@@ -1,8 +1,7 @@
 <template>
     <div class="topNav">
         <div class="topNavLeft">
-            <Logo></Logo>
-            <span>融创云开发</span>
+            <img src="@/assets/FUSIONCUDE-LONG1.png" height="90" width="220">
         </div>
         <div class="topNavRight" v-if="showMenu">
             <!-- 聊天 -->
@@ -661,7 +660,7 @@ const changePassword = async () => {
 
 .topNavLeft {
     /* background-color: red; */
-    width: 15%;
+    width: 35%;
     min-width: 200px;
     height: 100px;
     display: flex;
