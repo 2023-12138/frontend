@@ -26,6 +26,10 @@
                         <div class="createFileButtom">
                             <span>给你的{{ createFileValue }}起个名字吧&nbsp;(。・∀・)ノ</span>
                             <n-input v-model:value="fileName" placeholder="请输入文件名" />
+                            <n-select v-if="createFileValue === '原型设计'" 
+                            v-model:value="modelValue" 
+                            :options="createProtoOptions" 
+                            />
                             <n-button secondary type="info" @click="createFile">确定</n-button>
                         </div>
                     </div>
@@ -65,7 +69,7 @@
                     <n-tab-pane name="design" tab="原型设计">
                         <div class="project-card-pane">
                             <div class="project-card"
-                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/1')"
+                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/design/' + design.protoid)"
                                 v-for="design in designList">
                                 <div class="project-card-top">
                                     <img src="@/assets/design.svg" />
@@ -166,10 +170,26 @@ const createFileOptions = [
         label: '文件夹'
     }
 ]
+const modelValue = ref('默认模板')
+const createProtoOptions = [
+    {
+        value: "原型设计",
+        label: "原型设计"
+    },
+    {
+        value: '共享文档',
+        label: '共享文档'
+    },
+    {
+        value: '文件夹',
+        label: '文件夹'
+    }
+]
 const createFile = async () => {
     let url = '/project/createProto';
     let data: {
         pid: string,
+        modelid?: string,
         dirname?: string,
         docname?: string,
         protoname?: string,
@@ -191,6 +211,7 @@ const createFile = async () => {
         data.dirname = fileName.value;
     } else {
         data.protoname = fileName.value;
+        data.modelid = '1'
     }
     const res = await mypost(message, url, data);
     if (!res) {

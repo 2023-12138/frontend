@@ -4,7 +4,7 @@
             <Logo></Logo>
             <span>融创云开发</span>
         </div>
-        <div class="topNavRight">
+        <div class="topNavRight" v-if="showMenu">
             <!-- 聊天 -->
             <div class="topNavRightIcon" @click="chatShowModal = true" id="intostep2">
                 <n-icon size="25" :component="MessageCircle" />
@@ -160,7 +160,7 @@
 
 <script setup lang='ts'>
 
-import { ref, h, onMounted } from 'vue';
+import { ref, h, onMounted, watch } from 'vue';
 import { RecentListModel, useChatContainer } from '@/store/store'
 import { NIcon, NButton, NAvatar, NText, NConfigProvider, useMessage, useNotification, UploadCustomRequestOptions } from 'naive-ui'
 import { useTeamStore } from '@/store/teamStore'
@@ -182,11 +182,18 @@ import axios from '@/axios/axios';
 import { useMessengerStore } from '@/store/messengerStore';
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
+import { useRoute } from 'vue-router';
 
 const messengerStore = useMessengerStore();
 
 //加载头像以及用户名和当前团队
 const currentAvatar = ref('');
+const showMenu = ref(!location.pathname.includes('protopreview'))
+const route = useRoute()
+watch(() => route.params, () => {
+    showMenu.value = (!location.pathname.includes('protopreview'))
+})
+
 onMounted(async () => {
     const res = await mypost(message, '/user/showInfo', {});
     if (!res) {
