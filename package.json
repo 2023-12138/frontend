@@ -29,6 +29,7 @@
     "unplugin-vue-components": "^0.25.1",
     "vue": "^3.3.4",
     "vue-axios": "^3.5.2",
+    "vue-cookies": "^1.8.3",
     "vue-cropper": "^1.0.9",
     "vue-router": "^4.2.4",
     "web-editor-markdown": "^1.0.8"

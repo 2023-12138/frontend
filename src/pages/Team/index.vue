@@ -111,7 +111,7 @@ const projectstore = storeToRefs(projectStore);
 const tid = ref<String>(route.params.tid.toString())
 const isPrivate = ref(tid.value.startsWith('private'))
 const message = useMessage()
-const showMenu = ref(!(location.pathname.includes('protopreview') || location.pathname.includes('design')))
+const showMenu = ref(!(location.pathname.includes('protopreview') || location.pathname.includes('design') || location.pathname.includes('doc')))
 const refreshMenu = () => {
     tid.value = tid.value.toString()
     isPrivate.value = tid.value.toString().startsWith('private')
@@ -182,7 +182,7 @@ const refreshMenu = () => {
 }
 
 onMounted(() => {
-    showMenu.value = (!(location.pathname.includes('protopreview') || location.pathname.includes('design')))
+    showMenu.value = (!(location.pathname.includes('protopreview') || location.pathname.includes('design') || location.pathname.includes('doc')))
     tid.value = route.params.tid.toString()
     refreshMenu()
 })
@@ -198,7 +198,7 @@ watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
 })
 
 watch(() => route.params, () => {
-    showMenu.value = (!(location.pathname.includes('protopreview') || location.pathname.includes('design')))
+    showMenu.value = (!(location.pathname.includes('protopreview') || location.pathname.includes('design') || location.pathname.includes('doc')))
 })
 
 const menuOptions: Ref<any[]> = ref([

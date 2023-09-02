@@ -48,7 +48,8 @@ onMounted(async () => {
     if (!res) {
         return;
     }
-    src.value = `http://101.43.224.85/p/p/auth_session?sessionID=${res.sessionid}&padName=${res.padname}&groupID=${res.groupid}`;
+    document.cookie = `sessionID=${res.sessionid}`
+    src.value = `http://101.43.224.85/p/auth_session?sessionID=${res.sessionid}&padName=${res.padname}&groupID=${res.groupid}`;
 
 
     //设置cookies
