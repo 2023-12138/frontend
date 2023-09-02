@@ -186,10 +186,10 @@ const messengerStore = useMessengerStore();
 
 //加载头像以及用户名和当前团队
 const currentAvatar = ref('');
-const showMenu = ref(!location.pathname.includes('protopreview'))
+const showMenu = ref(!location.hash.includes('protopreview'))
 const route = useRoute()
 watch(() => route.params, () => {
-    showMenu.value = (!location.pathname.includes('protopreview'))
+    showMenu.value = (!location.hash.includes('protopreview'))
 })
 
 onMounted(async () => {

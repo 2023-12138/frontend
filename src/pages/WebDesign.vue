@@ -44,7 +44,7 @@ const exportPreview = () => {
     axios.post('project/makelink', {
     }).then(res => {
         if (res.data.code === 200) {
-            link.value = 'http://101.43.224.85/team/' + route.params.tid + '/project/' + route.params.pid + '/protopreview/'
+            link.value = 'http://101.43.224.85/#/team/' + route.params.tid + '/project/' + route.params.pid + '/protopreview/'
                 + route.params.did + '/' + res.data.data.token + '/key'
             showExportModal.value = true
         } else {
