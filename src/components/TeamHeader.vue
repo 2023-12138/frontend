@@ -193,8 +193,7 @@ watch(() => route.params, () => {
 })
 
 onMounted(async () => {
-    const temp = VueCropper()
-    console.log(temp)
+
     const res = await mypost(message, '/user/showInfo', {});
     if (!res) {
         return;

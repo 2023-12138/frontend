@@ -54,6 +54,10 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
+        path:'/docpreview/:sessionid/:padid/key',
+        component: () => import('../pages/DocPreview.vue')
+    },
+    {
         path: '/login',
         component: () => import('../pages/Login.vue')
     },
