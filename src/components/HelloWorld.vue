@@ -19,7 +19,6 @@
 import { UploadCustomRequestOptions } from 'naive-ui';
 import { onMounted, ref, nextTick } from 'vue';
 import 'vue-cropper/dist/index.css';
-import { VueCropper } from 'vue-cropper';
 import intro from "@/intro/introConfig";
 
 const imgbase = ref('');

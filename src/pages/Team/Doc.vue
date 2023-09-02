@@ -15,7 +15,7 @@
                 </div>
                 <div class="headerRight">
                     <n-button>导出</n-button>
-                    <n-button @click="save">保存</n-button>
+                    <n-button @click="">保存</n-button>
                 </div>
             </div>
         </div>
@@ -29,8 +29,7 @@
 </template>
 
 <script setup lang='ts'>
-import { onMounted, ref, watch } from "vue";
-import { Editor } from "@/editor/index";
+import { onMounted, ref } from "vue";
 import { usedocEditStore } from '@/store/docEditStore.ts'
 
 import { ArrowBackSharp } from '@vicons/ionicons5';
@@ -43,7 +42,6 @@ const message = useMessage();
 const docEditStore = usedocEditStore();
 const route = useRoute();
 
-let editor: Editor;
 let src = ref<string | undefined>(undefined);
 onMounted(async () => {
     debugger;
@@ -100,28 +98,6 @@ docEditStore.onAT = async () => {
         ATheight.value = rect.height;
         console.log(range);
     }
-}
-
-watch(ATValue, async (newValue) => {
-    if (newValue != '') {
-        const res = await mypost(message, '/doc/docaite', { "aite": parseInt(newValue.split('&')[1]), "docid": route.params.did })
-        if (!res) {
-            return;
-        }
-        editor.insertTextAtCursor(newValue.split('&')[0]);
-        ATshow.value = false;
-    }
-})
-
-
-//保存事件
-const save = async () => {
-    const content = editor.getContent();
-    const res = await mypost(message, '/doc/savedoc', { "docid": route.params.did, "text": content })
-    if (!res) {
-        return;
-    }
-    message.success('保存成功！')
 }
 </script>
 

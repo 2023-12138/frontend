@@ -166,7 +166,6 @@ import { useTeamStore } from '@/store/teamStore'
 import { MessageCircle } from '@vicons/tabler'
 import { IosReverseCamera } from '@vicons/ionicons4'
 
-import Logo from '@/components/Logo.vue';
 import ChatForm from '@/components/ChatForm.vue'
 import MessageCenter from './MessageCenter.vue';
 import CreateTeamForm from '@/components/CreateTeamForm.vue'
@@ -194,6 +193,8 @@ watch(() => route.params, () => {
 })
 
 onMounted(async () => {
+    const temp = VueCropper()
+    console.log(temp)
     const res = await mypost(message, '/user/showInfo', {});
     if (!res) {
         return;

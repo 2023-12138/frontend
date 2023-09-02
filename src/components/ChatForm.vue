@@ -185,7 +185,7 @@ const searchOptions = computed(() => {
 const renderSearchLabel = (option: SelectOption): VNodeChild => [
     h('div', { style: 'display:flex;align-items:center;margin:3px;padding:3px;' }, [
         h(NAvatar, { round: true, src: userAvatars.value.get(parseInt(option?.value?.toString().split(',')[0] as string)), style: 'margin-right:10px;' }),
-        h(NEllipsis, { style: 'max-width: 80%' }, option.label)
+        h(NEllipsis as any, { style: 'max-width: 80%' }, option.label as any)
     ])
 ];
 function searchSelected(value: string) {

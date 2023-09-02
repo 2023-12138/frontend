@@ -1,8 +1,6 @@
-import axios from 'axios'
 import { useAxiosStore } from '@/store/axiosStore';
 import { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
 const axiosStore = useAxiosStore();
-let header = localStorage.getItem('token')
 
 let request = axiosStore.axiosInstance
 
