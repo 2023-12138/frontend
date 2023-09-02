@@ -15,10 +15,7 @@
         <div class="dividerVertical"></div>
         <div class="messageContent">
             <div class="messageTitle">
-                在{{ message.type == 'chat' ? '群聊' : '文档' }}{{ message.tid }}中提到了你
-            </div>
-            <div class="messageText" v-show="textShow[index]">
-                具体消息
+                <n-ellipsis style="max-width: 100%">在{{ message.type == 'chat' ? '群聊' : '文档' }}{{ message.name }}中提到了你</n-ellipsis>
             </div>
         </div>
         <div class="selectMore">
@@ -41,6 +38,7 @@ import { mypost } from '@/axios/axios';
 
 import { useChatContainer } from '@/store/store'
 import { storeToRefs } from 'pinia';
+import router from '@/routes';
 
 let props = defineProps<{
     messages:any[],
@@ -77,9 +75,14 @@ const readMessage = async (index:number) => {
         props.messages[index].read = 1
     }
     chatShowModal.value = true;
-    setTimeout(() => {
-        if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(props.messages[index].tid, props.messages[index].rid);
-    }, 500);
+    if(props.messages[index].type === 'chat'){
+        setTimeout(() => {
+            if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(props.messages[index].tid, props.messages[index].rid);
+        }, 500);
+    }else{
+        router.push(`/team/${props.messages[index].tid}/project/${props.messages[index].pid}/doc/${props.messages[index].docid}`)
+    }
+    
 }
 
 onMounted(() => {
@@ -146,6 +149,7 @@ const deleteMessage = async (index:number) => {
 .messageTitle {
     font-size: 16px;
     font-weight: 666;
+    width: 100%;
 }
 
 .selectMore {

@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div style="height: 100vh;width: 100vw;">
+    <div style="height: 100vh;">
         <div class="intro">
             <div class="intro-right">
                 <img src="@/assets/doc.png" width="700">
@@ -133,18 +133,11 @@ const title = ref("FusionCode");
 .description {
     height: auto;
     width: 500px;
-    /* background-color: white; */
+    /* background-color: red; */
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0 0 5px 5px #ccc;
-}
-
-.description::after {
-    content: '';
-    filter: blur(20px);
-    background-color: red;
-    height: 100px;
-    width: 100px;
+    backdrop-filter: blur(15px);
 }
 
 .content {

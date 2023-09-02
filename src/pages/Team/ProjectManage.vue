@@ -3,7 +3,7 @@
         <div class="project-top">
             <n-h2>项目内容</n-h2>
             <div class="project-top-bottom">
-                <span>共{{ data.length }}个项目&nbsp; ID: {{ $route.params.tid }}</span>
+                <span>共{{ data.length }}个项目</span>
                 <n-button type="primary" @click="showModal = true" id="intostep5">添加项目</n-button>
                 <CreateProjectModal v-model:show="showModal" />
             </div>

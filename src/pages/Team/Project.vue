@@ -5,8 +5,7 @@
             <n-h2>{{ projectName }}</n-h2>
             <div class="project-top-bottom">
                 <span>
-                    TID: {{ $route.params.tid }}
-                    PID: {{ $route.params.pid }}
+                    {{ projectInform }}
                 </span>
                 <n-popover :show="showCreateFile" trigger="manual" placement="bottom-end">
                     <template #trigger>
@@ -40,9 +39,22 @@
             <div class="content">
                 <n-tabs type="line" animated tabs-padding="20">
                     <n-tab-pane name="file" tab="文档">
+                        <div class="breadcrumb" v-show="$route.params.fid">
+                            <div class="back" @click="$router.go(-1)">
+                                <n-icon size="20" :component="ArrowBackSharp" />
+                            </div>
+                            <n-breadcrumb>
+                                <n-breadcrumb-item @click="$router.push(`/team/${$route.params.tid}/project/${$route.params.pid}`)">
+                                    <n-icon color="blue" :component="ProjectDiagram" /> {{ projectName }}
+                                </n-breadcrumb-item>
+                                <n-breadcrumb-item>
+                                    <n-icon color="blue" :component="Folder" /> {{ currentFolder }}
+                                </n-breadcrumb-item>
+                            </n-breadcrumb>
+                        </div>
                         <div class="project-card-pane">
                             <div class="project-card"
-                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/folder/' + folder.fileID)"
+                                @click="$router.push('/team/' + $route.params.tid + '/project/' + $route.params.pid + '/folder/' + folder.fileID);currentFolder = folder.filename"
                                 v-for="folder in folderAndDocList"
                                 v-show="folder.depth == 1 && folder.type == 0 && !$route.params.fid">
                                 <div class="project-card-top">
@@ -78,12 +90,6 @@
                                 </div>
                             </div>
                         </div>
-                    </n-tab-pane>
-                    <n-tab-pane name="setting" tab="设置">
-                        设置
-                    </n-tab-pane>
-                    <n-tab-pane name="rubbish bin" tab="回收站">
-                        回收站
                     </n-tab-pane>
                 </n-tabs>
             </div>
@@ -126,10 +132,14 @@ import { ref, onMounted, watch,Ref } from 'vue';
 import { mypost } from '@/axios/axios';
 import { useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
+import { ArrowBackSharp } from '@vicons/ionicons5';
+import { Folder,ProjectDiagram } from '@vicons/fa';
+import { Document28Filled } from '@vicons/fluent';
 
 const message = useMessage();
 const route = useRoute();
 
+const currentFolder = ref('');
 //获取项目下文档、原型、回收站内容
 const folderAndDocList:Ref<any[]> = ref([]);
 const designList:Ref<any[]> = ref([]);
@@ -157,6 +167,7 @@ const getFiles = async () => {
 
 // 项目名称
 const projectName = ref('')
+const projectInform = ref('')
 
 const getProject = async () => {
     if (route.params.pid) {
@@ -164,7 +175,8 @@ const getProject = async () => {
         if (!curProject) {
             return;
         }
-        projectName.value = curProject.project.project_name
+        projectName.value = curProject.project.project_name;
+        projectInform.value = curProject.project.project_inform;
     }
 }
 
@@ -330,10 +342,26 @@ const chooseProtoTemplate = (index:number) => {
     margin: 10px;
 }
 
-.project-bottom {
+.project-top > h2 {
+    margin: 10px 0 0 10px;
+}
 
+.project-bottom {
     display: inline-flex;
-    flex-direction: row;
+    flex-direction: column;
+}
+
+.breadcrumb {
+    height: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.back {
+    font-size: 0;
+    margin: 0 10px;
+    cursor: pointer;
 }
 
 .content {
