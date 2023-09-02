@@ -22,32 +22,31 @@
   
 <script setup lang="ts">
 import { onMounted, ref, Ref, watch } from 'vue'
-import { useMessage } from 'naive-ui';
+import { MenuOption, useMessage } from 'naive-ui';
 import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia'; 
+import { storeToRefs } from 'pinia';
 import { useTeamStore } from '@/store/teamStore'
 
 import { MemberRowData } from '@/interfaces/Member/MemberTable.interface'
-import { menuOptions } from '@/components/Member/MemberMenu.vue';
 import AddMemberModal from '@/components/Member/AddMemberModal.vue'
 import axios from '@/axios/axios';
 
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
 
-watch (teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
+watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     if (teamstore.curTeam.value.toString() !== '-1') {
         tid.value = teamstore.curTeam.value.toString()
     }
-    
+
     axios.post('team/viewUser', {
         tid: tid.value.replace('private', '')
     }).then(res => {
         if (res.status === 200) {
-            if (res.data.code === 200) {                
-                data.value = res.data.data.userlist.map((item : any) => {
+            if (res.data.code === 200) {
+                data.value = res.data.data.userlist.map((item: any) => {
                     return {
-                        key: tid.value + '.' + item.uid ,    // tid + uid
+                        key: tid.value + '.' + item.uid,    // tid + uid
                         name: item.name,
                         phone: item.phone,
                         email: item.email,
@@ -85,10 +84,10 @@ onMounted(() => {
         tid: teamstore.curTeam.value.toString()
     }).then(res => {
         if (res.status === 200) {
-            if (res.data.code === 200) {                
-                data.value = res.data.data.userlist.map((item : any) => {
+            if (res.data.code === 200) {
+                data.value = res.data.data.userlist.map((item: any) => {
                     return {
-                        key: teamstore.curTeam.value.toString() + '.' + item.uid ,    // tid + uid
+                        key: teamstore.curTeam.value.toString() + '.' + item.uid,    // tid + uid
                         name: item.name,
                         phone: item.phone,
                         email: item.email,
@@ -120,11 +119,41 @@ const handleUpdateValue = (key: string) => {
 }
 
 
-import { NSelect } from "naive-ui";
-import { computed, h } from "vue";
+import { NSelect, NIcon } from "naive-ui";
+import { computed, h, Component } from "vue";
 import DeleteConfirm from '@/components/Member/MemberDeleteConfirm.vue'
 import { Column } from '@/interfaces/Member/MemberTable.interface'
+import {
+    PersonOutline as PersonIcon,
+    HomeOutline as HomeIcon
+} from '@vicons/ionicons5'
 
+const renderIcon = (icon: Component) => {
+    return () => h(NIcon, null, { default: () => h(icon) })
+}
+
+
+const menuOptions: MenuOption[] = [
+    {
+        label: '全部成员',
+        key: 'all-member',
+        icon: renderIcon(HomeIcon)
+    },
+    {
+        key: 'divider',
+        type: 'divider'
+    },
+    {
+        label: '管理员',
+        key: 'manager',
+        icon: renderIcon(PersonIcon)
+    },
+    {
+        label: '普通成员',
+        key: 'normal-member',
+        icon: renderIcon(PersonIcon)
+    }
+]
 const options = [{
     label: '管理员',
     value: '管理员'
@@ -141,8 +170,8 @@ const columns: Column[] = [
         width: 120,
         render(row: MemberRowData) {
             return h('div', {
-                    style: 'min-height: 22px',
-                }, row.username)
+                style: 'min-height: 22px',
+            }, row.username)
         }
     },
     {
