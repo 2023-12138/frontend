@@ -494,6 +494,7 @@ onMounted(async () => {
         }
     })
 
+    await refreshChatRoom();
     const temp = new VueCropper()
     console.log(temp)
     const rres = await mypost(message, '/user/showInfo', {});
@@ -503,50 +504,6 @@ onMounted(async () => {
     currentAvatar.value = rres.info.avatar;
     userName.value = rres.info.name;
 
-    if (webSocket.value == null) {
-        //重新加载socket的所有事件
-        try {
-            webSocket.value = new WebSocket(wsURL);
-            initWebSocket();
-        } catch (error) {
-            message.error('webSocket cannot connect to server');
-        }
-    }
-    let res = await mypost(message, '/team/viewTeam', {});
-    if (!res) {
-        return;
-    }
-    const li: {
-        teamlist: {
-            tid: number;
-            teamname: string;
-            teaminform: string;
-            is_active: boolean;
-        }[]
-    } = res;
-    allTeams.value = [];
-    for (const ateam of li.teamlist) {
-        const teammembers: {
-            userName: string;
-            userID: number;
-            isAdmin: boolean;
-        }[] = [];
-        let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
-        if (!mres) return;
-        for (const member of mres.userlist) {
-            teammembers.push({
-                userName: member.username,
-                userID: member.uid,
-                isAdmin: (member.status == 0 || member.status == 1)
-            });
-            userAvatars.value.set(member.uid, member.avatar);
-        }
-        allTeams.value.push({
-            teamName: ateam.teamname,
-            teamID: ateam.tid,
-            teamMembers: teammembers
-        });
-    }
 })
 
 //个人信息
@@ -641,7 +598,54 @@ const changePassword = async () => {
     message.success('修改成功！')
     changePasswordModal.value = false;
 }
-
+async function refreshChatRoom() {
+    debugger;
+    if (webSocket.value == null) {
+        //重新加载socket的所有事件
+        try {
+            webSocket.value = new WebSocket(wsURL);
+            initWebSocket();
+        } catch (error) {
+            message.error('webSocket cannot connect to server');
+        }
+    }
+    let res = await mypost(message, '/team/viewTeam', {});
+    if (!res) {
+        return;
+    }
+    const li: {
+        teamlist: {
+            tid: number;
+            teamname: string;
+            teaminform: string;
+            is_active: boolean;
+        }[]
+    } = res;
+    allTeams.value = [];
+    for (const ateam of li.teamlist) {
+        const teammembers: {
+            userName: string;
+            userID: number;
+            isAdmin: boolean;
+        }[] = [];
+        let mres = await mypost(message, '/team/viewUser', { tid: ateam.tid });
+        if (!mres) return;
+        for (const member of mres.userlist) {
+            teammembers.push({
+                userName: member.username,
+                userID: member.uid,
+                isAdmin: (member.status == 0 || member.status == 1)
+            });
+            userAvatars.value.set(member.uid, member.avatar);
+        }
+        allTeams.value.push({
+            teamName: ateam.teamname,
+            teamID: ateam.tid,
+            teamMembers: teammembers
+        });
+    }
+}
+messengerStore.registerMessage('refreshChatRoom', refreshChatRoom);
 </script>
 
 <style scoped>
