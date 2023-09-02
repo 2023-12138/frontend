@@ -81,10 +81,17 @@
                         </template>
                     </n-button>
                     <n-modal v-model:show="showSearchModal" transform-origin="center" preset="card"
-                        content-style="padding: 0;" header-style="padding: 0px;display: none;"
-                        style="width: 40vw; min-width: 30vw; margin-top: 80px;" size="huge">
-                        <n-auto-complete clear-after-select @select="searchSelected" v-model:value="searchValue"
-                            :options="searchOptions" placeholder="输入内容搜索" :render-label="renderSearchLabel" size="large" />
+                        content-style="padding:0;border-radius:10px;" header-style="padding: 0px;display: none;"
+                        style="width: 40vw; min-width: 30vw; margin-top: 80px; border-radius: 20px;" size="huge">
+                        <div class="searchContainer">
+                            <n-icon size="30" color="#82cefd"
+                                style="position: absolute; z-index:4; top: 50%; transform: translate(0,-50%);">
+                                <Search />
+                            </n-icon>
+                            <n-auto-complete class="autocmp" clear-after-select @select="searchSelected"
+                                v-model:value="searchValue" :options="searchOptions" placeholder="搜索聊天历史记录"
+                                :render-label="renderSearchLabel" size="large" />
+                        </div>
                     </n-modal>
                 </div>
                 <div class="rightChatContentContainer">
@@ -513,6 +520,18 @@ const fileCustomRequest = ({
 }
 </script>
 <style scoped>
+.autocmp :deep(.n-input) {
+    --n-border: 'none' !important;
+    --n-border-hover: 'none' !important;
+    --n-border-focus: 'none' !important;
+    --n-box-shadow-focus: 'none' !important;
+}
+
+.autocmp :deep(.n-input__input) {
+    margin-left: 20px;
+}
+
+
 .parentContainer {
     display: flex;
     height: 100%;
@@ -725,5 +744,13 @@ textarea {
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+.searchContainer {
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+
+    padding: 10px;
 }
 </style>
