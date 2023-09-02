@@ -74,13 +74,13 @@ const readMessage = async (index:number) => {
         }
         props.messages[index].read = 1
     }
-    chatShowModal.value = true;
     if(props.messages[index].type === 'chat'){
+        chatShowModal.value = true;
         setTimeout(() => {
             if (chatContainer.onOpenMsgFromNotice != null) chatContainer.onOpenMsgFromNotice(props.messages[index].tid, props.messages[index].rid);
         }, 500);
     }else{
-        router.push(`/team/${props.messages[index].tid}/project/${props.messages[index].pid}/doc/${props.messages[index].docid}`)
+        router.push(`/team/${props.messages[index].tid}/project/${props.messages[index].pid}/doc/${props.messages[index].docId}`)
     }
     
 }
