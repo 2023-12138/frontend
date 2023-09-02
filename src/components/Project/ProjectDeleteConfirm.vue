@@ -1,5 +1,6 @@
 <template>
-    <n-popconfirm @positive-click="handlePositiveClick()" @negative-click="handleNegativeClick()">
+    <n-popconfirm positive-text="确认" negative-text="取消" @positive-click="handlePositiveClick()"
+        @negative-click="handleNegativeClick()">
         <template #trigger>
             <n-button>{{ buttonText }}</n-button>
         </template>
@@ -10,7 +11,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useMessage } from 'naive-ui';
-import { storeToRefs } from 'pinia'; 
+import { storeToRefs } from 'pinia';
 import { useProjectStore } from '@/store/projectStore'
 import axios from '@/axios/axios';
 
@@ -30,8 +31,8 @@ export default defineComponent({
 
         const handlePositiveClick = () => {
             axios.post('project/deleteProject', {
-                tid : props.id!.split('.')[0],
-                pid : props.id!.split('.')[1],
+                tid: props.id!.split('.')[0],
+                pid: props.id!.split('.')[1],
             }).then(res => {
                 if (res.status === 200) {
                     if (res.data.code === 200) {

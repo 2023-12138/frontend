@@ -24,7 +24,8 @@
                                 </template>
                             </n-input>
                             <n-data-table :key="(row: any) => row.key" :columns="columns" :data="preData"
-                                :pagination="paginationRef" @update:page="handlePageChange" />
+                                :pagination="paginationRef" @update:page="handlePageChange" 
+                                size="small"/>
                         </div>
                     </n-tab-pane>
                     <n-tab-pane name="rubbish bin" tab="回收站">
@@ -40,7 +41,8 @@
                                 </template>
                             </n-input>
                             <n-data-table :key="(row: any) => row.key" :columns="deleteColumns" :data="preDeleteData"
-                                :pagination="deletePaginationRef" @update:deletePage="handleDeletePageChange" />
+                                :pagination="deletePaginationRef" @update:deletePage="handleDeletePageChange" 
+                                size="small"/>
                         </div>
                     </n-tab-pane>
                 </n-tabs>
@@ -302,10 +304,6 @@ const deleteColumns = [
             return h('div', {
                 style: "display:flex"
             }, [
-                h(DeleteConfirm, {
-                    buttonText: '删除',
-                    id: row.key,
-                }),
                 h(NButton, {
                     style: "margin-left: 10px",
                     onclick: () => {
@@ -346,7 +344,7 @@ const handlePageChange = (curPage: number): void => {
     page.value = curPage
 }
 const paginationRef: Ref<{ pageSize: number; page: number }> = computed(() => ({
-    pageSize: 6,
+    pageSize: 4,
     page: page.value
 }))
 
@@ -355,7 +353,7 @@ const handleDeletePageChange = (curPage: number): void => {
     deletePage.value = curPage
 }
 const deletePaginationRef: Ref<{ pageSize: number; page: number }> = computed(() => ({
-    pageSize: 6,
+    pageSize: 4,
     page: page.value
 }))
 

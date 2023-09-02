@@ -5,23 +5,6 @@
             <n-divider vertical style="height:40px ;margin-left: 20px;" />
             <label style="font-size: x-large; text-align: center;margin-left: 20px;color: white;">{{ header_title }}</label>
         </div>
-        <ul class="router">
-            <li>
-                <n-button class="route" strong tertiary @click="routeGo('/test')">
-                    测试
-                </n-button>
-            </li>
-            <li>
-                <n-button class="route" strong tertiary @click="routeGo('/team/1/member')">
-                    team
-                </n-button>
-            </li>
-            <li>
-                <n-button class="route" strong tertiary @click="routeGo('/login')">
-                    登录
-                </n-button>
-            </li>
-        </ul>
     </div>
 </template>
 

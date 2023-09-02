@@ -4,15 +4,26 @@
         <div class="bottom">
             <div class="leftSideNav" v-if="showMenu">
                 <div class="leftSideNavHeader">
-                    <span class="leftSideNavHeaderTop">
-                        {{ teamName }}
-                    </span>
-                    <span v-if="showMenu">
-                        {{ teamDescription }}
-                    </span>
+                    <n-popover style="max-height: 240px" trigger="click" scrollable placement="right">
+                        <template #trigger>
+                            <div class="leftSideNavHeaderTop">
+                                <span style="font-size: large;">
+                                    {{ teamName }}
+                                </span>
+                                <span v-if="showMenu">
+                                    {{ teamDescription }}
+                                </span>
+                            </div>
+                        </template>
+                        <n-menu :options="teamlist" @update:value=changeTeam indent="0">
+                        </n-menu>
+                    </n-popover>
+
                 </div>
                 <div class="leftSideNavMenu">
-                    <n-menu v-model:options="menuOptions" :render-label="renderMenuLabel" />
+                    <n-scrollbar class="leftSideNavMenu-scroll" style="max-height: 400px;">
+                        <n-menu v-model:options="menuOptions" :render-label="renderMenuLabel" />
+                    </n-scrollbar>
                 </div>
             </div>
             <div class="main">
@@ -36,10 +47,11 @@ import TeamHeader from '@/components/TeamHeader.vue'
 import axios from '@/axios/axios';
 import { GlobePerson20Regular, PeopleTeam16Filled } from '@vicons/fluent';
 import Box from '@vicons/tabler/es/Box';
-import { MdSettings } from '@vicons/ionicons4';
-
 import intro from "@/intro/introConfig";
 import { useUserStore } from '@/store/userStore';
+import router from '@/routes';
+import { TeamOutlined } from '@vicons/antd';
+import { Person } from '@vicons/ionicons5';
 
 const userStore = useUserStore();
 const { isNew } = storeToRefs(userStore);
@@ -138,12 +150,6 @@ const refreshMenu = () => {
                 icon: renderIcon(PeopleTeam16Filled),
             },
             {
-                label: '团队设置',
-                key: 'team_setting',
-                href: '/team/' + tid.value + '/setting',
-                icon: renderIcon(MdSettings),
-            },
-            {
                 key: 'header-divider',
                 type: 'divider'
             },
@@ -181,11 +187,37 @@ const refreshMenu = () => {
     })
 }
 
+const refreshTeam = () => {
+    axios.post('team/viewTeam', {
+    }).then(res => {
+        if (res.data.code === 200) {
+            const privateTid = res.data.data.privateTid
+            teamlist.value[0] = ({
+                label: '个人空间',
+                key: 'private' + privateTid + '.' + '个人空间.您的个人空间',
+                icon: renderIcon(Person)
+            } as never)
+            if (res.data.data.teamlist) {
+                res.data.data.teamlist.filter(item => item.tid !== privateTid).map((item: any, index: number) => {
+                    teamlist.value[index + 1] = ({
+                        label: item.teamname,
+                        key: item.tid + '.' + item.teamname + '.' + item.teaminform,
+                        icon: renderIcon(TeamOutlined)
+                    } as never)
+                })
+            }
+        } else {
+            message.warning(res.data.message)
+        }
+    })
+}
+
 onMounted(() => {
     showMenu.value = (!(location.hash.includes('protopreview') || location.hash.includes('design') || location.hash.includes('doc')))
-    
+
     tid.value = route.params.tid.toString()
     refreshMenu()
+    refreshTeam()
 })
 
 watch(projectstore.projectChanged, () => {
@@ -196,10 +228,10 @@ watch(teamstore.teamChanged, (_newTeamstore, _oldTeamstore) => {
     tid.value = teamstore.curTeam.value
     teamName.value = teamstore.curTeamName.value
     refreshMenu()
+    refreshTeam()
 })
 
 watch(() => route.params, () => {
-    console.log(location.hash)
     showMenu.value = (!(location.hash.includes('protopreview') || location.hash.includes('design') || location.hash.includes('doc')))
 })
 
@@ -215,6 +247,20 @@ function renderMenuLabel(option: MenuOption) {
         )
     }
     return option.label as string
+}
+
+const teamlist = ref([
+])
+
+const changeTeam = (key: string) => {
+    const tid = key!.split('.')[0]
+    const teamname = key!.split('.')[1]
+    message.info("切换至团队" + teamname)
+    teamstore.curTeam.value = tid
+    teamstore.curTeamName.value = teamname
+    teamstore.teamChanged.value = !(teamstore.teamChanged.value)
+    teamDescription.value = key!.split('.')[2]
+    router.push("/team/" + tid + "/projectmanage")
 }
 
 </script>
@@ -244,6 +290,18 @@ function renderMenuLabel(option: MenuOption) {
     align-items: center;
     /* border-bottom: var(--primary-color) solid;
     border-bottom-width: 3px; */
+
+    .leftSideNavHeaderTop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        >span {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    }
 
     &:hover {
         background-color: #eeee;
@@ -281,4 +339,5 @@ function renderMenuLabel(option: MenuOption) {
 .main {
     width: 100%;
     height: 100%;
-}</style>
+}
+</style>

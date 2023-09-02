@@ -3,18 +3,19 @@
         <div class="member-top">
             <n-h2>成员管理</n-h2>
             <div v-if="showButton" class="member-top-bottom">
-                <span>当前团队共{{ data.length }}人&nbsp; ID: {{ $route.params.tid }}</span>
+                <span>当前团队共{{ data.length }}人</span>
                 <n-button type="primary" @click="showModal = true">添加成员</n-button>
                 <AddMemberModal v-model:show="showModal"></AddMemberModal>
             </div>
         </div>
         <div class="member-bottom">
-            <div class="sider">
-                <n-menu :options="menuOptions" @update:value="handleUpdateValue" />
+            <div class="member-bottom-top">
+                <n-menu :options="menuOptions" mode="horizontal" @update:value="handleUpdateValue" />
             </div>
             <div class="content">
                 <n-data-table :key="(row: any) => row.key" :columns="columns" :data="preData" :pagination="paginationRef"
-                    @update:page="handlePageChange" />
+                    @update:page="handlePageChange"
+                    size="small" />
             </div>
         </div>
     </div>
@@ -296,16 +297,19 @@ const paginationRef: Ref<{ pageSize: number; page: number }> = computed(() => ({
 }
 
 .member-bottom {
-
     display: inline-flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
 }
 
-.sider {
-    width: 20%;
+.member-bottom-top {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 2px;
+    border-color: var(--primary-color);
 }
 
 .content {
-    width: 80%;
+    width: 100%;
 }
 </style>

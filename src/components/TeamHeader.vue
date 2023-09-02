@@ -640,7 +640,6 @@ const changePassword = async () => {
     changePasswordModal.value = false;
 }
 async function refreshChatRoom() {
-    //debugger;
     if (webSocket.value == null) {
         //重新加载socket的所有事件
         try {
@@ -866,5 +865,20 @@ messengerStore.registerMessage('refreshChatRoom', refreshChatRoom);
     .submitButton {
         width: 40%;
     }
+}
+
+.dropdown{
+    border-radius: 9px;
+    width: 200px; 
+    max-height: 500px;
+    overflow-y: auto !important;
+    * {
+        max-height: 100% !important;
+        
+    }
+}
+.n-dropdown-menu {
+    max-height: 500px !important;
+    overflow-y: scroll !important;
 }
 </style>
