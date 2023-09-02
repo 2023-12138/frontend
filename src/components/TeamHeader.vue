@@ -181,6 +181,8 @@ import { useMessengerStore } from '@/store/messengerStore';
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 import { useRoute } from 'vue-router';
+import { Document } from '@vicons/carbon';
+import { BuildingHome20Filled } from '@vicons/fluent'
 
 const messengerStore = useMessengerStore();
 
@@ -310,10 +312,10 @@ const newMessage = (teamId: number, teamName: string, rid: number) => {
     const n = notification.create({
         title: `你在${teamName}团队群聊被@了`,
         avatar: () =>
-            h(NAvatar, {
-                size: 'small',
-                round: true,
-                src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+            h(NIcon, {
+                size: '40',
+                color: '#82cefd',
+                component: BuildingHome20Filled
             }),
         meta: ' ',
         action: () =>
@@ -340,10 +342,10 @@ const newDocMessage = (pid: number, tid: number, docid: number) => {
     const n = notification.create({
         title: `你在文档中被@了`,
         avatar: () =>
-            h(NAvatar, {
-                size: 'small',
-                round: true,
-                src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+            h(NIcon, {
+                size: '40',
+                color: '#82cefd',
+                component: Document
             }),
         meta: ' ',
         action: () =>
@@ -531,7 +533,7 @@ onMounted(async () => {
         return;
     }
     currentAvatar.value = rres.info.avatar;
-    userName.value = rres.info.name;
+    userName.value = rres.info.username;
 
 })
 

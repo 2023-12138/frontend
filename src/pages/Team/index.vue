@@ -129,12 +129,12 @@ const refreshMenu = () => {
     isPrivate.value = tid.value.toString().startsWith('private')
     menuOptions.value = isPrivate.value ?
         [
-            {
-                label: '个人空间',
-                key: 'team_setting',
-                href: '/team/' + tid.value + '/setting',
-                icon: renderIcon(GlobePerson20Regular),
-            },
+            // {
+            //     label: '个人空间',
+            //     key: 'team_setting',
+            //     href: '/team/' + tid.value + '/setting',
+            //     icon: renderIcon(GlobePerson20Regular),
+            // },
             {
                 label: '项目空间',
                 key: 'project_space',
@@ -292,6 +292,7 @@ const changeTeam = (key: string) => {
     border-bottom-width: 3px; */
 
     .leftSideNavHeaderTop {
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;

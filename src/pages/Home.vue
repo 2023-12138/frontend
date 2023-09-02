@@ -13,7 +13,7 @@
                 <n-h3>包含人员管理、项目管理，助力团队项目开发</n-h3>
                 <div style="height: 90px;">
                     <n-button @click="router.push('/login')" type="primary" class="loginbutton">开始</n-button>
-                    <n-button @click="router.push('/document')" class="loginbutton">阅读文档</n-button>
+                    <!-- <n-button @click="router.push('/document')" class="loginbutton">阅读文档</n-button> -->
                 </div>
             </div>
         </div>
@@ -164,6 +164,7 @@ const title = ref("FusionCode");
     height: 100%;
     width: 100%;
     background-image: url('@/assets/background.png');
+    background-size: cover;
 
     .intro-left-container {
         width: 35%;

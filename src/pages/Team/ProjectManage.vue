@@ -10,7 +10,7 @@
         </div>
         <div class="project-bottom" id="intostep4">
             <div class="content">
-                <n-tabs type="line" animated>
+                <n-tabs type="line" animated tabs-padding="20">
                     <n-tab-pane name="project" tab="项目">
                         <div class="active-project">
                             <n-input 
@@ -440,6 +440,10 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     margin: 10px;
+}
+
+.project-top > h2 {
+    margin: 10px 0 0 10px;
 }
 
 .project-bottom {

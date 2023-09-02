@@ -27,7 +27,7 @@
                                 <n-button type="primary" @click="createFileValue == '共享文档' ? changeTemplateModal = true : changeProtoTemplateModal = true">选择模板</n-button>
                                 <span>{{ createFileValue == '共享文档' ? templateValue : protoTemplateValue }}</span>
                             </div>
-                            <span>给你的{{ createFileValue }}起个名字吧&nbsp;(。・∀・)ノ</span>
+                            <span>给你的{{ createFileValue === '原型设计' ? '页面' : createFileValue }}起个名字吧&nbsp;(。・∀・)ノ</span>
                             <n-input v-model:value="fileName" placeholder="请输入文件名" />
                             <n-button secondary type="info" @click="createFile">确定</n-button>
                         </div>
