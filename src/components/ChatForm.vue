@@ -293,7 +293,6 @@ function team2Options(team: TeamModel) {
 }
 
 async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderName: string) {
-    debugger;
     let data = JSON.parse(e.data);
     let msgtype: string = data.type;
     if (msgtype == 'chat_aite_history') msgtype = 'chat_aite';
@@ -310,7 +309,6 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     else if (msgtype == 'chat_file') messagetype = 'file';
     //判断是否正在展示
     if (currentChatID.value.id == recent.id) {
-        debugger;
         msgList.value.push({
             userName: senderName,
             msg: message,

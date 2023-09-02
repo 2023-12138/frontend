@@ -44,13 +44,11 @@ const route = useRoute();
 
 let src = ref<string | undefined>(undefined);
 onMounted(async () => {
-    debugger;
     const res = await mypost(message, '/doc/openDoc', { docid: route.params.did })
     if (!res) {
         return;
     }
-    debugger;
-    src.value = `/pad/auth_session?sessionID=${res.sessionid}&padName=${res.padname}&groupID=${res.groupid}`;
+    src.value = `http://101.43.224.85/p/p/auth_session?sessionID=${res.sessionid}&padName=${res.padname}&groupID=${res.groupid}`;
 
 
     //设置cookies

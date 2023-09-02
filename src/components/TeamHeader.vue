@@ -411,7 +411,6 @@ let reconnectCount = 0;
 function initWebSocket() {
     if (webSocket.value == null) return;
     webSocket.value.onmessage = async (e) => {
-        debugger;
         let data = JSON.parse(e.data);
         let msgtype: string = data.type;
         data = data.data;
@@ -423,7 +422,6 @@ function initWebSocket() {
         let rid: number = parseInt(data.rid);
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
-            debugger;
             newDocMessage(data.pid,data.tid,data.docid);
             return;
         }
