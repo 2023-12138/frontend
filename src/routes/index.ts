@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../pages/Team/Project.vue'),
                 children: [
                     {
-                        path:'doc/:did',
+                        path: 'doc/:did',
                         component: () => import('../pages/Team/Doc.vue')
                     },
                     {
@@ -54,7 +54,7 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path:'/docpreview/:sessionid/:padid/key',
+        path: '/docpreview/:sessionid/:padid/key',
         component: () => import('../pages/DocPreview.vue')
     },
     {
@@ -71,5 +71,13 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes
 })
+
+router.beforeEach((to, from, next) => {
+    document.title = 'FusionCode';
+    if (!localStorage.getItem('token')) {
+        router.push('/login')
+    }
+    next();
+});
 
 export default router
