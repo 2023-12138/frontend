@@ -14,7 +14,15 @@
                     </div>
                 </div>
                 <div class="headerRight">
-                    <n-button>导出</n-button>
+                    <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+                        <n-button>导出</n-button>
+                    </n-dropdown>
+                    <n-modal v-model:show="showExportModal">
+                        <n-card style="width: 600px" title="生成链接" :bordered="false" size="huge" role="dialog"
+                            aria-modal="true">
+                            <a :href="link">{{ link }} </a>
+                        </n-card>
+                    </n-modal>
                     <n-button @click="">保存</n-button>
                 </div>
             </div>
@@ -34,13 +42,40 @@ import { usedocEditStore } from '@/store/docEditStore.ts'
 
 import { ArrowBackSharp } from '@vicons/ionicons5';
 import { Edit16Filled } from '@vicons/fluent'
-import { mypost } from "@/axios/axios";
+import axios, { mypost } from "@/axios/axios";
 import { useMessage } from "naive-ui";
 import { useRoute } from "vue-router";
 
 const message = useMessage();
 const docEditStore = usedocEditStore();
 const route = useRoute();
+
+const showExportModal = ref(false)
+const link = ref('')
+const options = [
+    {
+        label: '可编辑',
+        key: '0',
+    },
+    {
+        label: '仅查看',
+        key: '1',
+    },
+]
+
+const handleSelect = (key: string) => {
+    axios.post('doc/makeLink', {
+        "identity": key,
+        "docid": route.params.did
+    }).then(res => {
+        if (res.data.code === 200) {
+            link.value = 'http://101.43.224.85/#/docpreview/' + res.data.data.sessionid + "/" + res.data.data.padid + '/key'
+            showExportModal.value = true
+        } else {
+            message.warning(res.data.message)
+        }
+    })
+}
 
 let src = ref<string | undefined>(undefined);
 onMounted(async () => {
