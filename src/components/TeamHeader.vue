@@ -192,16 +192,6 @@ watch(() => route.params, () => {
     showMenu.value = (!location.hash.includes('protopreview'))
 })
 
-onMounted(async () => {
-    const temp = VueCropper()
-    console.log(temp)
-    const res = await mypost(message, '/user/showInfo', {});
-    if (!res) {
-        return;
-    }
-    currentAvatar.value = res.info.avatar;
-    userName.value = res.info.name;
-})
 
 //顶部头像下拉框功能
 function renderCustomHeader() {
@@ -233,42 +223,7 @@ function renderCustomHeader() {
 const teamStore = useTeamStore();
 const teamstore = storeToRefs(teamStore);
 
-onMounted(() => {
-    axios.post('team/viewTeam', {
-    }).then(res => {
-        console.log(res)
-        if (res.status === 200) {
-            if (res.data.code === 200) {
-                const privateTid = res.data.data.privateTid
-                avatarOptions.value[3].children![0] = ({
-                    label: '个人空间',
-                    key: 'team.private' + privateTid + '.' + '个人空间',
-                } as never)
-                avatarOptions.value[3].children![1] = (({
-                    label: '创建团队',
-                    key: 'create-team'
-                }) as never)
-                avatarOptions.value[3].children![2] = (({
-                    key: 'child-divider',
-                    type: 'divider'
-                }) as never)
-                const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
-                if (teamlist) {
-                    teamlist.forEach((item: any, index: number) => {
-                        avatarOptions.value[3].children![index + 3] = ({
-                            label: item.teamname,
-                            key: 'team.' + item.tid + '.' + item.teamname
-                        } as never)
-                    })
-                }
-            } else {
-                message.warning(res.data.message)
-            }
-        } else {
-            message.error('服务器错误')
-        }
-    })
-})
+
 
 const avatarOptions = ref([
     {
@@ -374,7 +329,7 @@ const newMessage = (teamId: number, teamName: string, rid: number) => {
             ),
     })
 }
-const newDocMessage = (pid:number,tid:number,docid:number) => {
+const newDocMessage = (pid: number, tid: number, docid: number) => {
     const n = notification.create({
         title: `你在文档中被@了`,
         avatar: () =>
@@ -422,7 +377,7 @@ function initWebSocket() {
         let rid: number = parseInt(data.rid);
         let senderName: string = data.senderName;
         if (msgtype == 'doc_aite') {
-            newDocMessage(data.pid,data.tid,data.docid);
+            newDocMessage(data.pid, data.tid, data.docid);
             return;
         }
         if (msgtype == "chat_aite" && senderId != myuid.value) {
@@ -504,6 +459,50 @@ function initWebSocket() {
     }
 }
 onMounted(async () => {
+    axios.post('team/viewTeam', {
+    }).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+            if (res.data.code === 200) {
+                const privateTid = res.data.data.privateTid
+                avatarOptions.value[3].children![0] = ({
+                    label: '个人空间',
+                    key: 'team.private' + privateTid + '.' + '个人空间',
+                } as never)
+                avatarOptions.value[3].children![1] = (({
+                    label: '创建团队',
+                    key: 'create-team'
+                }) as never)
+                avatarOptions.value[3].children![2] = (({
+                    key: 'child-divider',
+                    type: 'divider'
+                }) as never)
+                const teamlist = res.data.data.teamlist.filter((item: any) => item.tid !== privateTid)
+                if (teamlist) {
+                    teamlist.forEach((item: any, index: number) => {
+                        avatarOptions.value[3].children![index + 3] = ({
+                            label: item.teamname,
+                            key: 'team.' + item.tid + '.' + item.teamname
+                        } as never)
+                    })
+                }
+            } else {
+                message.warning(res.data.message)
+            }
+        } else {
+            message.error('服务器错误')
+        }
+    })
+
+    const temp = new VueCropper()
+    console.log(temp)
+    const rres = await mypost(message, '/user/showInfo', {});
+    if (!rres) {
+        return;
+    }
+    currentAvatar.value = rres.info.avatar;
+    userName.value = rres.info.name;
+
     if (webSocket.value == null) {
         //重新加载socket的所有事件
         try {

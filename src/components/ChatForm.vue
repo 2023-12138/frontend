@@ -478,7 +478,10 @@ const picCustomRequest = ({
     file
 }: UploadCustomRequestOptions) => {
     console.log('upload start');
-
+    if (file.file.type !== 'image/png' && file.file.type !== 'image/jpeg') {
+        message.info('只能发送图片 :(');
+        return;
+    }
     const formData = new FormData();
     formData.append('key', file.name);
     formData.append('file', file.file as File);

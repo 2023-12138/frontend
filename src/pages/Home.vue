@@ -133,10 +133,18 @@ const title = ref("FusionCode");
 .description {
     height: auto;
     width: 500px;
-    background-color: white;
+    /* background-color: white; */
     padding: 50px;
     border-radius: 10px;
     box-shadow: 0 0 5px 5px #ccc;
+}
+
+.description::after {
+    content: '';
+    filter: blur(20px);
+    background-color: red;
+    height: 100px;
+    width: 100px;
 }
 
 .content {

@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div style="display: flex;">
+        <div style="display: flex; align-items: center;">
             <Logo />
             <n-divider vertical style="height:40px ;margin-left: 20px;" />
             <label style="font-size: x-large; text-align: center;margin-left: 20px;color: white;">{{ header_title }}</label>
