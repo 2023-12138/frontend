@@ -3,7 +3,6 @@
         <template #trigger>
             <div class="bellIcon" id="intostep3" @click="getNotice">
                 <n-icon size="25" :component="BellRegular" />
-                <div class="remind" v-show="remindShow"></div>
             </div>
         </template>
         <div class="content">

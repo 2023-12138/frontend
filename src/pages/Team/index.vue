@@ -6,7 +6,7 @@
                 <div class="leftSideNavHeader">
                     <n-popover style="max-height: 240px" trigger="click" scrollable placement="right">
                         <template #trigger>
-                            <div class="leftSideNavHeaderTop">
+                            <div class="leftSideNavHeaderTop" id="intostep1">
                                 <span style="font-size: large;">
                                     {{ teamName }}
                                 </span>
