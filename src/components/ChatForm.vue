@@ -219,7 +219,7 @@ const io = new IntersectionObserver(eles => {
             console.log(`${element} 可视`);
             let div: any = element;
             console.log("riddddd" + div['rid']);
-            mypost(message, '/notice/haveread', { rid: div['rid'] });
+            mypost(message, '/notice/haveread', { rid: div['rid'], uid: myuid.value });
         }
     });
 });
