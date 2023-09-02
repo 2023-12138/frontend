@@ -1,7 +1,7 @@
 <template>
     <n-popover :overlap="overlap" placement="bottom" trigger="click" style="border-radius: 6px;">
         <template #trigger>
-            <div class="bellIcon" id="intostep3">
+            <div class="bellIcon" id="intostep3" @click="getNotice">
                 <n-icon size="25" :component="BellRegular" />
                 <div class="remind" v-show="remindShow"></div>
             </div>
@@ -128,7 +128,7 @@ const TabProp = (tab:string) => ({
     }
 })
 
-onMounted(async () => {
+const getNotice = async () => {
     let res = await mypost(giveMessage,'/notice/getnotice',{'type':'chat'});
     if(!res){
         return;
@@ -140,6 +140,10 @@ onMounted(async () => {
         }
     }
     chatMessages.value = res.notice_list.map((x:any) => x);
+}
+
+onMounted(() => {
+    getNotice();
 })
 
 //底部控件

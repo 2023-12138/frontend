@@ -1,6 +1,6 @@
 <template>
     <div class="topNav">
-        <div class="topNavLeft">
+        <div class="topNavLeft" @click="$router.push('/')">
             <img src="@/assets/FUSIONCUDE-LONG1.png" height="90" width="220">
         </div>
         <div class="topNavRight" v-if="showMenu">
@@ -22,7 +22,7 @@
             <div class="avatar">
                 <n-config-provider :theme-overrides="avatarDropdownThemeOverrides">
                     <n-dropdown trigger="click" :options="avatarOptions" :show-arrow="true" size="huge"
-                        @select="avatarHandleSelect" style="border-radius: 9px;width: 200px;">
+                        @select="avatarHandleSelect" style="border-radius: 9px;width: 200px; max-height: 400px" :menu-props="menuProps" scrollable>
                         <n-avatar round :size="40" :src="currentAvatar" />
                     </n-dropdown>
                 </n-config-provider>
@@ -254,6 +254,13 @@ const avatarOptions = ref([
         key: 'logout'
     },
 ])
+
+const menuProps = () => ({
+    style:{
+        maxHeight:'300px',
+        width:'200px'
+    }
+})
 
 const message = useMessage()
 
@@ -519,8 +526,6 @@ onMounted(async () => {
     })
 
     await refreshChatRoom();
-    const temp = new VueCropper()
-    console.log(temp)
     const rres = await mypost(message, '/user/showInfo', {});
     if (!rres) {
         return;
@@ -587,12 +592,24 @@ const chooseAvatar = ({
     changeAvatarModal.value = !changeAvatarModal.value;
 }
 const changeAvatar = () => {
-    cropper.value.getCropData(async (data: string) => {
-        const res = await mypost(message, '/user/changeAva', { avatar: data });
-        if (!res) {
-            return;
-        }
-        currentAvatar.value = data;
+    cropper.value.getCropBlob(async (data: Blob) => {
+        const formData = new FormData();
+        formData.append('key', `用户${localStorage.getItem('uid')}在${Date.now()}修改的头像`);
+        formData.append('file', data as File);
+        axios.post('http://101.43.202.84:7002/user/changeAva', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        }).then((res) => {
+            if (res.status === 200) {
+                if (res.data.code === 200) {
+                    currentAvatar.value = res.data.data.url;
+                    message.success('修改成功');
+                } else {
+                    message.warning(res.data.message)
+                }
+            } else {
+                message.error("网络错误")
+            }
+        }).catch((_) => message.error('文件上传失败'));
     })
     changeAvatarModal.value = !changeAvatarModal.value;
 }
@@ -689,21 +706,25 @@ messengerStore.registerMessage('refreshChatRoom', refreshChatRoom);
 
 .topNavLeft {
     /* background-color: red; */
-    width: 35%;
+    width: 10%;
     min-width: 200px;
     height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
-.topNavLeft span {
+/* .topNavLeft span {
     margin-left: 15px;
     letter-spacing: 3px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', '宋体', Arial, sans-serif;
     font-weight: bolder;
     font-size: 20px;
-}
+} */
 
 .topNavRight {
     width: 85%;

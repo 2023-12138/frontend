@@ -43,10 +43,10 @@
                                         <n-dropdown trigger="hover" :options="team2Options(team)">
                                             <n-popover trigger="hover">
                                                 <template #trigger>
-                                                    <n-button strong secondary circle type="primary">
+                                                    <n-button strong secondary circle type="primary" style="margin-right:10px;height: 0px;width: 0px;">
                                                         <template #icon>
-                                                            <n-icon>
-                                                                <ImageOutline />
+                                                            <n-icon size="25">
+                                                                <MoreHorizFilled />
                                                             </n-icon>
                                                         </template>
                                                     </n-button>
@@ -156,6 +156,7 @@ import { mypost } from '@/axios/axios';
 import ChatMessage from '@/components/ChatMessage.vue';
 import axios from 'axios';
 import { useMessengerStore } from '@/store/messengerStore';
+import { MoreHorizFilled } from '@vicons/material';
 const messengerStore = useMessengerStore();
 const container = useChatContainer();
 const { recentChatList, msgList, webSocket, allTeams, currentChatID, currentChatName, onOpenMsgFromNotice, recvHandler, myname, options, userAvatars } = storeToRefs(container);
@@ -544,11 +545,21 @@ const fileCustomRequest = ({
     height: 100%;
     width: 100%;
 
+    &::before{
+        content:'';
+        position: absolute;
+        width: 100%;
+        height: 2.5px;
+        background-color: #f3f3f3;
+        left: 0;
+        top: 9%;
+    }
+
     .leftChatRoomMenu {
         width: 25%;
         height: 100%;
         display: flex;
-        background-color: rgb(220, 221, 222);
+        /* background-color: rgb(220, 221, 222); */
 
         .n-tabs {
             width: 100%;
@@ -564,8 +575,9 @@ const fileCustomRequest = ({
             .chatListItem {
                 height: 65px;
                 display: flex;
-                justify-content: space-evenly;
+                justify-content: space-around;
                 align-items: center;
+                /* background-color: red; */
 
                 .chatListItemRight {
                     width: 70%;
@@ -655,6 +667,7 @@ const fileCustomRequest = ({
                     height: 30%;
                     display: flex;
                     flex-direction: column;
+                    border-left: 2px #f3f3f3 solid;
 
                     .chatTools {
                         height: 25%;
