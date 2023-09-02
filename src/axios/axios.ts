@@ -1,3 +1,4 @@
+import router from '@/routes';
 import { useAxiosStore } from '@/store/axiosStore';
 import { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
 const axiosStore = useAxiosStore();
@@ -15,6 +16,9 @@ export async function mypost(message: MessageApiInjection, url: string, props: a
                 let code = res.data.code
                 if (code === 400) {
                     message.warning(res.data.message)
+                } else if (code === 401) {
+                    message.warning(res.data.message)
+                    router.push('/login')
                 }
                 return false;
             }

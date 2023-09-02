@@ -72,12 +72,4 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
-    document.title = 'FusionCode';
-    if (!localStorage.getItem('token')) {
-        router.push('/login')
-    }
-    next();
-});
-
 export default router
