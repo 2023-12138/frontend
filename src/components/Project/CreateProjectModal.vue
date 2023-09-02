@@ -2,7 +2,7 @@
     <n-modal :mask-closable="false" preset="dialog" @positive-click="createProject"
         positive-text="创建" negative-text="取消">
         <template #header>
-            <span class="header">创建项目</span>
+            <span class="create-project-header">创建项目</span>
         </template>
         <div class="content">
             <n-form ref="createProjectFormRef" :model="createProjectModel" :rules="createProjectRules">
@@ -98,7 +98,7 @@ const createProject = () => {
 </script>
 
 <style scoped>
-.header {
+.create-project-header {
     display: flex;
     justify-content: center;
 }
