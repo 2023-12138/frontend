@@ -308,7 +308,7 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     if (msgtype == 'chat_pic') messagetype = 'img';
     else if (msgtype == 'chat_file') messagetype = 'file';
     //判断是否正在展示
-    debugger;
+    //debugger;
     if (currentChatID.value != undefined && currentChatID.value.id == recent.id) {
         msgList.value.push({
             userName: senderName,

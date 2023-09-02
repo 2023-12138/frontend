@@ -393,14 +393,12 @@ function initWebSocket() {
             if (senderId == myuid.value) {//自己发送的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 if (recent == undefined) {
-                    debugger;
                     console.log('why this happend?');
                     //messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: myname.value });
                     recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 }
 
             } else {//别人发的消息自己收到
-                debugger;
                 recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
                 if (recent == undefined) {
                     chatform_start(senderId, isuser, senderName);
@@ -623,7 +621,7 @@ const changePassword = async () => {
     changePasswordModal.value = false;
 }
 async function refreshChatRoom() {
-    debugger;
+    //debugger;
     if (webSocket.value == null) {
         //重新加载socket的所有事件
         try {
