@@ -393,14 +393,17 @@ function initWebSocket() {
             if (senderId == myuid.value) {//自己发送的消息自己收到
                 recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 if (recent == undefined) {
-                    messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: myname.value });
+                    debugger;
+                    console.log('why this happend?');
+                    //messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: myname.value });
                     recent = recentChatList.value.find((ele) => ele.id == receiverId && ele.isuser == isuser);
                 }
 
             } else {//别人发的消息自己收到
+                debugger;
                 recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
                 if (recent == undefined) {
-                    messengerStore.callMessage('chatform_startchat', { id: receiverId, isuser: isuser, targetUName: senderName });
+                    chatform_start(senderId, isuser, senderName);
                     recent = recentChatList.value.find((ele) => ele.id == senderId && ele.isuser == isuser);
 
                 }
@@ -414,7 +417,7 @@ function initWebSocket() {
             console.log(name);
             senderName = allTeams.value.find(ele => ele.teamID == teamId)?.teamMembers.find(ele1 => ele1.userID == senderId)?.userName || 'NaN :(';
             if (recent == undefined) {
-                messengerStore.callMessage('chatform_startchat', { id: teamId, isuser: isuser, targetUName: team?.teamName });
+                chatform_start(teamId as number, isuser, team?.teamName);
                 recent = recentChatList.value.find((ele) => ele.id == teamId && ele.isuser == isuser);
             }
         }
@@ -456,6 +459,27 @@ function initWebSocket() {
     }
     webSocket.value.onerror = (_) => {
         //message.error('unknown error');
+    }
+}
+function chatform_start(id: number, isuser: boolean, targetUName: string) {
+    if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
+        //没找到,问服务器请求历史数据 
+        // :todo
+        recentChatList.value.push({
+            userOrTeamName: targetUName,
+            id: id,
+            isuser: isuser,
+            lastMsg: null,
+            Messages: []
+        });
+        if (isuser) {
+            mypost(message, 'chat/getHistory', { senderId: id, tid: '' });
+        } else {
+            //请求team的历史数据
+            // :todo
+            mypost(message, 'chat/getHistory', { tid: id, senderId: '' });
+        }
+
     }
 }
 onMounted(async () => {

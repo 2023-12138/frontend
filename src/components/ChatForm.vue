@@ -308,7 +308,8 @@ async function onMessage(e: MessageEvent<any>, recent: RecentListModel, senderNa
     if (msgtype == 'chat_pic') messagetype = 'img';
     else if (msgtype == 'chat_file') messagetype = 'file';
     //判断是否正在展示
-    if (currentChatID.value.id == recent.id) {
+    debugger;
+    if (currentChatID.value != undefined && currentChatID.value.id == recent.id) {
         msgList.value.push({
             userName: senderName,
             msg: message,
@@ -365,33 +366,31 @@ function startChat(id: number, isuser: boolean, targetUName: string) {
 
     changeChatContent(id, isuser);
 }
-messengerStore.registerMessage('chatform_startchat', (arg: { id: number, isuser: boolean, targetUName: string }) => {
-    //startChat(arg.id, arg.isuser, arg.targetUName);
-    const id = arg.id;
-    const isuser = arg.isuser;
-    const targetUName = arg.targetUName;
-    if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
-        //没找到,问服务器请求历史数据 
-        // :todo
-        recentChatList.value.push({
-            userOrTeamName: targetUName,
-            id: id,
-            isuser: isuser,
-            lastMsg: null,
-            Messages: []
-        });
-        if (isuser) {
-            mypost(message, 'chat/getHistory', { senderId: id, tid: '' });
-        } else {
-            //请求team的历史数据
-            // :todo
-            mypost(message, 'chat/getHistory', { tid: id, senderId: '' });
-        }
+// messengerStore.registerMessage('chatform_startchat', (arg: { id: number, isuser: boolean, targetUName: string }) => {
+//     //startChat(arg.id, arg.isuser, arg.targetUName);
+//     const id = arg.id;
+//     const isuser = arg.isuser;
+//     const targetUName = arg.targetUName;
+//     if (recentChatList.value.find((ele) => ele.id == id && ele.isuser == isuser) == undefined) {
+//         //没找到,问服务器请求历史数据 
+//         // :todo
+//         recentChatList.value.push({
+//             userOrTeamName: targetUName,
+//             id: id,
+//             isuser: isuser,
+//             lastMsg: null,
+//             Messages: []
+//         });
+//         if (isuser) {
+//             mypost(message, 'chat/getHistory', { senderId: id, tid: '' });
+//         } else {
+//             //请求team的历史数据
+//             // :todo
+//             mypost(message, 'chat/getHistory', { tid: id, senderId: '' });
+//         }
 
-        //添加到最近聊天中
-
-    }
-})
+//     }
+// })
 function changeChatContent(id: number, isuser: boolean) {
     msgList.value = [];
     console.log('content changing');
