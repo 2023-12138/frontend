@@ -422,10 +422,12 @@ function initWebSocket() {
 
 
         let messagetype: "text" | "img" | "file" = 'text';
-        if (msgtype == 'chat_pic') messagetype = 'img';
-        else if (msgtype == 'chat_file') messagetype = 'file';
+        if (msgtype == 'chat_pic') { messagetype = 'img'; recent.lastMsg = '[图片]'; }
+        else if (msgtype == 'chat_file') { messagetype = 'file'; recent.lastMsg = '[文件]'; }
+        else recent.lastMsg = message;
         let isaite = false;
         if (msgtype == 'chat_aite' || msgtype == 'chat_aite_history') isaite = true;
+
         recent?.Messages.push({
             userName: senderName,
             msg: message,

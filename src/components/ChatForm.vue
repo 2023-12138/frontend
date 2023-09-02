@@ -20,7 +20,7 @@
                                     </n-avatar>
                                     <div class="chatListItemRight">
                                         <div class="chatName">{{ item.userOrTeamName }}</div>
-                                        <div class="chatText">最近消息</div>
+                                        <div class="chatText">{{ item.lastMsg }}</div>
                                     </div>
                                 </div>
                             </n-list-item>
@@ -168,6 +168,13 @@ const inputMessage = ref('');
 const message = useMessage();
 const SetItemRef = (el: any) => {
     MessageComponents.push(el);
+}
+function getLastMessage(item: RecentListModel) {
+    debugger;
+    const lastmes = item.Messages[item.Messages.length - 1];
+    if (lastmes.type == 'file') return '[文件]';
+    if (lastmes.type == 'img') return '[图片]';
+    return lastmes.msg;
 }
 const showSearchModal = ref(false);
 const fileList = ref([]);
