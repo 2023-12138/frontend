@@ -11,15 +11,13 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
-const padname = route.params.padid.toString().split('$')[1]
-const groupid = route.params.padid.toString().split('$')[0]
-const preUrl = "http://101.43.224.85/p/auth_session?sessionID="
-const target = ref(preUrl  + route.params.sessionid + '&padName=' + padname + '&groupID=' + groupid)
+const preUrl = "http://101.43.224.85/p/p/"
+const target = ref(preUrl  + route.params.padid)
 
 onMounted(() => {
     document.cookie = `sessionID=${route.params.sessionid}`
     // 在组件加载完成后，获取 iframe 元素并进行操作
-    target.value = (preUrl  + route.params.sessionid + '&padName=' + padname + '&groupID=' + groupid)
+    target.value = (preUrl  + route.params.padid)
 })
 
 </script>
